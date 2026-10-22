@@ -3585,7 +3585,7 @@
     "id": "markdown.toc",
     "name": "Markdown 目录生成",
     "nameEn": "Markdown table of contents",
-    "description": "提取 ATX 标题，跳过围栏代码；生成 GitHub 风格锚点。",
+    "description": "提取 ATX 标题，跳过围栏代码；最多 10000 个标题，每个最多 4096 字。",
     "category": "Markdown",
     "tags": [
       "Markdown",

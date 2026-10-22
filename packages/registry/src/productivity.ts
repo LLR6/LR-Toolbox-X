@@ -5,13 +5,14 @@ export const productivityActions = [
     "markdown.toc",
     "Markdown 目录生成",
     "Markdown table of contents",
-    "提取 ATX 标题，跳过围栏代码；生成 GitHub 风格锚点。",
+    "提取 ATX 标题，跳过围栏代码；最多 10000 个标题，每个最多 4096 字。",
     "Markdown",
     { text: s },
     "string",
     { text: "# Hello\n## World\n## World" },
     (i) => {
       const used = new Set<string>(),
+        counters = new Map<string, number>(),
         out: string[] = [];
       let fence = "";
       for (const line of text(i).split(/\r?\n/)) {
@@ -23,16 +24,28 @@ export const productivityActions = [
           continue;
         }
         if (fence) continue;
-        const m = /^ {0,3}(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line);
+        const m = /^ {0,3}(#{1,6})[ \t]+(.*)$/.exec(line);
         if (!m) continue;
-        const label = m[2],
-          base = label
-            .toLowerCase()
-            .replace(/[^\p{L}\p{N}\p{M}_\-\s]/gu, "")
-            .replace(/\s/g, "-");
+        const raw = m[2].trimEnd();
+        let end = raw.length;
+        while (raw[end - 1] === "#") end--;
+        const label =
+          end > 0 && /[ \t]/.test(raw[end - 1])
+            ? raw.slice(0, end).trimEnd()
+            : raw;
+        if (!label) continue;
+        if (label.length > 4096 || out.length >= 10000)
+          throw Error(
+            "TOC exceeds 10000 headings or 4096 characters per heading",
+          );
+        const base = label
+          .toLowerCase()
+          .replace(/[^\p{L}\p{N}\p{M}_\-\s]/gu, "")
+          .replace(/\s/g, "-");
         let slug = base,
-          j = 0;
+          j = counters.get(base) ?? 0;
         while (used.has(slug)) slug = base + "-" + ++j;
+        counters.set(base, j);
         used.add(slug);
         out.push(
           "  ".repeat(m[1].length - 1) +
@@ -134,17 +147,14 @@ export const productivityActions = [
     { text: "2021-01-01T12:00:00Z" },
     (i) => {
       const date = dateInput(text(i)),
-        v = new Date(
-          Date.UTC(
-            date.getUTCFullYear(),
-            date.getUTCMonth(),
-            date.getUTCDate(),
-          ),
-        ),
+        v = new Date(date.getTime()),
         day = v.getUTCDay() || 7;
+      v.setUTCHours(0, 0, 0, 0);
       v.setUTCDate(v.getUTCDate() + 4 - day);
       const year = v.getUTCFullYear(),
-        start = new Date(Date.UTC(year, 0, 1));
+        start = new Date(0);
+      start.setUTCFullYear(year, 0, 1);
+      start.setUTCHours(0, 0, 0, 0);
       return {
         year,
         week: Math.ceil(((v.getTime() - start.getTime()) / 86400000 + 1) / 7),

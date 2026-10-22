@@ -198,3 +198,26 @@ test("ISO week year boundary, duration and zone validation", async () => {
     }),
   );
 });
+
+test("TOC bounds repeated headings and handles closing hashes without rescanning all anchors", async () => {
+  const result = (await execute("markdown.toc", {
+    text: "# repeated\n".repeat(10000),
+  })) as string;
+  assert.ok(result.endsWith("(#repeated-9999)"));
+  await assert.rejects(
+    execute("markdown.toc", { text: "# repeated\n".repeat(10001) }),
+  );
+  await assert.rejects(
+    execute("markdown.toc", { text: "# " + "x".repeat(4097) }),
+  );
+  assert.equal(
+    await execute("markdown.toc", { text: "# A##\n# B ###" }),
+    "- [A##](#a)\n- [B](#b)",
+  );
+});
+test("ISO weeks preserve years below 100 without Date.UTC remapping", async () => {
+  assert.deepEqual(
+    await execute("time.iso_week", { text: "0001-01-01T00:00:00Z" }),
+    { year: 1, week: 1, weekday: 1 },
+  );
+});
