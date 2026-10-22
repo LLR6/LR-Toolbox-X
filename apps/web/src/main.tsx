@@ -916,8 +916,10 @@ function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && paletteMatches[0])
+                if (e.key === "Enter" && paletteMatches[0]) {
+                  e.preventDefault();
                   choose(paletteMatches[0]);
+                }
               }}
             />
             {paletteMatches.map((a) => (

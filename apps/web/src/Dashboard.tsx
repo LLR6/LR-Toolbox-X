@@ -133,7 +133,10 @@ export function Dashboard({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") openSearch();
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  openSearch();
+                }
               }}
               placeholder={t(
                 `搜索 ${actions.length} 个工具，开始你的高效时刻…`,
