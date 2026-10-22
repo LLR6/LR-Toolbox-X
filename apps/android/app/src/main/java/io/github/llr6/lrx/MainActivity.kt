@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.graphics.BitmapFactory
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,15 +24,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -55,9 +53,8 @@ class MainActivity : ComponentActivity() {
                 var history by remember { mutableStateOf(prefs.getString("last", "") ?: "") }
                 val filtered = tools.filter { it.getString("name").contains(query, true) || it.getString("id").contains(query, true) }
                 val clipboard = LocalClipboardManager.current
-                val screenHeight = LocalConfiguration.current.screenHeightDp.dp
                 Surface(Modifier.fillMaxSize()) {
-                    LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(16.dp), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 26.dp, bottom = 30.dp)) {
+                    if (selected == null) LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(16.dp), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 26.dp, bottom = 30.dp)) {
                         item {
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                                 Column { Text("LR Toolbox X", style = MaterialTheme.typography.titleLarge); Text("YOUR PERSONAL PRODUCTIVITY SPACE", fontSize = 8.sp, color = scheme.onSurfaceVariant, letterSpacing = 1.sp) }
@@ -104,16 +101,18 @@ class MainActivity : ComponentActivity() {
                     }
                     if (selected != null) {
                         val tool = tools.first { it.getString("id") == selected }
-                        Dialog(onDismissRequest = { selected = null }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-                            Surface(Modifier.widthIn(max = 560.dp).fillMaxWidth(0.94f).heightIn(max = screenHeight * 0.86f).imePadding(), shape = RoundedCornerShape(22.dp), color = scheme.surface) {
+                        BackHandler { selected = null }
+                            Surface(Modifier.fillMaxSize().systemBarsPadding().imePadding(), color = scheme.background) {
                                 Column(Modifier.verticalScroll(rememberScrollState()).padding(22.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                         Image(painterResource(iconFor(tool)), contentDescription = null, modifier = Modifier.size(50.dp))
                                         Column(Modifier.weight(1f).padding(start = 10.dp)) { Text(tool.getString("name"), style = MaterialTheme.typography.titleMedium); Text(tool.getString("id"), fontSize = 9.sp, color = scheme.onSurfaceVariant) }
-                                        TextButton(onClick = { selected = null }, contentPadding = PaddingValues(4.dp)) { Text("关闭") }
+                                        TextButton(onClick = { selected = null }, contentPadding = PaddingValues(4.dp)) { Text("返回") }
                                     }
+                                    Text("INPUT  →  LOCAL ENGINE  →  OUTPUT", fontSize = 10.sp, letterSpacing = 1.sp, color = scheme.primary)
                                     Text(tool.getString("description"), fontSize = 12.sp, color = scheme.onSurfaceVariant, lineHeight = 20.sp)
-                                    OutlinedTextField(input, { input = it }, label = { Text("输入文本") }, modifier = Modifier.fillMaxWidth(), minLines = 4, maxLines = 7, shape = RoundedCornerShape(12.dp))
+                                    Text("01 / 输入工作区", style = MaterialTheme.typography.titleSmall, color = scheme.primary)
+                                    OutlinedTextField(input, { input = it }, label = { Text("输入文本") }, modifier = Modifier.fillMaxWidth(), minLines = 7, maxLines = 12, shape = RoundedCornerShape(12.dp))
                                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                                         Button(onClick = {
                                             val start = System.nanoTime()
@@ -126,14 +125,16 @@ class MainActivity : ComponentActivity() {
                                         }, shape = RoundedCornerShape(10.dp)) { Text("运行工具") }
                                         OutlinedButton(onClick = { input = tool.getJSONObject("example").getString("text"); output = ""; problem = false; hasRun = false }, shape = RoundedCornerShape(10.dp)) { Text("填入示例") }
                                     }
+                                    Text("02 / 输出工作区", style = MaterialTheme.typography.titleSmall, color = scheme.primary)
+                                    if (!hasRun) Surface(Modifier.fillMaxWidth().heightIn(min = 180.dp), shape = RoundedCornerShape(16.dp), color = scheme.surface) { Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.Center) { Text("让工具接手这一步", style = MaterialTheme.typography.titleMedium); Spacer(Modifier.height(12.dp)); Text("准备好输入后，点击运行工具。结果仅在本机处理。", fontSize = 12.sp, color = scheme.onSurfaceVariant) } }
                                     if (hasRun) {
                                         HorizontalDivider(color = scheme.outline)
                                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) { Text(if (problem) "执行错误" else "执行结果", style = MaterialTheme.typography.titleSmall); TextButton(onClick = { clipboard.setText(AnnotatedString(output)) }) { Text("复制") } }
                                         SelectionContainer { Text(output.ifEmpty { "（空文本）" }, color = if (problem) scheme.error else scheme.onSurface, fontFamily = FontFamily.Monospace, fontSize = 12.sp, lineHeight = 21.sp) }
                                     }
+                                    Text("LOCAL FIRST · 无网络权限 · 输入与结果不写入历史", fontSize = 9.sp, color = scheme.onSurfaceVariant)
                                 }
                             }
-                        }
                     }
                 }
             }

@@ -658,6 +658,52 @@ export function ToolIcon({
 }
 
 const linePaths: Record<string, ReactNode> = {
+  back: <path d="M20 12H4m6-6-6 6 6 6" />,
+  input: (
+    <>
+      <path d="M14 3h7v18h-7M3 12h12m-5-5 5 5-5 5" />
+    </>
+  ),
+  output: (
+    <>
+      <path d="M10 3H3v18h7M10 12h11m-5-5 5 5-5 5" />
+    </>
+  ),
+  terminal: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="3" />
+      <path d="m7 9 3 3-3 3m6 0h4" />
+    </>
+  ),
+  play: <path d="m8 4 12 8-12 8Z" />,
+  copy: (
+    <>
+      <rect x="8" y="8" width="12" height="13" rx="2" />
+      <path d="M15 8V3H3v13h5" />
+    </>
+  ),
+  download: (
+    <>
+      <path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" />
+    </>
+  ),
+  upload: (
+    <>
+      <path d="M12 16V4m-5 5 5-5 5 5M4 16v5h16v-5" />
+    </>
+  ),
+  example: (
+    <>
+      <path d="M6 3h9l4 4v14H6Z" />
+      <path d="M14 3v5h5M9 12h7m-7 4h5" />
+    </>
+  ),
+  alert: (
+    <>
+      <path d="m12 3 10 18H2Z" />
+      <path d="M12 9v5m0 3v.1" />
+    </>
+  ),
   home: (
     <>
       <path d="m3 10 9-7 9 7v10H3Z" />

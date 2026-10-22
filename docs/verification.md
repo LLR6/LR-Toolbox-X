@@ -37,6 +37,8 @@ Large repeated-heading input is bounded at 10000 headings; anchor counters avoid
 
 ## v0.3.0 illustrated icons and native parity
 
-- Replaced character/emoji tool icons with 17 original SVG illustrations and matching navigation glyphs across dashboard, tool library, command palette and execution dialogs. Added direct home-screen favorites.
+- Replaced character/emoji tool icons with 17 original SVG illustrations and matching navigation glyphs across dashboard, tool library, command palette and full-page execution workspaces. Added direct home-screen favorites.
 - Android capability manifest now selects 12 native actions. npm run catalog generates the Android-only metadata, Kotlin ID set and portable-to-native example fixtures; CI rejects generated-file drift. New handlers: Base64URL encode/decode, SHA-384/512, LF normalization and HTML escaping.
-- Native Compose UI now has vector artwork, a two-column card grid, search, bounded tool dialogs and result copy/selection; inputs/results remain excluded from history. Physical Android installation and visual verification remain pending.
+- Native Compose UI now has vector artwork, a two-column card grid, search, full-page input/output workspaces and result copy/selection; inputs/results remain excluded from history. Physical Android installation and visual verification remain pending.
+
+- Tool execution now uses a dedicated responsive workspace with input/output editors, syntax coloring, local text import (1 MB), output download, actual run status, metadata history and Ctrl/Cmd+Enter. Native Android tools use full pages with system Back navigation.

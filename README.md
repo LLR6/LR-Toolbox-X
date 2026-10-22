@@ -9,7 +9,7 @@
 
 - **94 portable actions**: JSON, UTF-8/Base64/hex/binary/URI, Unicode, text, SHA-2, timestamps, URL/JWT inspection, colors, math and units; CSV, SemVer, dotenv, HTTP headers/Basic auth, IPv4/IPv6/MAC, HMAC, Markdown, time zones and matrix/integer arithmetic.
 - **6 additional Rust actions**: file info, bounded UTF-8 reads, directory listing, streaming SHA-256, file comparison, OS/architecture information.
-- Illustrated SVG icon system: 17 original category illustrations, matching navigation icons, LR monogram, favorite buttons on the home screen and consistent tool/dialog artwork.
+- Illustrated SVG icon system: 17 original category illustrations, matching navigation icons, LR monogram, favorite buttons on the home screen and consistent tool workspace artwork.
 - Alpine dusk dashboard: three-column layout, real activity/favorite statistics, quick access, responsive navigation and blue/violet glass panels.
 - React desktop/web interface: schema forms, real results, errors, search, Ctrl/Cmd+K palette, favorites, metadata-only history, Chinese/English controls, light/dark/system theme, result export.
 - A sequential workflow runner using the same registry; JSON editing, save/import/export, previous-result binding, stop on first failure, maximum 20 steps. Visual node editing is a later milestone.
@@ -71,15 +71,15 @@ Android: JDK 17, Android SDK 35, Gradle 8.11.1. `gradle -p apps/android testDebu
 
 See [Actions artifacts](https://github.com/LLR6/LR-Toolbox-X/actions) and [Releases](https://github.com/LLR6/LR-Toolbox-X/releases). Only successful jobs produce artifacts. A workflow definition is not evidence of a successful build or installation. See [verification status](docs/verification.md).
 
-| Target | Source / pipeline | Runtime verification |
-|---|---|---|
-| Web/PWA | Built locally; static hosting supported | Browser checks performed; offline install still needs device check |
-| Portable CLI | Built and run locally | Linux Node runtime tested |
-| Rust CLI | Release binary built locally | Linux native tested |
-| Windows EXE/MSI/portable ZIP | Tauri CI workflow | Installation pending |
-| Linux DEB/AppImage/RPM | Tauri CI workflow | Installation pending; Debian/Kali pending |
-| macOS APP/DMG | Tauri CI workflow | Unsigned; installation pending |
-| Android APK/AAB | Native Compose + CI workflow | Emulator/device installation pending |
+| Target                       | Source / pipeline                       | Runtime verification                                               |
+| ---------------------------- | --------------------------------------- | ------------------------------------------------------------------ |
+| Web/PWA                      | Built locally; static hosting supported | Browser checks performed; offline install still needs device check |
+| Portable CLI                 | Built and run locally                   | Linux Node runtime tested                                          |
+| Rust CLI                     | Release binary built locally            | Linux native tested                                                |
+| Windows EXE/MSI/portable ZIP | Tauri CI workflow                       | Installation pending                                               |
+| Linux DEB/AppImage/RPM       | Tauri CI workflow                       | Installation pending; Debian/Kali pending                          |
+| macOS APP/DMG                | Tauri CI workflow                       | Unsigned; installation pending                                     |
+| Android APK/AAB              | Native Compose + CI workflow            | Emulator/device installation pending                               |
 
 Windows/macOS binaries are unsigned. Windows portable build still requires WebView2. macOS builds use the hosted runner architecture; there is no promise of an Intel build. Android uses managed Kotlin code and has no native ABI restriction at this milestone. Android minSdk 26 (8.0).
 
@@ -98,3 +98,5 @@ Tauri uses `unsafe-eval` solely for Ajv compiling trusted built-in schemas. Thir
 See [CONTRIBUTING.md](CONTRIBUTING.md). Features must have executable handlers, schema validation, error cases, real examples and tests before being counted. Counts are generated from registered handlers, not marketing targets. Release signing, full platform installation testing, AI, sandboxed plugins and a visual workflow editor are later deliverables, explicitly tracked in [ROADMAP.md](ROADMAP.md).
 
 English: a local-first toolbox with 94 portable actions and 6 native actions. This is an early working milestone, not the complete 2000-action product. Apache-2.0 applies to original project code; upstream dependencies retain their licenses.
+
+- Tool execution now uses a dedicated responsive workspace with input/output editors, syntax coloring, local text import (1 MB), output download, actual run status, metadata history and Ctrl/Cmd+Enter. Native Android tools use full pages with system Back navigation.
