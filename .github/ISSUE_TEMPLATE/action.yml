@@ -1,0 +1,11 @@
+name: Action request
+description: Propose a distinct useful action
+body:
+  - type: textarea
+    attributes:
+      label: Use case, inputs and expected outputs
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Platform, permissions and candidate dependency/license

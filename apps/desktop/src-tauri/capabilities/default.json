@@ -1,0 +1,1 @@
+{"identifier":"default","description":"Application window with no shell, filesystem plugin or remote URL capabilities","windows":["main"],"permissions":["core:default"]}
