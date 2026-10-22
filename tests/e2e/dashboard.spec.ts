@@ -103,6 +103,9 @@ test("keyboard palette opens a full workspace and preserves it on Escape", async
   page,
 }) => {
   await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: /让一切更高效/ }),
+  ).toBeVisible();
   await page.keyboard.press("Control+k");
   await page
     .getByRole("textbox", { name: "Command search" })
