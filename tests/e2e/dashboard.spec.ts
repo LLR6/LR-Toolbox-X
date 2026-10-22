@@ -77,3 +77,61 @@ test("theme and language controls preserve the working dashboard", async ({
   await page.getByRole("button", { name: "Run action" }).click();
   await expect(page.getByRole("status")).toContainText("-1");
 });
+test("home favorites persist and open the matching real tool", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByTestId("dashboard-csv.to.json").hover();
+  await page
+    .getByRole("button", { name: "Favorite csv.to.json", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Unfavorite csv.to.json", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.reload();
+  await page
+    .locator(".sidebar")
+    .getByRole("button", { name: /我的收藏/ })
+    .click();
+  await page.getByTestId("action-csv.to.json").click();
+  await expect(page.getByRole("dialog")).toHaveAccessibleName("CSV to JSON");
+});
+test("keyboard palette ignores collection filters and dialog traps focus", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .locator(".sidebar .collection-nav")
+    .getByRole("button", { name: /JSON 与数据/ })
+    .click();
+  await page.keyboard.press("Control+k");
+  await page
+    .getByRole("textbox", { name: "Command search" })
+    .fill("hash.sha256");
+  await page.getByRole("textbox", { name: "Command search" }).press("Enter");
+  await expect(page.getByRole("dialog")).toHaveAccessibleName("SHA-256");
+  await expect(
+    page.getByRole("textbox", { name: "text", exact: true }),
+  ).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(page.getByRole("button", { name: "Close tool" })).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(page.getByRole("button", { name: "填入示例" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+});
+
+test("home search Enter opens a matching action without clearing the query", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("textbox", { name: "搜索工具" })
+    .fill("encoding.base64url.encode");
+  await page.getByRole("textbox", { name: "搜索工具" }).press("Enter");
+  await expect(page.getByRole("dialog")).toHaveAccessibleName(
+    "Encode Base64URL",
+  );
+  await page.getByRole("button", { name: "运行工具" }).click();
+  await expect(page.getByRole("status")).toHaveText("SGVsbG8_");
+});

@@ -34,3 +34,9 @@ Desktop run 39736823244 failed on mismatched Tauri crate/npm minor versions. Upd
 CI 39745189046 passed all four quality matrices (Ubuntu 22.04/24.04, Windows 2022, macOS 14), five Playwright E2E cases, Android tests/lint/APK/AAB and dependency audit. CodeQL 39745189058 passed. Android artifact 12411431467 ZIP SHA-256 matched `a53b6387e4eb3c0a316566111bff16b28aad0078b73ac9d17ccfed49a51551ee`; APK was 11,486,813 bytes with complete alpine background, Android manifest and native DEX. Browser also verified SemVer form dropdown and backward Tab wrapping inside the modal. A subsequent display-only correction updates the remaining CLI help/About version labels to 0.2.0 and is subject to a fresh CI run before release.
 
 Large repeated-heading input is bounded at 10000 headings; anchor counters avoid quadratic duplicate scanning. Added regression checks for closing hashes and ISO week dates with years below 100. The final local suite has 215 passing tests.
+
+## v0.3.0 illustrated icons and native parity
+
+- Replaced character/emoji tool icons with 17 original SVG illustrations and matching navigation glyphs across dashboard, tool library, command palette and execution dialogs. Added direct home-screen favorites.
+- Android capability manifest now selects 12 native actions. npm run catalog generates the Android-only metadata, Kotlin ID set and portable-to-native example fixtures; CI rejects generated-file drift. New handlers: Base64URL encode/decode, SHA-384/512, LF normalization and HTML escaping.
+- Native Compose UI now has vector artwork, a two-column card grid, search, bounded tool dialogs and result copy/selection; inputs/results remain excluded from history. Physical Android installation and visual verification remain pending.

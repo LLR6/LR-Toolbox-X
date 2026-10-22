@@ -28,7 +28,7 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run catalog
-      - run: git diff --exit-code -- docs/actions.md apps/web/public/action-catalog.json apps/android/app/src/main/assets/action-catalog.json
+      - run: git diff --exit-code -- docs/actions.md apps/web/public/action-catalog.json apps/android/app/src/main/assets/action-catalog.json apps/android/app/src/main/java/io/github/llr6/lrx/NativeActionIds.kt apps/android/app/src/test/java/io/github/llr6/lrx/PortableConformanceTest.kt
       - run: npm run build
       - run: node scripts/build-cli.mjs
       - run: rustup component add rustfmt clippy

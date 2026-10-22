@@ -16,6 +16,8 @@ import { load, save, download, type Run } from "./storage.ts";
 import "./style.css";
 import "./dashboard.css";
 import { Dashboard } from "./Dashboard.tsx";
+import { ToolIcon, UiIcon } from "./Icons.tsx";
+import "./polish.css";
 const desktop = "__TAURI_INTERNALS__" in window;
 const groups = [
   "All",
@@ -34,23 +36,23 @@ const groups = [
   "Markdown",
   "Crypto",
 ];
-const symbols: Record<string, string> = {
-  JSON: "{ }",
-  Text: "Aa",
-  Encoding: "⌘",
-  Hash: "#",
-  Developer: "</>",
-  Time: "◷",
-  Math: "∑",
-  Numbers: "01",
-  Units: "⇄",
-  Colors: "◉",
-  CSV: "▤",
-  Network: "◎",
-  Markdown: "M↓",
-  Crypto: "◇",
-  Files: "▤",
-  System: "⌨",
+const categoryLabels: Record<string, string> = {
+  JSON: "JSON 与数据",
+  Text: "文本处理",
+  Encoding: "编码转换",
+  Hash: "哈希校验",
+  Developer: "开发工具",
+  Time: "日期与时间",
+  Math: "数学计算",
+  Numbers: "数字工具",
+  Units: "单位换算",
+  Colors: "色彩工具",
+  CSV: "表格转换",
+  Network: "网络工具",
+  Markdown: "Markdown",
+  Crypto: "安全与加密",
+  Files: "文件工具",
+  System: "系统信息",
 };
 const defaultWorkflow: Step[] = [
   { action: "text.trim", input: { text: " Hello LR " } },
@@ -258,7 +260,7 @@ function App() {
       );
     }
   }
-  const nav = (id: string, label: string, icon: string) => (
+  const nav = (id: string, label: string) => (
     <button
       className={page === id ? "nav selected" : "nav"}
       onClick={() => {
@@ -267,7 +269,7 @@ function App() {
         setCategory("All");
       }}
     >
-      <span>{icon}</span>
+      <UiIcon name={id} />
       {label}
       {id === "favorites" && <small>{favorite.length}</small>}
     </button>
@@ -288,59 +290,63 @@ function App() {
           </div>
         </div>
         <button className="quick-search" onClick={() => setPalette(true)}>
-          <span>⌕</span>
+          <UiIcon name="search" />
           {t("快速查找", "Quick search")}
           <kbd>⌘ K</kbd>
         </button>
         <div className="nav-label">WORKSPACE</div>
-        {nav("home", t("工作台", "Workbench"), "▦")}
-        {nav("tools", t("全部工具", "All tools"), "⊞")}
-        {nav("favorites", t("我的收藏", "Favorites"), "☆")}
-        {nav("history", t("执行历史", "History"), "◷")}
-        {nav("workflow", t("工作流", "Workflows"), "⌘")}
-        <div className="nav-label categories-label">TOOL COLLECTIONS</div>
-        {groups.slice(1).map((g) => (
-          <button
-            key={g}
-            className={
-              category === g && page === "tools" ? "nav selected" : "nav"
-            }
-            onClick={() => {
-              setPage("tools");
-              setCategory(g);
-              setQuery("");
-            }}
-          >
-            <span className="nav-icon">{symbols[g]}</span>
-            {g}
-            <small>{actions.filter((a) => a.category === g).length}</small>
-          </button>
-        ))}
-        {desktop &&
-          ["Files", "System"].map((g) => (
+        {nav("home", t("工作台", "Workbench"))}
+        {nav("tools", t("全部工具", "All tools"))}
+        {nav("favorites", t("我的收藏", "Favorites"))}
+        {nav("history", t("执行历史", "History"))}
+        {nav("workflow", t("工作流", "Workflows"))}
+        <div className="nav-label categories-label">
+          {t("工具分类", "COLLECTIONS")}
+        </div>
+        <div className="collection-nav">
+          {groups.slice(1).map((g) => (
             <button
               key={g}
-              className="nav"
+              className={
+                category === g && page === "tools" ? "nav selected" : "nav"
+              }
               onClick={() => {
                 setPage("tools");
                 setCategory(g);
+                setQuery("");
               }}
             >
-              <span>{symbols[g]}</span>
-              {g}
+              <ToolIcon category={g} className="nav-icon" flat />
+              {en ? g : (categoryLabels[g] ?? g)}
+              <small>{actions.filter((a) => a.category === g).length}</small>
             </button>
           ))}
+          {desktop &&
+            ["Files", "System"].map((g) => (
+              <button
+                key={g}
+                className="nav"
+                onClick={() => {
+                  setPage("tools");
+                  setCategory(g);
+                }}
+              >
+                <ToolIcon category={g} className="nav-icon" flat />
+                {en ? g : (categoryLabels[g] ?? g)}
+              </button>
+            ))}
+        </div>
         <div className="sidebar-bottom">
           <div className="local">
             <span className="dot" />
             {t("本地运行 · 无需登录", "Local first · No account")}
           </div>
-          {nav("settings", t("设置与关于", "Settings & About"), "⚙")}
+          {nav("settings", t("设置与关于", "Settings & About"))}
           <div className="profile">
             <div className="avatar">LR</div>
             <div>
               Personal workspace
-              <small>v0.2.0 · {desktop ? "Desktop" : "Web"}</small>
+              <small>v0.3.0 · {desktop ? "Desktop" : "Web"}</small>
             </div>
           </div>
         </div>
@@ -363,7 +369,8 @@ function App() {
           </div>
           <div className="top-actions">
             <button className="header-search" onClick={() => setPalette(true)}>
-              ⌕ <span>{t("搜索你的工具…", "Find your tools…")}</span>
+              <UiIcon name="search" />
+              <span>{t("搜索你的工具…", "Find your tools…")}</span>
               <kbd>⌘ K</kbd>
             </button>
             <span className="local-pill">
@@ -380,7 +387,7 @@ function App() {
               title="Switch theme"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
-              ◐
+              <UiIcon name="theme" />
             </button>
           </div>
         </header>
@@ -394,6 +401,7 @@ function App() {
             navigate={navigate}
             query={query}
             setQuery={setQuery}
+            toggle={toggle}
           />
         )}
         {(["tools", "favorites"].includes(page) ||
@@ -433,7 +441,7 @@ function App() {
                   </div>
                 </div>
                 <div className="searchbar">
-                  <span>⌕</span>
+                  <UiIcon name="search" />
                   <input
                     ref={searchRef}
                     aria-label={t("搜索工具", "Search tools")}
@@ -487,7 +495,11 @@ function App() {
                   className={category === g ? "active" : ""}
                   onClick={() => setCategory(g)}
                 >
-                  {g === "All" ? t("全部", "All tools") : g}
+                  {g === "All"
+                    ? t("全部", "All tools")
+                    : en
+                      ? g
+                      : (categoryLabels[g] ?? g)}
                 </button>
               ))}
             </div>
@@ -495,15 +507,14 @@ function App() {
               {matches.map((a) => (
                 <article key={a.id} className="tool-card">
                   <div className="card-top">
-                    <span className={"tool-icon icon-" + a.category}>
-                      {symbols[a.category] ?? "✦"}
-                    </span>
+                    <ToolIcon category={a.category} className="tool-icon" />
                     <button
                       aria-label={`${favorite.includes(a.id) ? "Unfavorite" : "Favorite"} ${a.id}`}
+                      aria-pressed={favorite.includes(a.id)}
                       onClick={() => toggle(a.id)}
                       className={favorite.includes(a.id) ? "star on" : "star"}
                     >
-                      {favorite.includes(a.id) ? "★" : "☆"}
+                      <UiIcon name="favorites" />
                     </button>
                   </div>
                   <button
@@ -707,7 +718,7 @@ function App() {
               </button>
             </div>
             <div className="settings-card">
-              <h2>LR Toolbox X · 0.2.0</h2>
+              <h2>LR Toolbox X · 0.3.0</h2>
               <p>
                 {all.length} {t("已实现 Action", "implemented actions")} ·{" "}
                 {desktop ? "Tauri / Rust" : "React / Web"} · Apache-2.0
@@ -749,7 +760,7 @@ function App() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="runner-head">
-              <span className="tool-icon">{symbols[active.category]}</span>
+              <ToolIcon category={active.category} className="tool-icon" />
               <div>
                 <h2>{en ? active.nameEn : active.name}</h2>
                 <code>{active.id}</code>
@@ -759,7 +770,7 @@ function App() {
                 aria-label="Close tool"
                 onClick={() => setActive(null)}
               >
-                ×
+                <UiIcon name="close" />
               </button>
             </div>
             <p>{active.description}</p>
@@ -911,6 +922,7 @@ function App() {
             />
             {paletteMatches.map((a) => (
               <button key={a.id} onClick={() => choose(a)}>
+                <ToolIcon category={a.category} />
                 <span>{en ? a.nameEn : a.name}</span>
                 <code>{a.id}</code>
               </button>
