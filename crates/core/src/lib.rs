@@ -104,7 +104,7 @@ pub fn catalog() -> Value {
             "比较两个不超过 1 GiB 文件的字节内容",
         ),
     ];
-    let mut out:Vec<Value>=items.into_iter().map(|(id,name,en,description)|{let mut props=json!({"path":{"type":"string","maxLength":4096}});let required=if id=="file.compare"{props["other"]=json!({"type":"string","maxLength":4096});json!(["path","other"])}else{json!(["path"])};json!({"id":id,"name":name,"nameEn":en,"description":description,"category":"Files","tags":["file","文件"],"input_schema":{"type":"object","properties":props,"required":required,"additionalProperties":false},"output_schema":{"type":"object"},"platforms":["windows","linux","macos","cli"],"permissions":["filesystem.read"],"risk_level":"sensitive","timeout":30000,"example":if id=="file.compare"{json!({"path":"README.md","other":"README.md"})}else{json!({"path":"README.md"})}})}).collect();
+    let mut out:Vec<Value>=items.into_iter().map(|(id,name,en,description)|{let mut props=json!({"path":{"type":"string","maxLength":4096}});let required=if id=="file.compare"{props["other"]=json!({"type":"string","maxLength":4096});json!(["path","other"])}else{json!(["path"])};json!({"id":id,"name":name,"nameEn":en,"description":description,"category":"Files","tags":["file","文件"],"input_schema":{"type":"object","properties":props,"required":required,"additionalProperties":false},"output_schema":{"type":"object"},"platforms":["windows","linux","macos","cli"],"permissions":["filesystem.read"],"risk_level":"sensitive","timeout":30000,"example":if id=="file.compare"{json!({"path":"README.md","other":"README.md"})}else if id=="file.list"{json!({"path":"."})}else{json!({"path":"README.md"})}})}).collect();
     out.push(json!({"id":"system.info","name":"系统信息","nameEn":"System information","description":"读取真实操作系统、CPU 架构和可用逻辑处理器数","category":"System","tags":["system","系统"],"input_schema":{"type":"object","properties":{},"required":[],"additionalProperties":false},"output_schema":{"type":"object"},"platforms":["windows","linux","macos","cli"],"permissions":[],"risk_level":"safe","timeout":1000,"example":{}}));
     json!(out)
 }
@@ -294,9 +294,14 @@ mod tests {
     fn all_handlers_and_validation() {
         let dir = tempfile::tempdir().unwrap();
         fs::write(dir.path().join("中文 🧪.txt"), "abc").unwrap();
+        fs::write(dir.path().join("README.md"), "example").unwrap();
         let scope = Scope::new(dir.path()).unwrap();
         for a in catalog().as_array().unwrap() {
             let id = a["id"].as_str().unwrap();
+            assert!(
+                execute(id, &a["example"], Some(&scope)).is_ok(),
+                "declared example: {id}"
+            );
             let input = if id == "system.info" {
                 json!({})
             } else if id == "file.compare" {

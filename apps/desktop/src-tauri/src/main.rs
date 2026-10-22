@@ -14,7 +14,11 @@ async fn run_native(
     root: Option<String>,
 ) -> Result<Value, lrx_core::AppError> {
     tauri::async_runtime::spawn_blocking(move || {
-        let scope = root.map(lrx_core::Scope::new).transpose()?;
+        let scope = if id == "system.info" {
+            None
+        } else {
+            root.map(lrx_core::Scope::new).transpose()?
+        };
         lrx_core::execute(&id, &input, scope.as_ref())
     })
     .await
