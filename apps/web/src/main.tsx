@@ -707,7 +707,7 @@ function App() {
               </button>
             </div>
             <div className="settings-card">
-              <h2>LR Toolbox X · 0.1.0</h2>
+              <h2>LR Toolbox X · 0.2.0</h2>
               <p>
                 {all.length} {t("已实现 Action", "implemented actions")} ·{" "}
                 {desktop ? "Tauri / Rust" : "React / Web"} · Apache-2.0

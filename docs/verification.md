@@ -28,3 +28,7 @@ Desktop run 39736823244 failed on mismatched Tauri crate/npm minor versions. Upd
 - Managed browser: inspected the three-column alpine dashboard; CSV conversion returned actual Chinese values and updated local history/counts.
 - Local Playwright execution cannot start its standalone Vite server in this managed environment (`uv_interface_addresses` denied). The committed E2E suite will run on GitHub's normal runner, including a 390px mobile navigation/overflow/IPv4/workflow check and favorites/theme/language checks. No local E2E pass is claimed.
 - Android visual changes remain native Compose and retain no Internet permission. Compilation/lint and desktop installer builds require the new CI run. Physical device/OS installation remains unverified.
+
+### CI confirmation of functional source 4faca29223679cc277ba7074fe59b581be4f839a
+
+CI 39745189046 passed all four quality matrices (Ubuntu 22.04/24.04, Windows 2022, macOS 14), five Playwright E2E cases, Android tests/lint/APK/AAB and dependency audit. CodeQL 39745189058 passed. Android artifact 12411431467 ZIP SHA-256 matched `a53b6387e4eb3c0a316566111bff16b28aad0078b73ac9d17ccfed49a51551ee`; APK was 11,486,813 bytes with complete alpine background, Android manifest and native DEX. Browser also verified SemVer form dropdown and backward Tab wrapping inside the modal. A subsequent display-only correction updates the remaining CLI help/About version labels to 0.2.0 and is subject to a fresh CI run before release.
