@@ -1,5 +1,9 @@
 name: Desktop installers
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches: [main, feature/initial-milestone]
+  workflow_dispatch:
+  workflow_call:
 permissions:
   contents: read
 jobs:

@@ -13,3 +13,9 @@
 The managed container lacks pkg-config/WebKitGTK development libraries. Installing prerequisites with apt failed due to environment setgroups/setuid restrictions, so Tauri installers cannot be built here. No escalation was requested. Android SDK/Gradle are not installed locally. CI jobs are configured for actual platform builds; their state must be read on GitHub.
 
 Windows/macOS/Linux desktop installation and Android emulator/device installation are not yet verified. PWA cache is generated but offline app/device installation has not been tested. Browser interaction is not a substitute for the committed E2E suite. Native filesystem root grants defend ordinary traversal and symlink escapes, but not adversarial concurrent replacement. API declarations do not count as completed plugin, AI or visual workflow features.
+
+## First CI run
+
+Commit 16c1cf1ec63582147c19be62a0b0f6757b958637: CI run 39736825922 succeeded, including Windows 2022, Ubuntu 22.04/24.04 and macOS 14 quality/CLI builds, E2E, dependency audit and Android unit tests/lint/APK/AAB. CodeQL run 39736826006 succeeded. Downloaded Android artifact digest verified against GitHub metadata; APK 9,290,945 bytes and AAB 6,490,613 bytes contain expected manifests and code/resources. Physical installation remains pending.
+
+Desktop run 39736823244 failed on mismatched Tauri crate/npm minor versions. Updated npm API/CLI to 2.12.4 to match Rust 2.12.x and added a macOS ICNS icon. Revalidation follows in CI.
