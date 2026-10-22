@@ -1,0 +1,2401 @@
+[
+  {
+    "id": "text.trim",
+    "name": "清理首尾空白",
+    "nameEn": "Trim whitespace",
+    "description": "移除文本首尾空白，保留内部格式。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "trim"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "  你好  "
+    },
+    "expected": "你好"
+  },
+  {
+    "id": "text.lines.unique",
+    "name": "行去重",
+    "nameEn": "Unique lines",
+    "description": "按首次出现顺序去重，区分大小写。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "lines",
+      "unique"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "a\nb\na"
+    },
+    "expected": "a\nb"
+  },
+  {
+    "id": "text.lines.sort",
+    "name": "行排序",
+    "nameEn": "Sort lines",
+    "description": "使用 Unicode 码点顺序排序。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "lines",
+      "sort"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "b\na"
+    },
+    "expected": "a\nb"
+  },
+  {
+    "id": "text.lines.reverse",
+    "name": "倒序排列行",
+    "nameEn": "Reverse lines",
+    "description": "倒序排列文本行。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "lines",
+      "reverse"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "a\nb"
+    },
+    "expected": "b\na"
+  },
+  {
+    "id": "text.lines.nonempty",
+    "name": "删除空白行",
+    "nameEn": "Remove blank lines",
+    "description": "删除内容为空或只有空格的行。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "lines",
+      "nonempty"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "a\n \nb"
+    },
+    "expected": "a\nb"
+  },
+  {
+    "id": "text.stats",
+    "name": "文本统计",
+    "nameEn": "Text statistics",
+    "description": "统计码点、UTF-8 字节、行和空白分隔词。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "stats"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "你好 LR"
+    }
+  },
+  {
+    "id": "text.replace",
+    "name": "字面替换",
+    "nameEn": "Literal replace",
+    "description": "替换所有字面匹配内容，不使用正则表达式。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "replace"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "search": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "replacement": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text",
+        "search",
+        "replacement"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "hello LR",
+      "search": "LR",
+      "replacement": "世界"
+    },
+    "expected": "hello 世界"
+  },
+  {
+    "id": "text.normalize",
+    "name": "Unicode 标准化",
+    "nameEn": "Unicode NFC",
+    "description": "将组合字符转换为 NFC 标准形式。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "normalize"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "é"
+    },
+    "expected": "é"
+  },
+  {
+    "id": "text.newlines.lf",
+    "name": "统一换行",
+    "nameEn": "Normalize LF",
+    "description": "将 CRLF 和 CR 转换为 LF。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "newlines",
+      "lf"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "a\r\nb\rc"
+    },
+    "expected": "a\nb\nc"
+  },
+  {
+    "id": "text.lines.number",
+    "name": "添加行号",
+    "nameEn": "Number lines",
+    "description": "为每一行添加从 1 开始的编号。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "lines",
+      "number"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "a\nb"
+    },
+    "expected": "1. a\n2. b"
+  },
+  {
+    "id": "text.html.escape",
+    "name": "HTML 转义",
+    "nameEn": "Escape HTML",
+    "description": "转义 HTML 特殊字符，结果作为纯文本展示。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "text",
+      "html",
+      "escape"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "<b>&\""
+    },
+    "expected": "&lt;b&gt;&amp;&quot;"
+  },
+  {
+    "id": "encoding.base64.encode",
+    "name": "Base64 编码",
+    "nameEn": "Base64 encode",
+    "description": "UTF-8 文本编码为标准 Base64。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "encoding",
+      "base64",
+      "encode"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "你好"
+    },
+    "expected": "5L2g5aW9"
+  },
+  {
+    "id": "encoding.base64.decode",
+    "name": "Base64 解码",
+    "nameEn": "Base64 decode",
+    "description": "校验 Base64 并严格解码为 UTF-8。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "encoding",
+      "base64",
+      "decode"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "5L2g5aW9"
+    },
+    "expected": "你好"
+  },
+  {
+    "id": "encoding.hex.encode",
+    "name": "十六进制编码",
+    "nameEn": "UTF-8 to hex",
+    "description": "将 UTF-8 字节编码为十六进制。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "encoding",
+      "hex",
+      "encode"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "LR"
+    },
+    "expected": "4c52"
+  },
+  {
+    "id": "encoding.hex.decode",
+    "name": "十六进制解码",
+    "nameEn": "Hex to UTF-8",
+    "description": "校验十六进制并严格解码 UTF-8。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "encoding",
+      "hex",
+      "decode"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "4c52"
+    },
+    "expected": "LR"
+  },
+  {
+    "id": "encoding.uri.encode",
+    "name": "URL 组件编码",
+    "nameEn": "URI component encode",
+    "description": "转义 URL 查询参数中的保留字符。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "encoding",
+      "uri",
+      "encode"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "你好 &"
+    },
+    "expected": "%E4%BD%A0%E5%A5%BD%20%26"
+  },
+  {
+    "id": "encoding.uri.decode",
+    "name": "URL 组件解码",
+    "nameEn": "URI component decode",
+    "description": "解码百分号编码，不把加号转换为空格。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "encoding",
+      "uri",
+      "decode"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "%E4%BD%A0%E5%A5%BD"
+    },
+    "expected": "你好"
+  },
+  {
+    "id": "encoding.binary.encode",
+    "name": "UTF-8 二进制",
+    "nameEn": "UTF-8 to binary",
+    "description": "将每个 UTF-8 字节编码为八位二进制。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "encoding",
+      "binary",
+      "encode"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "A"
+    },
+    "expected": "01000001"
+  },
+  {
+    "id": "encoding.binary.decode",
+    "name": "二进制解码",
+    "nameEn": "Binary to UTF-8",
+    "description": "严格解码空格分隔的八位二进制字节。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "encoding",
+      "binary",
+      "decode"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "01000001"
+    },
+    "expected": "A"
+  },
+  {
+    "id": "encoding.codepoints",
+    "name": "Unicode 码点",
+    "nameEn": "Unicode code points",
+    "description": "读取 Unicode 码点，包括 Emoji。",
+    "category": "Encoding",
+    "tags": [
+      "Encoding",
+      "encoding",
+      "codepoints"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "LR"
+    },
+    "expected": [
+      "U+004C",
+      "U+0052"
+    ]
+  },
+  {
+    "id": "developer.jwt.inspect",
+    "name": "JWT 查看",
+    "nameEn": "Inspect JWT",
+    "description": "解码 JWT 头与载荷；不验证签名或可信性。",
+    "category": "Developer",
+    "tags": [
+      "Developer",
+      "developer",
+      "jwt",
+      "inspect"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJMUiJ9."
+    }
+  },
+  {
+    "id": "json.format",
+    "name": "JSON 格式化",
+    "nameEn": "Format JSON",
+    "description": "校验并以两空格缩进 JSON；数字遵循 JS 精度。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "format"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "{\"a\":1}"
+    },
+    "expected": "{\n  \"a\": 1\n}"
+  },
+  {
+    "id": "json.minify",
+    "name": "JSON 压缩",
+    "nameEn": "Minify JSON",
+    "description": "校验并移除 JSON 非必要空白。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "minify"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "{ \"a\": 1 }"
+    },
+    "expected": "{\"a\":1}"
+  },
+  {
+    "id": "json.validate",
+    "name": "JSON 校验",
+    "nameEn": "Validate JSON",
+    "description": "验证 JSON 语法，格式错误时返回统一错误。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "validate"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "[1,2]"
+    }
+  },
+  {
+    "id": "json.keys",
+    "name": "JSON 键列表",
+    "nameEn": "Object keys",
+    "description": "读取对象顶层键名。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "keys"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "{\"a\":1,\"b\":2}"
+    },
+    "expected": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "id": "json.sort",
+    "name": "JSON 键排序",
+    "nameEn": "Sort JSON keys",
+    "description": "递归排序对象键，保留数组顺序。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "sort"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "{\"b\":2,\"a\":1}"
+    },
+    "expected": "{\n  \"a\": 1,\n  \"b\": 2\n}"
+  },
+  {
+    "id": "json.pointer",
+    "name": "JSON Pointer 查询",
+    "nameEn": "JSON Pointer",
+    "description": "通过 RFC 6901 Pointer 查询，支持 ~0 和 ~1。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "pointer"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "pointer": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text",
+        "pointer"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "{\"a/b\":[42]}",
+      "pointer": "/a~1b/0"
+    }
+  },
+  {
+    "id": "json.array.ndjson",
+    "name": "JSON 转 NDJSON",
+    "nameEn": "JSON array to NDJSON",
+    "description": "将顶层数组转换为每行一个 JSON 值。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "array",
+      "ndjson"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "[1,{\"a\":2}]"
+    },
+    "expected": "1\n{\"a\":2}"
+  },
+  {
+    "id": "json.ndjson.array",
+    "name": "NDJSON 转 JSON",
+    "nameEn": "NDJSON to JSON",
+    "description": "逐行校验并转换为 JSON 数组，跳过空行。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "ndjson",
+      "array"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "1\n{\"a\":2}"
+    },
+    "expected": "[\n  1,\n  {\n    \"a\": 2\n  }\n]"
+  },
+  {
+    "id": "url.parse",
+    "name": "URL 解析",
+    "nameEn": "Parse URL",
+    "description": "解析绝对 URL 的协议、主机、端口与参数。",
+    "category": "Developer",
+    "tags": [
+      "Developer",
+      "url",
+      "parse"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "https://example.com/a?q=LR"
+    }
+  },
+  {
+    "id": "url.query.parse",
+    "name": "查询参数解析",
+    "nameEn": "Parse query string",
+    "description": "保留重复参数和空值。",
+    "category": "Developer",
+    "tags": [
+      "Developer",
+      "url",
+      "query",
+      "parse"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "a=1&a=2"
+    }
+  },
+  {
+    "id": "url.query.build",
+    "name": "构建查询参数",
+    "nameEn": "Build query string",
+    "description": "JSON 对象的字符串值编码为查询参数。",
+    "category": "Developer",
+    "tags": [
+      "Developer",
+      "url",
+      "query",
+      "build"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "{\"q\":\"你好\"}"
+    },
+    "expected": "q=%E4%BD%A0%E5%A5%BD"
+  },
+  {
+    "id": "time.iso.timestamp",
+    "name": "日期转时间戳",
+    "nameEn": "ISO to Unix timestamp",
+    "description": "ISO 日期转换为 Unix 秒（包含小数）。",
+    "category": "Time",
+    "tags": [
+      "Time",
+      "time",
+      "iso",
+      "timestamp"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "number"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "1970-01-01T00:00:01Z"
+    },
+    "expected": 1
+  },
+  {
+    "id": "time.timestamp.iso",
+    "name": "时间戳转日期",
+    "nameEn": "Unix timestamp to ISO",
+    "description": "Unix 秒转换为 UTC ISO 日期。",
+    "category": "Time",
+    "tags": [
+      "Time",
+      "time",
+      "timestamp",
+      "iso"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "seconds": {
+          "type": "number",
+          "minimum": -8640000000000,
+          "maximum": 8640000000000
+        }
+      },
+      "required": [
+        "seconds"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "seconds": 0
+    },
+    "expected": "1970-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "time.difference",
+    "name": "日期差值",
+    "nameEn": "Date difference",
+    "description": "计算带时区 ISO 日期之间的秒数。",
+    "category": "Time",
+    "tags": [
+      "Time",
+      "time",
+      "difference"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "end": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "number"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "start": "2026-01-01T00:00:00Z",
+      "end": "2026-01-02T00:00:00Z"
+    },
+    "expected": 86400
+  },
+  {
+    "id": "color.hex.rgb",
+    "name": "HEX 转 RGB",
+    "nameEn": "HEX to RGB",
+    "description": "解析六位 HEX 颜色。",
+    "category": "Colors",
+    "tags": [
+      "Colors",
+      "color",
+      "hex",
+      "rgb"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "#74E0B8"
+    }
+  },
+  {
+    "id": "color.rgb.hex",
+    "name": "RGB 转 HEX",
+    "nameEn": "RGB to HEX",
+    "description": "RGB 整数转换为 HEX 颜色。",
+    "category": "Colors",
+    "tags": [
+      "Colors",
+      "color",
+      "rgb",
+      "hex"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "r": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "g": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "b": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        }
+      },
+      "required": [
+        "r",
+        "g",
+        "b"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "r": 116,
+      "g": 224,
+      "b": 184
+    },
+    "expected": "#74E0B8"
+  },
+  {
+    "id": "color.contrast",
+    "name": "颜色对比度",
+    "nameEn": "WCAG contrast ratio",
+    "description": "计算 WCAG 2.x sRGB 相对亮度对比度。",
+    "category": "Colors",
+    "tags": [
+      "Colors",
+      "color",
+      "contrast"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "foreground": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "background": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "foreground",
+        "background"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "foreground": "#000000",
+      "background": "#FFFFFF"
+    }
+  },
+  {
+    "id": "developer.uuid.v4",
+    "name": "UUID v4",
+    "nameEn": "Generate UUID v4",
+    "description": "使用加密安全随机数生成 UUID；输入为生成数量。",
+    "category": "Developer",
+    "tags": [
+      "Developer",
+      "developer",
+      "uuid",
+      "v4"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "count": 1
+    }
+  },
+  {
+    "id": "hash.sha256",
+    "name": "SHA-256",
+    "nameEn": "SHA-256 digest",
+    "description": "计算 UTF-8 文本 SHA-256，不适用于密码存储。",
+    "category": "Hash",
+    "tags": [
+      "Hash",
+      "hash",
+      "sha256"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "abc"
+    },
+    "expected": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+  },
+  {
+    "id": "hash.sha384",
+    "name": "SHA-384",
+    "nameEn": "SHA-384 digest",
+    "description": "计算 UTF-8 文本 SHA-384。",
+    "category": "Hash",
+    "tags": [
+      "Hash",
+      "hash",
+      "sha384"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "abc"
+    },
+    "expected": "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7"
+  },
+  {
+    "id": "hash.sha512",
+    "name": "SHA-512",
+    "nameEn": "SHA-512 digest",
+    "description": "计算 UTF-8 文本 SHA-512。",
+    "category": "Hash",
+    "tags": [
+      "Hash",
+      "hash",
+      "sha512"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "abc"
+    },
+    "expected": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
+  },
+  {
+    "id": "math.statistics",
+    "name": "数列统计",
+    "nameEn": "Descriptive statistics",
+    "description": "计算逗号分隔数列的总和、均值、中位数、总体方差。",
+    "category": "Math",
+    "tags": [
+      "Math",
+      "math",
+      "statistics"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "1,2,3"
+    }
+  },
+  {
+    "id": "math.gcd",
+    "name": "最大公约数",
+    "nameEn": "Greatest common divisor",
+    "description": "欧几里得算法，要求安全整数。",
+    "category": "Math",
+    "tags": [
+      "Math",
+      "math",
+      "gcd"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "b": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "a",
+        "b"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "number"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "a": 48,
+      "b": 18
+    },
+    "expected": 6
+  },
+  {
+    "id": "math.lcm",
+    "name": "最小公倍数",
+    "nameEn": "Least common multiple",
+    "description": "计算两个安全整数的最小公倍数，溢出时报告错误。",
+    "category": "Math",
+    "tags": [
+      "Math",
+      "math",
+      "lcm"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "b": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "a",
+        "b"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "number"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "a": 12,
+      "b": 18
+    },
+    "expected": 36
+  },
+  {
+    "id": "numbers.base.convert",
+    "name": "进制转换",
+    "nameEn": "Integer base conversion",
+    "description": "转换 2–36 进制整数，使用 BigInt 保持精度。",
+    "category": "Numbers",
+    "tags": [
+      "Numbers",
+      "numbers",
+      "base",
+      "convert"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "from": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 36
+        },
+        "to": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 36
+        }
+      },
+      "required": [
+        "text",
+        "from",
+        "to"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "ff",
+      "from": 16,
+      "to": 2
+    },
+    "expected": "11111111"
+  },
+  {
+    "id": "math.quadratic",
+    "name": "一元二次方程",
+    "nameEn": "Quadratic roots",
+    "description": "求实数域根，负判别式时给出说明。",
+    "category": "Math",
+    "tags": [
+      "Math",
+      "math",
+      "quadratic"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "number",
+          "minimum": -1e+100,
+          "maximum": 1e+100
+        },
+        "b": {
+          "type": "number",
+          "minimum": -1e+100,
+          "maximum": 1e+100
+        },
+        "c": {
+          "type": "number",
+          "minimum": -1e+100,
+          "maximum": 1e+100
+        }
+      },
+      "required": [
+        "a",
+        "b",
+        "c"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "a": 1,
+      "b": -3,
+      "c": 2
+    }
+  },
+  {
+    "id": "units.temperature",
+    "name": "温度换算",
+    "nameEn": "Temperature conversion",
+    "description": "摄氏度转换为华氏度与开尔文，禁止低于绝对零度。",
+    "category": "Units",
+    "tags": [
+      "Units",
+      "units",
+      "temperature"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "celsius": {
+          "type": "number",
+          "minimum": -273.15,
+          "maximum": 1e+100
+        }
+      },
+      "required": [
+        "celsius"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "celsius": 0
+    }
+  },
+  {
+    "id": "units.length",
+    "name": "长度换算",
+    "nameEn": "Length conversion",
+    "description": "米换算为厘米、毫米、英寸、英尺和千米。",
+    "category": "Units",
+    "tags": [
+      "Units",
+      "units",
+      "length"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "meters": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1e+100
+        }
+      },
+      "required": [
+        "meters"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "meters": 1
+    }
+  },
+  {
+    "id": "units.bytes",
+    "name": "存储大小换算",
+    "nameEn": "Storage conversion",
+    "description": "字节换算 SI 与 IEC 单位。",
+    "category": "Units",
+    "tags": [
+      "Units",
+      "units",
+      "bytes"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "bytes": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1e+100
+        }
+      },
+      "required": [
+        "bytes"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "bytes": 1024
+    }
+  },
+  {
+    "id": "units.pressure",
+    "name": "压力换算",
+    "nameEn": "Pressure conversion",
+    "description": "帕斯卡换算 bar、atm、psi。",
+    "category": "Units",
+    "tags": [
+      "Units",
+      "units",
+      "pressure"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "pascals": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1e+100
+        }
+      },
+      "required": [
+        "pascals"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "pascals": 101325
+    }
+  },
+  {
+    "id": "units.mass",
+    "name": "质量换算",
+    "nameEn": "Mass conversion",
+    "description": "千克换算克、吨、磅和盎司。",
+    "category": "Units",
+    "tags": [
+      "Units",
+      "units",
+      "mass"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "kilograms": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1e+100
+        }
+      },
+      "required": [
+        "kilograms"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "kilograms": 1
+    }
+  },
+  {
+    "id": "numbers.roman",
+    "name": "罗马数字",
+    "nameEn": "Integer to Roman",
+    "description": "将 1–3999 整数转换为罗马数字。",
+    "category": "Numbers",
+    "tags": [
+      "Numbers",
+      "numbers",
+      "roman"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3999
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "value": 2026
+    },
+    "expected": "MMXXVI"
+  },
+  {
+    "id": "numbers.percent",
+    "name": "百分比变化",
+    "nameEn": "Percentage change",
+    "description": "计算初值到终值的百分比变化，初值不能为零。",
+    "category": "Numbers",
+    "tags": [
+      "Numbers",
+      "numbers",
+      "percent"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "initial": {
+          "type": "number",
+          "minimum": -1e+100,
+          "maximum": 1e+100
+        },
+        "final": {
+          "type": "number",
+          "minimum": -1e+100,
+          "maximum": 1e+100
+        }
+      },
+      "required": [
+        "initial",
+        "final"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "number"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "initial": 100,
+      "final": 125
+    },
+    "expected": 25
+  }
+]

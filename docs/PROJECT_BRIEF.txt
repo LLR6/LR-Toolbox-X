@@ -1,0 +1,3588 @@
+你现在接管一个长期大型开源软件项目。
+
+你同时承担以下角色：
+
+- 首席产品负责人
+- 软件架构师
+- Rust 工程师
+- TypeScript / React 工程师
+- Python 工程师
+- Android Kotlin 工程师
+- Linux 工程师
+- Windows 工程师
+- DevOps 工程师
+- GitHub 开源维护者
+- QA 测试负责人
+- 安全工程师
+- UI/UX 负责人
+- 开源许可证合规负责人
+- Release Manager
+
+你要从零开始真正开发，而不是只给我方案。
+
+项目名称：
+
+# LR Toolbox X
+
+可同时使用品牌名：
+
+# LR OmniBox
+
+Slogan：
+
+**One App. 2000+ Real Tools. Zero Clutter.**
+
+长期愿景：
+
+建立一个：
+
+**AI Native + Local First + Cross Platform + Plugin Based + 2000+ Real Actions**
+
+的超级个人工具平台。
+
+最终必须公开在 GitHub。
+
+项目必须真正能够安装和使用。
+
+==================================================
+一、最终必须交付的版本
+==================================================
+
+不能只给源码。
+
+最终 GitHub Releases 至少需要逐步提供：
+
+### Windows
+
+- `.exe`
+- `.msi`
+- Portable `.zip`
+
+至少支持：
+
+- Windows 10 x64
+- Windows 11 x64
+
+后续考虑：
+
+- Windows ARM64
+
+### Android
+
+至少生成：
+
+- `.apk`
+- `.aab`
+
+APK 必须可以真正安装。
+
+支持：
+
+Android 8+ 或根据技术栈确定合理最低版本。
+
+架构尽量覆盖：
+
+- arm64-v8a
+- armeabi-v7a（如果依赖允许）
+- x86_64（模拟器）
+
+GitHub Release 至少提供：
+
+`LR-Toolbox-X-Android.apk`
+
+### Linux
+
+至少提供：
+
+- `.AppImage`
+- `.deb`
+
+尽可能增加：
+
+- `.rpm`
+- `.tar.gz`
+
+至少验证：
+
+Ubuntu 22.04
+Ubuntu 24.04
+Debian
+Kali Linux
+
+后续考虑：
+
+Arch Linux / AUR。
+
+### Web
+
+提供：
+
+Web Version
+
+支持：
+
+- 浏览器直接使用
+- PWA
+- 安装到桌面
+- 离线基础功能
+
+可以部署：
+
+GitHub Pages
+
+或者其他免费静态托管。
+
+### macOS
+
+如果当前 CI 能够可靠构建：
+
+提供：
+
+- `.dmg`
+- `.app`
+
+如果签名证书暂时没有：
+
+允许先提供 unsigned build，
+
+但 README 必须明确说明。
+
+以后再加入：
+
+Apple Developer Signing
+Notarization
+
+### CLI
+
+额外开发：
+
+`lrtool`
+
+例如：
+
+lrtool json format file.json
+
+lrtool hash sha256 test.iso
+
+lrtool dns lookup github.com
+
+lrtool image convert test.png test.webp
+
+lrtool pdf merge a.pdf b.pdf output.pdf
+
+这样 GUI、AI、CLI 都调用同一套 Action Registry。
+
+==================================================
+二、最重要原则
+==================================================
+
+这个项目绝对不能靠假功能堆数量。
+
+禁止：
+
+- 2000 个空页面
+- 2000 个假按钮
+- TODO
+- Coming Soon
+- 点击无反应
+- 只有 UI 没 Handler
+- 同一个函数复制几十次改名字
+- 为了数字机械生成垃圾 Actions
+- README 宣传不存在的功能
+- 假执行结果
+- AI 假装命令执行成功
+
+每个正式计入数量的 Action 必须包含：
+
+- 唯一 ID
+- 名称
+- 描述
+- 分类
+- 输入 Schema
+- 输出 Schema
+- 平台支持
+- 权限需求
+- Risk Level
+- 实际 Handler
+- 参数验证
+- 错误处理
+- 使用示例
+- 至少基础测试
+
+例如：
+
+network.dns.a_lookup
+
+network.dns.aaaa_lookup
+
+network.dns.mx_lookup
+
+network.dns.txt_lookup
+
+network.dns.ns_lookup
+
+network.dns.reverse_lookup
+
+这些可以独立算 Action。
+
+因为：
+
+输入/输出/用途不同。
+
+但不能通过复制完全相同的 Handler 冒充多个能力。
+
+==================================================
+三、2000+ 的正确实现方法
+==================================================
+
+不要造：
+
+2000 个 App 页面。
+
+应该造：
+
+# Action Registry
+
+每个小功能都是：
+
+Atomic Action
+
+例如：
+
+file.rename
+
+file.copy
+
+file.move
+
+file.hash.sha256
+
+image.resize
+
+image.convert.webp
+
+image.metadata.read
+
+pdf.extract.pages
+
+network.dns.lookup
+
+android.apk.inspect
+
+git.repo.status
+
+system.port.owner
+
+然后：
+
+UI
+
+CLI
+
+AI
+
+Workflow
+
+Plugin
+
+全部调用同一个 Action Registry。
+
+最终目标：
+
+>= 2000 个真正不同、真正能执行的 Actions。
+
+==================================================
+四、建议总体技术架构
+==================================================
+
+优先稳定和可维护。
+
+### Desktop
+
+优先：
+
+Tauri 2
+
+React
+
+TypeScript
+
+Vite
+
+Rust
+
+不要默认 Electron。
+
+除非出现 Tauri 明显无法解决的问题。
+
+### 核心逻辑
+
+Rust
+
+负责：
+
+- Registry
+- Action Execution
+- Permissions
+- Security
+- File Operations
+- System Operations
+- Network Core
+- Process Management
+- Plugin Runtime
+- Workflow Engine
+
+### Python Sidecar
+
+Python 用于：
+
+- PDF
+- Office
+- OCR
+- 数据处理
+- AI 相关工具
+- 图像高级处理
+- 科学计算
+- 一些成熟 Python 库能力
+
+Python 不是必须参与所有工具。
+
+能 Rust 原生完成的优先 Rust。
+
+### Android
+
+优先：
+
+Kotlin
+Jetpack Compose
+
+并尽可能共享：
+
+Rust Core
+
+例如通过：
+
+JNI / UniFFI / 其他成熟跨语言方式。
+
+Android 不要简单套一个 WebView 当成完整 APK。
+
+真正需要 Android 系统能力的模块必须原生实现。
+
+### Web
+
+React
+TypeScript
+
+复用：
+
+UI Components
+Schemas
+纯 JS/WASM Actions
+
+浏览器不允许假装拥有：
+
+ADB
+Docker
+本地进程管理
+系统服务管理
+
+不支持的 Action：
+
+明确隐藏或标为平台不可用。
+
+==================================================
+五、Monorepo
+==================================================
+
+建议结构：
+
+apps/
+
+desktop/
+
+web/
+
+android/
+
+cli/
+
+packages/
+
+ui/
+
+schemas/
+
+registry-types/
+
+shared/
+
+workflows/
+
+sdk/
+
+crates/
+
+core/
+
+registry/
+
+executor/
+
+system/
+
+network/
+
+filesystem/
+
+plugin-runtime/
+
+workflow-engine/
+
+cli-core/
+
+python/
+
+lrtoolbox_python/
+
+plugins/
+
+official/
+
+community/
+
+docs/
+
+scripts/
+
+tests/
+
+benchmarks/
+
+assets/
+
+.github/
+
+workflows/
+
+==================================================
+六、允许并鼓励借鉴优秀开源项目
+==================================================
+
+非常重要：
+
+不要什么功能都从零重新实现。
+
+对于已经存在成熟开源方案的问题：
+
+优先研究成熟项目。
+
+包括但不限于：
+
+- 文件工具
+- Everything 类搜索
+- PDF 工具
+- ImageMagick 类图像处理
+- FFmpeg
+- ExifTool
+- 7-Zip
+- ripgrep
+- fd
+- jq
+- yt-dlp 类架构思想
+- CyberChef 类编码工具思想
+- DevToys 类工具箱思想
+- Raycast 类 Command Palette 交互
+- PowerToys 类系统工具设计
+- LocalSend 类局域网传输思想
+- ShareX 类截图工作流
+- scrcpy / ADB 生态
+- Git
+- OpenSSL
+- curl
+- rsync
+- Pandoc
+- OCR 项目
+- SQLite
+- Tantivy
+- ripgrep
+- tree-sitter
+- mature Rust crates
+- mature Python packages
+- mature npm packages
+
+但是：
+
+### 绝对不能无脑复制代码。
+
+每次引入第三方项目或代码前检查：
+
+1. License
+2. 是否允许商用/修改/再分发
+3. 是否要求开源衍生代码
+4. 是否要求 Attribution
+5. 是否存在专利限制
+6. 最近维护时间
+7. Release 活跃度
+8. Security Issues
+9. CVE
+10. 跨平台兼容性
+11. 二进制体积
+12. 是否存在更优替代品
+
+==================================================
+七、开源许可证策略
+==================================================
+
+项目主 License：
+
+优先：
+
+Apache-2.0
+
+但在最终确定前：
+
+扫描所有依赖许可证。
+
+使用：
+
+cargo-deny
+cargo-about
+license-checker
+pip-licenses
+其他成熟许可证扫描工具
+
+如果某个依赖：
+
+GPL / AGPL / LGPL / MPL
+
+必须仔细分析传播要求。
+
+不能为了方便：
+
+直接把许可证不兼容代码复制进核心。
+
+必要时：
+
+将工具设计成：
+
+External Adapter
+
+调用用户本机已经安装的软件。
+
+例如：
+
+FFmpeg
+Pandoc
+7z
+Git
+ADB
+
+这样可以减少：
+
+重复开发
+
+同时保留明确许可证边界。
+
+建立：
+
+THIRD_PARTY_NOTICES.md
+
+自动生成：
+
+SBOM。
+
+==================================================
+八、SBOM
+==================================================
+
+Release 自动生成：
+
+Software Bill of Materials。
+
+建议支持：
+
+CycloneDX
+
+或：
+
+SPDX
+
+每个正式 Release：
+
+附带 SBOM。
+
+==================================================
+九、依赖成熟开源工具时的原则
+==================================================
+
+如果本机已有：
+
+ffmpeg
+
+则直接使用。
+
+如果没有：
+
+Environment Doctor 显示：
+
+FFmpeg 未安装。
+
+并提供：
+
+官方安装说明。
+
+不要静默下载不可控二进制。
+
+对于可以合法 Bundled 的依赖：
+
+构建系统可以打包。
+
+但必须：
+
+记录版本
+
+验证 Hash
+
+保留 License。
+
+==================================================
+十、核心功能中心
+==================================================
+
+至少建设以下一级中心：
+
+1. Files
+2. PDF
+3. Office
+4. Images
+5. Video
+6. Audio
+7. Archive
+8. Text
+9. JSON
+10. YAML
+11. XML
+12. CSV
+13. Encoding
+14. Hash
+15. Crypto Utilities
+16. Time
+17. Numbers
+18. Math
+19. Units
+20. Colors
+21. Developer
+22. Regex
+23. HTTP
+24. API
+25. Network
+26. DNS
+27. SSL/TLS
+28. System
+29. Processes
+30. Services
+31. Environment Doctor
+32. Docker
+33. Web Server
+34. Git
+35. GitHub
+36. Android
+37. APK
+38. ADB
+39. QR
+40. Barcode
+41. Clipboard
+42. Screenshot
+43. Local Search
+44. Study
+45. Research
+46. Markdown
+47. LaTeX
+48. Database
+49. SQLite
+50. Media
+51. Automation
+52. Website Monitor
+53. LAN Transfer
+54. AI
+55. Plugins
+56. Workflows
+57. Productivity
+58. Metadata
+59. Logs
+60. Diagnostics
+
+以后继续扩展。
+
+==================================================
+十一、文件中心
+==================================================
+
+实现大量真正实用的 Actions：
+
+读取
+写入
+追加
+创建
+复制
+移动
+删除
+安全删除
+重命名
+批量重命名
+目录创建
+目录扫描
+目录树
+文件统计
+目录统计
+大小计算
+Hash
+Magic Number
+MIME
+权限
+时间戳
+扩展名
+文件类型
+重复文件
+大文件
+空文件
+最近文件
+全文搜索
+按扩展名搜索
+按日期搜索
+按大小搜索
+路径 Normalize
+路径 Join
+相对路径
+绝对路径
+文件 Diff
+目录 Diff
+Unicode 文件名清理
+非法字符检测
+名称冲突解决
+批量前缀
+批量后缀
+批量编号
+Regex Rename
+
+目标：
+
+100+ Actions。
+
+==================================================
+十二、PDF
+==================================================
+
+优先借鉴成熟库。
+
+实现：
+
+Merge
+Split
+Extract
+Rotate
+Crop
+Reorder
+Delete Pages
+Duplicate Pages
+Page Size
+Watermark
+Page Number
+Metadata
+Password
+Known Password Unlock
+Compression
+Image Extraction
+Text Extraction
+OCR
+Images → PDF
+PDF → Images
+Bookmarks
+Outline
+Page Count
+Page Range
+PDF Info
+PDF Diff
+Linearization 检测
+字体信息
+
+等等。
+
+==================================================
+十三、图像
+==================================================
+
+使用成熟图像库。
+
+支持：
+
+PNG
+JPG
+JPEG
+WebP
+AVIF
+BMP
+TIFF
+GIF
+SVG
+
+Actions：
+
+Resize
+Crop
+Rotate
+Flip
+Convert
+Compress
+Metadata
+EXIF
+EXIF Remove
+DPI
+Palette
+Dominant Color
+Pixel Info
+Image Hash
+Duplicate Image
+Similar Image
+Contact Sheet
+Collage
+Long Image
+Transparency
+Background
+QR Detect
+OCR
+Batch Process
+
+==================================================
+十四、媒体
+==================================================
+
+允许调用：
+
+FFmpeg / ffprobe。
+
+功能：
+
+视频转码
+音频转码
+提取音频
+提取视频
+剪切
+合并
+压缩
+分辨率
+FPS
+Metadata
+Duration
+Codec
+Bitrate
+帧提取
+GIF
+缩略图
+音量标准化
+音轨提取
+字幕轨信息
+
+只能用于：
+
+用户合法拥有或有权处理的媒体。
+
+==================================================
+十五、开发者工具
+==================================================
+
+JSON
+YAML
+TOML
+XML
+CSV
+INI
+Properties
+
+格式化
+Minify
+Validate
+Convert
+Diff
+Schema
+JSONPath
+JQ
+
+以及：
+
+JWT Viewer
+UUID
+ULID
+NanoID
+SemVer
+Cron
+Regex
+SQL Formatter
+URL Parser
+URI Builder
+MIME
+User Agent
+Color
+.gitignore
+Docker Ignore
+Environment Parser
+HTTP Header
+Cookie Parser
+Query Builder
+
+==================================================
+十六、网络
+==================================================
+
+定位：
+
+诊断、防御、学习、授权环境。
+
+实现：
+
+Ping
+Traceroute
+DNS
+A
+AAAA
+MX
+NS
+TXT
+CNAME
+PTR
+DoH
+TCP Connect
+HTTP Status
+HTTPS
+SSL Certificate
+TLS Version
+IP
+IPv4
+IPv6
+Subnet
+CIDR
+MAC
+Network Interfaces
+Gateway
+Route Table
+Port Owner
+Local Listening Ports
+
+不开发：
+
+未经授权的攻击自动化
+爆破
+恶意利用
+隐蔽持久化
+凭据窃取。
+
+==================================================
+十七、系统工具
+==================================================
+
+CPU
+RAM
+GPU
+Disk
+Battery
+Network
+Process
+Services
+Startup
+Environment
+PATH
+Ports
+Displays
+OS
+Kernel
+Architecture
+
+Actions：
+
+Process Search
+Process Details
+Resource Monitor
+Service Status
+Environment Diff
+PATH Doctor
+
+危险操作：
+
+Kill
+Stop Service
+Delete
+
+全部二次确认。
+
+==================================================
+十八、Environment Doctor
+==================================================
+
+检测：
+
+Python
+pip
+pipx
+uv
+Node
+npm
+pnpm
+yarn
+Java
+Gradle
+Maven
+Git
+Docker
+Docker Compose
+ADB
+CMake
+Rust
+Cargo
+Go
+PHP
+Ruby
+.NET
+CUDA
+NVIDIA Driver
+FFmpeg
+Pandoc
+7z
+
+输出：
+
+版本
+路径
+冲突
+环境变量
+依赖问题
+修复建议。
+
+==================================================
+十九、Docker
+==================================================
+
+GUI：
+
+Containers
+Images
+Networks
+Volumes
+Compose
+Logs
+Inspect
+Stats
+
+支持：
+
+Start
+Stop
+Restart
+Pull
+Build
+Logs
+Stats
+
+危险操作确认。
+
+==================================================
+二十、Git / GitHub
+==================================================
+
+Git：
+
+Status
+Log
+Branch
+Diff
+Remote
+Tag
+Stash
+Commit
+Repository Analysis
+
+GitHub：
+
+Repository
+Issue
+PR
+Actions
+Release
+Workflow
+Dependabot
+Commit
+Branch
+Tag
+
+开发：
+
+PR Risk Review
+
+Dependency Update Review
+
+GitHub Actions Compatibility Check
+
+README Doctor
+
+Repository Health Score
+
+Release Notes Generator
+
+==================================================
+二十一、Android / APK / ADB
+==================================================
+
+支持：
+
+Devices
+Install APK
+Uninstall
+Logcat
+Screenshot
+Screen Record
+Push
+Pull
+Package List
+Activity
+Device Info
+
+APK：
+
+Package Name
+Version
+Version Code
+Min SDK
+Target SDK
+Permissions
+Activities
+Services
+Receivers
+Providers
+Signature
+Icon
+Metadata
+Architectures
+
+不得对第三方应用实施恶意修改或攻击。
+
+==================================================
+二十二、学习与研究
+==================================================
+
+Study：
+
+PDF Reader
+Notes
+Wrong Questions
+Screenshot Questions
+Tags
+Knowledge Points
+Timer
+Pomodoro
+Exam Countdown
+Mastery
+Review History
+Study Stats
+Flashcard Export
+
+Research：
+
+DOI
+BibTeX
+Citation
+Paper Metadata
+PDF Notes
+Markdown Notes
+
+AI 可提供：
+
+Summary
+Method
+Contribution
+Limitation
+Experiment Structure
+
+==================================================
+二十三、AI Command Bar
+==================================================
+
+这是项目灵魂。
+
+Windows / Linux：
+
+默认：
+
+Alt + Space
+
+如果冲突：
+
+允许用户修改。
+
+输入：
+
+“查一下是谁占用了 8080”
+
+自动调用：
+
+system.port.owner
+
+输入：
+
+“把桌面 PNG 全部改成 WebP”
+
+自动：
+
+file.search
+image.convert.webp
+
+输入：
+
+“把这些 PDF 合并”
+
+自动：
+
+pdf.merge
+
+输入：
+
+“检查 Python 环境”
+
+调用：
+
+environment.python.inspect
+
+AI 执行前必须：
+
+生成 Plan。
+
+==================================================
+二十四、Action Graph
+==================================================
+
+AI 任务显示：
+
+理解用户请求
+
+↓
+
+选择工具
+
+↓
+
+参数
+
+↓
+
+权限
+
+↓
+
+运行
+
+↓
+
+结果
+
+用户能够展开查看。
+
+AI 不能黑盒执行。
+
+==================================================
+二十五、Universal Drag & Drop
+==================================================
+
+拖：
+
+APK
+
+建议：
+
+APK Info
+Permissions
+Install
+
+拖：
+
+PDF
+
+建议：
+
+Read
+OCR
+Split
+Merge
+Compress
+
+拖：
+
+Image
+
+建议：
+
+OCR
+Resize
+Compress
+Convert
+Metadata
+
+拖：
+
+ZIP
+
+建议：
+
+Extract
+Inspect
+Test
+
+拖：
+
+JSON
+
+建议：
+
+Format
+Validate
+Convert
+
+==================================================
+二十六、Workflow Builder
+==================================================
+
+实现可视化工作流。
+
+节点：
+
+Trigger
+Input
+Action
+Filter
+Condition
+Loop
+Delay
+Output
+Notification
+
+例如：
+
+Downloads 新增 PNG
+
+↓
+
+Compress
+
+↓
+
+Convert WebP
+
+↓
+
+Move
+
+↓
+
+Notification
+
+支持：
+
+保存
+导入
+导出。
+
+==================================================
+二十七、插件体系
+==================================================
+
+官方插件和社区插件。
+
+插件至少：
+
+manifest.json
+
+字段：
+
+id
+name
+version
+author
+description
+license
+permissions
+platforms
+actions
+
+插件能够注册：
+
+Actions
+Panels
+Commands
+Workflow Nodes
+
+提供：
+
+Plugin SDK
+
+Template
+
+Documentation。
+
+==================================================
+二十八、插件安全
+==================================================
+
+Permission Manifest。
+
+权限示例：
+
+filesystem.read
+filesystem.write
+network
+process
+clipboard
+camera
+adb
+shell
+
+安装插件时显示权限。
+
+插件默认：
+
+最小权限。
+
+==================================================
+二十九、CLI
+==================================================
+
+CLI 与 GUI 共用 Registry。
+
+例如：
+
+lrtool list
+
+lrtool search pdf
+
+lrtool run text.base64.encode --text hello
+
+lrtool run dns.lookup --domain github.com
+
+lrtool run image.convert --input a.png --format webp
+
+支持：
+
+JSON 输出。
+
+方便：
+
+脚本
+CI
+自动化。
+
+==================================================
+三十、UI
+==================================================
+
+高级、专业、克制。
+
+参考设计思想：
+
+Raycast
+Linear
+Arc
+VS Code
+Nothing OS
+Apple
+PowerToys
+
+但不要直接抄。
+
+支持：
+
+Dark
+Light
+System
+
+布局：
+
+Sidebar
+
+Command Bar
+
+Content
+
+Inspector
+
+History。
+
+首页不要显示 2000 个按钮。
+
+显示：
+
+Search
+
+Recent
+
+Favorite
+
+Workflow
+
+System
+
+AI Command。
+
+==================================================
+三十一、国际化
+==================================================
+
+必须至少：
+
+简体中文
+English
+
+支持：
+
+中文路径
+中文文件名
+Unicode
+UTF-8。
+
+==================================================
+三十二、搜索
+==================================================
+
+任何 Action：
+
+可以通过：
+
+名称
+描述
+Alias
+Tags
+Category
+
+搜索。
+
+输入：
+
+“时间戳”
+
+出现时间工具。
+
+输入：
+
+“8080”
+
+建议端口工具。
+
+输入：
+
+“apk”
+
+出现 Android 工具。
+
+==================================================
+三十三、错误系统
+==================================================
+
+统一：
+
+AppError
+
+类型：
+
+ValidationError
+IOError
+NetworkError
+PermissionError
+DependencyError
+TimeoutError
+ActionError
+PluginError
+PlatformUnsupportedError
+
+禁止用户看到：
+
+undefined
+null
+panic
+raw stack trace
+
+生产环境隐藏开发信息。
+
+==================================================
+三十四、Action 标准
+==================================================
+
+每个 Action 至少定义：
+
+id
+
+name
+
+description
+
+category
+
+tags
+
+input_schema
+
+output_schema
+
+platforms
+
+permissions
+
+risk_level
+
+timeout
+
+handler
+
+tests
+
+documentation。
+
+==================================================
+三十五、Risk Level
+==================================================
+
+分：
+
+safe
+
+sensitive
+
+dangerous
+
+例如：
+
+JSON Format：
+
+safe
+
+读取文件：
+
+sensitive
+
+删除文件：
+
+dangerous
+
+危险 Action：
+
+必须 Preview + Confirm。
+
+==================================================
+三十六、Local First
+==================================================
+
+核心功能不登录也能使用。
+
+用户数据：
+
+默认本地。
+
+数据库：
+
+SQLite。
+
+配置：
+
+Local Config。
+
+不要强制账号。
+
+==================================================
+三十七、AI Provider
+==================================================
+
+提供统一 Provider API。
+
+支持：
+
+OpenAI
+
+OpenAI Compatible
+
+Ollama
+
+LM Studio
+
+Custom Base URL
+
+Local Model。
+
+API Key：
+
+不能明文放配置文件。
+
+优先系统安全凭据存储。
+
+==================================================
+三十八、隐私
+==================================================
+
+AI 请求之前：
+
+显示数据是否会上传。
+
+敏感文件：
+
+默认本地。
+
+Clipboard：
+
+默认不自动发送。
+
+Telemetry：
+
+默认关闭。
+
+==================================================
+三十九、测试
+==================================================
+
+必须建立：
+
+Unit Test
+
+Integration Test
+
+E2E Test
+
+Smoke Test
+
+Platform Test。
+
+每个 Action：
+
+至少：
+
+正常路径测试
+
+异常路径测试。
+
+==================================================
+四十、平台测试矩阵
+==================================================
+
+GitHub Actions 至少测试：
+
+Windows latest
+
+Ubuntu latest
+
+如果资源允许：
+
+macOS latest。
+
+Android：
+
+Gradle Build
+
+Unit Test
+
+Lint。
+
+Web：
+
+Build
+
+Typecheck
+
+E2E。
+
+==================================================
+四十一、Release CI/CD
+==================================================
+
+Tag：
+
+v0.x.x
+
+触发：
+
+Release Workflow。
+
+自动生成：
+
+Windows EXE
+
+Windows MSI
+
+Windows Portable ZIP
+
+Linux AppImage
+
+Linux DEB
+
+Linux RPM（可行时）
+
+Linux tar.gz
+
+Android APK
+
+Android AAB
+
+Web Build
+
+macOS DMG（可行时）
+
+CLI binaries。
+
+==================================================
+四十二、Release 命名
+==================================================
+
+例如：
+
+LR-Toolbox-X_0.3.0_windows_x64.exe
+
+LR-Toolbox-X_0.3.0_windows_x64.msi
+
+LR-Toolbox-X_0.3.0_windows_x64_portable.zip
+
+LR-Toolbox-X_0.3.0_linux_x86_64.AppImage
+
+LR-Toolbox-X_0.3.0_amd64.deb
+
+LR-Toolbox-X_0.3.0_x86_64.rpm
+
+LR-Toolbox-X_0.3.0_android_arm64.apk
+
+LR-Toolbox-X_0.3.0_android.aab
+
+lrtool_0.3.0_windows_x64.exe
+
+lrtool_0.3.0_linux_x64
+
+==================================================
+四十三、Checksum
+==================================================
+
+Release 自动生成：
+
+SHA256SUMS.txt
+
+用户能够验证下载文件。
+
+==================================================
+四十四、代码签名
+==================================================
+
+如果当前没有：
+
+Windows Code Signing Certificate
+
+Android Release Keystore
+
+Apple Developer Certificate
+
+不要因此阻塞项目。
+
+先：
+
+创建 unsigned Development Release。
+
+README 明确写：
+
+Unsigned。
+
+当我以后提供证书：
+
+再配置正式 Signing。
+
+绝对不能生成假证书冒充可信签名。
+
+==================================================
+四十五、Android Signing
+==================================================
+
+Debug APK：
+
+CI 可以生成。
+
+Release APK：
+
+当有安全 Keystore 后：
+
+GitHub Secrets 管理。
+
+绝对不能：
+
+提交 keystore
+
+提交密码
+
+提交 token。
+
+==================================================
+四十六、GitHub Secrets
+==================================================
+
+所有 Secret：
+
+GitHub Actions Secrets。
+
+例如：
+
+Signing Password
+
+API Token
+
+Keystore。
+
+代码不能写死。
+
+==================================================
+四十七、GitHub 仓库
+==================================================
+
+优先创建：
+
+LLR6/LR-Toolbox-X
+
+如果存在则：
+
+继续使用。
+
+如果冲突：
+
+LR-OmniBox。
+
+仓库：
+
+Public。
+
+==================================================
+四十八、Git 分支
+==================================================
+
+main：
+
+始终可构建。
+
+使用：
+
+feature branches。
+
+合并：
+
+PR + CI。
+
+==================================================
+四十九、Commit 规范
+==================================================
+
+Conventional Commits。
+
+例如：
+
+feat(core): add action registry
+
+feat(pdf): add merge actions
+
+feat(android): add apk inspector
+
+feat(release): build Windows installer
+
+test(network): add dns tests
+
+fix(linux): handle unicode paths
+
+docs: add plugin guide
+
+==================================================
+五十、README
+==================================================
+
+README 要达到优秀开源项目标准。
+
+包含：
+
+Logo
+
+Badges
+
+Screenshots
+
+Demo
+
+Features
+
+2000+ Actions
+
+Download
+
+Windows
+
+Android
+
+Linux
+
+Web
+
+CLI
+
+Install
+
+Quick Start
+
+AI Command
+
+Workflow
+
+Plugins
+
+Architecture
+
+Privacy
+
+Security
+
+Roadmap
+
+Contributing
+
+License
+
+Third Party。
+
+==================================================
+五十一、功能目录
+==================================================
+
+不要手工维护 2000 个功能。
+
+写脚本：
+
+generate-action-catalog
+
+自动生成：
+
+docs/actions.md
+
+以及：
+
+website catalog。
+
+显示：
+
+Action ID
+
+Name
+
+Category
+
+Platforms
+
+Risk。
+
+==================================================
+五十二、数量统计
+==================================================
+
+提供：
+
+scripts/count-actions
+
+输出：
+
+Total Actions: 384
+
+Windows: 310
+
+Linux: 328
+
+Android: 145
+
+Web: 201
+
+等等。
+
+README 可以动态更新。
+
+==================================================
+五十三、禁止数量造假
+==================================================
+
+Action 数量只有：
+
+Handler 实现 + Registry 注册 + Schema
+
+以后才计数。
+
+Disabled / Placeholder：
+
+不计入。
+
+==================================================
+五十四、开源代码调研流程
+==================================================
+
+当准备开发一个大型模块：
+
+第一步：
+
+先调研 GitHub 是否有成熟项目。
+
+对候选项目记录：
+
+Repository
+
+Stars 只作为辅助参考
+
+Latest Release
+
+Latest Commit
+
+Language
+
+License
+
+Security
+
+Architecture
+
+API
+
+是否适合复用。
+
+然后决定：
+
+直接依赖
+
+调用 CLI
+
+借鉴设计
+
+参考算法
+
+自行实现。
+
+不能：
+
+没有许可证检查就复制代码。
+
+==================================================
+五十五、开源 Attribution
+==================================================
+
+所有需要 Attribution 的内容：
+
+写入：
+
+THIRD_PARTY_NOTICES.md
+
+About 页面：
+
+Third Party Licenses。
+
+==================================================
+五十六、Supply Chain Security
+==================================================
+
+CI 加入：
+
+cargo audit
+
+cargo deny
+
+npm audit
+
+依赖漏洞扫描
+
+Dependabot
+
+CodeQL
+
+SBOM。
+
+==================================================
+五十七、不要自动合并重大依赖升级
+==================================================
+
+Dependabot PR：
+
+先跑测试。
+
+Major Upgrade：
+
+检查 Breaking Changes。
+
+==================================================
+五十八、性能
+==================================================
+
+目标：
+
+Desktop 冷启动尽量 < 2 秒。
+
+Registry：
+
+Metadata Lazy Load。
+
+插件：
+
+Lazy Load。
+
+不要启动时加载全部 2000 个 Handler。
+
+==================================================
+五十九、插件崩溃隔离
+==================================================
+
+一个 Plugin Crash：
+
+不能导致整个 App 崩。
+
+记录：
+
+Plugin Error。
+
+允许：
+
+Disable Plugin。
+
+==================================================
+六十、诊断工具
+==================================================
+
+提供：
+
+Export Diagnostics。
+
+包含：
+
+App Version
+
+OS
+
+Architecture
+
+Installed Plugins
+
+Dependency Versions
+
+Recent Errors。
+
+不得包含：
+
+API Key
+
+Password
+
+Token
+
+敏感 Clipboard
+
+私人文件内容。
+
+==================================================
+六十一、Universal Search
+==================================================
+
+Command Palette：
+
+Ctrl/Cmd + K。
+
+搜索：
+
+工具
+设置
+文件
+工作流
+历史
+插件。
+
+==================================================
+六十二、Desktop Integration
+==================================================
+
+Windows 后续加入：
+
+Explorer Context Menu。
+
+例如：
+
+Send to LR Toolbox
+
+Hash
+
+Compress
+
+Convert
+
+OCR。
+
+==================================================
+六十三、系统托盘
+==================================================
+
+Desktop：
+
+Tray Icon。
+
+提供：
+
+Open
+
+Clipboard
+
+Screenshot
+
+Quick Command
+
+Settings
+
+Exit。
+
+==================================================
+六十四、截图
+==================================================
+
+桌面支持：
+
+Full Screen
+
+Window
+
+Region。
+
+之后：
+
+OCR
+
+QR
+
+Color Picker
+
+AI Explain。
+
+==================================================
+六十五、剪贴板
+==================================================
+
+历史：
+
+可关闭。
+
+敏感识别：
+
+Password-like content
+
+Token
+
+Private Key
+
+检测到时：
+
+默认不保存。
+
+==================================================
+六十六、局域网传输
+==================================================
+
+借鉴成熟开源项目设计。
+
+功能：
+
+PC → Phone
+
+Phone → PC
+
+Text Transfer
+
+File Transfer
+
+QR Pairing。
+
+安全：
+
+Random Token
+
+Session Expiry
+
+Device Confirmation
+
+Encryption。
+
+==================================================
+六十七、远程 PC
+==================================================
+
+Android 后续能够：
+
+查看 PC 状态
+
+发送文件
+
+触发低风险 Action。
+
+Shell：
+
+默认禁止远程执行。
+
+==================================================
+六十八、Web 版本边界
+==================================================
+
+Web 提供：
+
+JSON
+
+YAML
+
+Encoding
+
+Hash
+
+Regex
+
+Timestamp
+
+Color
+
+Text
+
+QR
+
+Image Browser Processing
+
+部分 PDF
+
+等等。
+
+Web 不能宣传：
+
+管理 Windows Process
+
+ADB
+
+Docker
+
+systemd
+
+这些不存在的能力。
+
+==================================================
+六十九、PWA
+==================================================
+
+Web：
+
+可 Install。
+
+缓存基础工具。
+
+无网络时：
+
+JSON
+
+Encoding
+
+Hash
+
+Text
+
+Regex
+
+Color
+
+Time
+
+等等仍可使用。
+
+==================================================
+七十、Android UI
+==================================================
+
+Android 不必完全复制 Desktop。
+
+适合手机的 UI。
+
+Bottom Navigation：
+
+Home
+
+Tools
+
+Transfer
+
+History
+
+Settings。
+
+==================================================
+七十一、Desktop UI
+==================================================
+
+Sidebar：
+
+Home
+
+Tools
+
+Files
+
+Developer
+
+Network
+
+System
+
+Android
+
+Study
+
+Automation
+
+Plugins
+
+Settings。
+
+==================================================
+七十二、版本路线
+==================================================
+
+### v0.1
+
+基础骨架。
+
+完成：
+
+Monorepo
+
+Desktop
+
+Registry
+
+Error System
+
+SQLite
+
+Command Palette
+
+Settings
+
+History
+
+50+ Actions
+
+Windows Build
+
+Linux Build。
+
+### v0.2
+
+100+ Actions。
+
+加入：
+
+File
+
+Text
+
+JSON
+
+Encoding
+
+Hash
+
+QR
+
+Network。
+
+发布：
+
+EXE
+
+AppImage
+
+DEB。
+
+### v0.3
+
+300+ Actions。
+
+加入：
+
+PDF
+
+Image
+
+Archive
+
+HTTP
+
+System
+
+Git
+
+Environment Doctor。
+
+加入：
+
+APK 基础版。
+
+### v0.4
+
+500+ Actions。
+
+加入：
+
+ADB
+
+Docker
+
+GitHub
+
+Screenshot
+
+Clipboard
+
+Workflow。
+
+### v0.5
+
+800+ Actions。
+
+加入：
+
+Web PWA
+
+Android 功能扩展
+
+Plugin SDK。
+
+### v0.6+
+
+1000+
+
+1500+
+
+2000+。
+
+==================================================
+七十三、不要等到 2000 才发布
+==================================================
+
+每个稳定 Milestone：
+
+都发布。
+
+让 GitHub 用户能够：
+
+看到项目持续进化。
+
+==================================================
+七十四、版本 1.0 标准
+==================================================
+
+LR Toolbox X v1.0：
+
+必须达到：
+
+2000+ Real Actions
+
+Windows EXE
+
+Windows MSI
+
+Windows Portable
+
+Android APK
+
+Android AAB
+
+Linux AppImage
+
+Linux DEB
+
+Linux RPM 或替代包
+
+Web PWA
+
+CLI
+
+Plugin System
+
+Workflow System
+
+AI Command Bar
+
+Action Graph
+
+Local First
+
+Chinese + English
+
+自动测试
+
+CI
+
+GitHub Releases
+
+Documentation
+
+Plugin SDK
+
+SBOM
+
+Checksum
+
+Third Party Notices。
+
+==================================================
+七十五、代码质量
+==================================================
+
+禁止：
+
+巨型单文件。
+
+保持模块化。
+
+使用：
+
+Formatter
+
+Linter
+
+Type Checking。
+
+Rust：
+
+rustfmt
+
+clippy。
+
+TS：
+
+ESLint
+
+Prettier。
+
+Python：
+
+Ruff
+
+Pyright/Mypy。
+
+Kotlin：
+
+ktlint/detekt。
+
+==================================================
+七十六、测试真实路径
+==================================================
+
+尤其测试：
+
+中文文件名
+
+中文目录
+
+空格
+
+Emoji
+
+超长路径
+
+Windows Drive Letter
+
+Linux 权限。
+
+==================================================
+七十七、文件安全
+==================================================
+
+任何覆盖：
+
+默认询问。
+
+支持：
+
+Backup
+
+Undo（可实现时）
+
+Trash 优先于永久删除。
+
+==================================================
+七十八、Action History
+==================================================
+
+每次执行：
+
+时间
+
+Action
+
+参数摘要
+
+结果
+
+耗时
+
+状态。
+
+Sensitive Parameter：
+
+自动隐藏。
+
+==================================================
+七十九、Favorite
+==================================================
+
+用户可以收藏 Action。
+
+支持：
+
+Pin。
+
+==================================================
+八十、Profiles
+==================================================
+
+以后支持：
+
+Developer Profile
+
+Student Profile
+
+System Admin Profile
+
+Research Profile。
+
+只改变首页推荐。
+
+不限制 Registry。
+
+==================================================
+八十一、AI 必须真实调用工具
+==================================================
+
+AI 不知道结果时：
+
+执行 Action。
+
+例如：
+
+“8080 谁占用了？”
+
+不能凭空回答。
+
+必须：
+
+system.port.owner。
+
+==================================================
+八十二、AI Tool Permission
+==================================================
+
+安全 Action：
+
+可以自动执行。
+
+Sensitive：
+
+提示。
+
+Dangerous：
+
+Confirm。
+
+==================================================
+八十三、自然语言 Workflow
+==================================================
+
+用户：
+
+“每天把下载文件夹里的 PDF 移到 Documents/PDF。”
+
+AI：
+
+生成 Workflow。
+
+展示：
+
+Trigger
+
+↓
+
+Filter
+
+↓
+
+Move。
+
+用户确认后保存。
+
+==================================================
+八十四、统计
+==================================================
+
+Dashboard：
+
+Tools Used
+
+Actions Run
+
+Time Saved
+
+Favorite Tools
+
+Workflow Runs
+
+Error Rate。
+
+全部本地。
+
+==================================================
+八十五、不要收集隐私
+==================================================
+
+默认：
+
+无账号
+
+无 Telemetry
+
+无 Tracking。
+
+==================================================
+八十六、开放 API
+==================================================
+
+未来提供：
+
+localhost API。
+
+例如：
+
+POST /actions/text.base64.encode
+
+用于：
+
+本机其他软件调用。
+
+默认关闭。
+
+开启需要：
+
+Token。
+
+==================================================
+八十七、插件商店
+==================================================
+
+第一阶段：
+
+官方插件目录。
+
+后续：
+
+社区 Repository Index。
+
+安装前：
+
+License
+
+Permissions
+
+Version。
+
+==================================================
+八十八、社区贡献
+==================================================
+
+提供：
+
+CONTRIBUTING.md
+
+Action Development Guide
+
+Plugin Guide
+
+Good First Issue。
+
+==================================================
+八十九、Issue Templates
+==================================================
+
+Bug
+
+Feature
+
+Plugin
+
+Action Request
+
+Platform Bug。
+
+==================================================
+九十、Security Policy
+==================================================
+
+SECURITY.md。
+
+告诉用户：
+
+如何报告漏洞。
+
+不要让安全漏洞公开暴露细节。
+
+==================================================
+九十一、Changelog
+==================================================
+
+CHANGELOG.md
+
+自动结合 Conventional Commits 生成 Release Notes。
+
+==================================================
+九十二、自动截图
+==================================================
+
+条件允许时：
+
+E2E 启动应用。
+
+生成：
+
+README screenshots。
+
+但不要让视觉截图阻塞核心 Build。
+
+==================================================
+九十三、Logo
+==================================================
+
+设计：
+
+简洁
+
+现代
+
+适合：
+
+App Icon
+
+Tray
+
+Android
+
+GitHub。
+
+保留：
+
+SVG。
+
+==================================================
+九十四、品牌
+==================================================
+
+主品牌：
+
+LR Toolbox X。
+
+内部：
+
+LRX。
+
+CLI：
+
+lrtool。
+
+Android Package：
+
+选择规范唯一 Package Name。
+
+==================================================
+九十五、Build 信息
+==================================================
+
+About 页面显示：
+
+Version
+
+Commit SHA
+
+Build Date
+
+Platform
+
+Architecture
+
+Action Count。
+
+==================================================
+九十六、Nightly Build
+==================================================
+
+以后增加：
+
+Nightly。
+
+但 Stable Release：
+
+必须测试通过。
+
+==================================================
+九十七、Benchmark
+==================================================
+
+测试：
+
+File Hash
+
+Image Conversion
+
+Compression
+
+Search
+
+Registry Search
+
+Startup。
+
+==================================================
+九十八、缓存
+==================================================
+
+合理使用缓存。
+
+但提供：
+
+Clear Cache。
+
+==================================================
+九十九、备份
+==================================================
+
+能够导出：
+
+Settings
+
+Favorites
+
+Workflows
+
+Plugin List。
+
+导入：
+
+恢复。
+
+==================================================
+一百、最终执行原则
+==================================================
+
+不要只回复：
+
+“这是一个很大的项目。”
+
+不要只给我：
+
+Architecture 文档。
+
+不要只做：
+
+UI Mockup。
+
+立即开始开发真实项目。
+
+==================================================
+一百零一、开始顺序
+==================================================
+
+现在开始：
+
+1. 检查当前 Workspace。
+2. 检查 GitHub 是否已连接。
+3. 检查 LLR6/LR-Toolbox-X 是否存在。
+4. 如果不存在，创建 Public Repository。
+5. 初始化 Monorepo。
+6. 创建 LICENSE。
+7. 创建 README。
+8. 创建 THIRD_PARTY_NOTICES。
+9. 创建 Tauri Desktop。
+10. 创建 Web App。
+11. 创建 Android 项目骨架。
+12. 创建 CLI。
+13. 创建 Rust Core。
+14. 创建 Action Registry。
+15. 创建 Permission System。
+16. 创建 AppError。
+17. 创建 SQLite Data Layer。
+18. 创建 Logging。
+19. 创建 Command Palette。
+20. 创建第一批 Actions。
+21. 创建 Test Framework。
+22. 创建 GitHub Actions。
+23. 运行 Lint。
+24. 运行 Typecheck。
+25. 运行 Tests。
+26. Build Windows。
+27. Build Linux。
+28. Build Android APK。
+29. Build Web。
+30. 修复所有可解决错误。
+31. Push。
+32. 创建初始 Release。
+33. 然后继续开发更多 Actions。
+
+==================================================
+一百零二、开源调研任务
+==================================================
+
+在开发各模块过程中：
+
+主动搜索和研究成熟开源方案。
+
+但每次采用必须记录：
+
+Source Project
+
+License
+
+Integration Method
+
+Version
+
+Why Selected。
+
+将重要信息写入：
+
+docs/open-source-components.md。
+
+==================================================
+一百零三、不要重复造轮子
+==================================================
+
+举例：
+
+视频：
+
+优先 FFmpeg。
+
+Git：
+
+优先 Git CLI / libgit2。
+
+搜索：
+
+优先 ripgrep / Tantivy 等成熟能力。
+
+压缩：
+
+优先成熟 Archive Libraries。
+
+OCR：
+
+优先成熟 OCR Engine。
+
+PDF：
+
+优先成熟 PDF Libraries。
+
+Android：
+
+优先 Android 官方 API + ADB。
+
+图片：
+
+优先成熟 Image Libraries。
+
+二维码：
+
+优先成熟 QR Libraries。
+
+==================================================
+一百零四、但也不要拼凑垃圾软件
+==================================================
+
+虽然大量复用开源技术：
+
+LR Toolbox X 本身必须拥有统一：
+
+UI
+
+UX
+
+Action Registry
+
+Error Model
+
+Permissions
+
+History
+
+Search
+
+Workflow
+
+AI
+
+Plugin API。
+
+不能让用户感觉：
+
+只是把几十个 CLI 粘在一起。
+
+==================================================
+一百零五、真实失败处理
+==================================================
+
+例如：
+
+用户使用 FFmpeg Action。
+
+但系统没有 FFmpeg。
+
+不要：
+
+崩溃。
+
+显示：
+
+FFmpeg is not installed.
+
+并提供：
+
+Detect Again
+
+Installation Guide。
+
+==================================================
+一百零六、跨平台差异
+==================================================
+
+Action 定义：
+
+platforms：
+
+windows
+
+linux
+
+macos
+
+android
+
+web。
+
+UI 自动判断。
+
+不要在 Android 展示：
+
+systemd。
+
+不要在 Web 展示：
+
+ADB。
+
+==================================================
+一百零七、Action Fallback
+==================================================
+
+如果一个功能：
+
+Windows 用 PowerShell API
+
+Linux 用 POSIX
+
+则可以：
+
+相同 Action ID。
+
+内部：
+
+Platform Adapter。
+
+==================================================
+一百零八、测试打包文件
+==================================================
+
+CI 不只：
+
+编译。
+
+还要 Smoke Test：
+
+安装包是否生成
+
+文件非 0 Byte
+
+版本正确
+
+Checksum 正确。
+
+==================================================
+一百零九、Release 页面
+==================================================
+
+每次 Release：
+
+自动生成：
+
+What's New
+
+Downloads
+
+Windows
+
+Linux
+
+Android
+
+CLI
+
+Web
+
+Checksums
+
+Known Issues。
+
+==================================================
+一百一十、我的最终要求
+==================================================
+
+这个项目最终应该达到这样的状态：
+
+我打开 GitHub：
+
+能看到一个非常完整的公开项目。
+
+我点 Releases：
+
+可以直接下载：
+
+APK
+
+EXE
+
+MSI
+
+AppImage
+
+DEB
+
+RPM
+
+ZIP
+
+CLI。
+
+我打开软件：
+
+不是空壳。
+
+里面真的拥有大量工具。
+
+我搜索：
+
+任何工具都能快速找到。
+
+我输入自然语言：
+
+AI 能调用这些工具完成任务。
+
+我组合多个 Action：
+
+可以形成 Workflow。
+
+开发者：
+
+可以自己写 Plugin。
+
+所有能力：
+
+不是为了凑 2000 数量。
+
+而是真正能够工作。
+
+长期目标：
+
+**2000+ REAL ACTIONS**
+
+**MULTI-PLATFORM**
+
+**PUBLIC OPEN SOURCE**
+
+**AI-NATIVE**
+
+**LOCAL FIRST**
+
+**PLUGIN ECOSYSTEM**
+
+**WORKFLOW AUTOMATION**
+
+**REAL INSTALLERS**
+
+**NO FAKE FEATURES**
+
+**NO PLACEHOLDERS**
+
+**NO SILENT FAILURES**
+
+现在开始执行。
+
+不要停留在规划阶段。
+
+遇到普通技术决策：
+
+你自己选择最成熟稳定的实现。
+
+只有这些情况才需要我：
+
+- GitHub 授权
+- Signing Certificate
+- Android Keystore
+- Apple Developer Certificate
+- 外部账号登录
+- 付费操作
+- 不可逆外部操作
+
+除此之外：
+
+持续开发、测试、修复、构建、提交和发布。
+
+如果一次 Work 会话无法完成整个项目：
+
+必须保证：
+
+1. 当前代码可运行。
+2. 当前 CI 状态明确。
+3. 已完成内容已经 Push GitHub。
+4. TODO / Roadmap 有明确记录。
+5. 下一次 Work 可以读取仓库后直接继续。
+6. 不重复已经完成的工作。
+
+每次继续项目时：
+
+首先读取：
+
+README
+
+ROADMAP
+
+Git History
+
+GitHub Issues
+
+CI
+
+Action Registry
+
+已有 Release。
+
+然后：
+
+从上一次真正停止的位置继续。
+
+最终把 LR Toolbox X 打造成一个让人看到后第一反应是：
+
+**“这一个软件怎么什么都能干？”**
+
+的真正超级工具平台。
