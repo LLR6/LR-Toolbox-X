@@ -1,6 +1,15 @@
 package io.github.llr6.lrx
 
 import android.os.Bundle
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -19,8 +28,9 @@ class MainActivity : ComponentActivity() {
         val catalog = JSONArray(assets.open("action-catalog.json").bufferedReader().use { it.readText() })
         val tools = (0 until catalog.length()).map { catalog.getJSONObject(it) }.filter { it.getString("id") in Codec.ids }
         val prefs = getSharedPreferences("lrx", MODE_PRIVATE)
+        val backdrop = assets.open("alpine-dusk.png").use { BitmapFactory.decodeStream(it).asImageBitmap() }
         setContent {
-            val scheme = darkColorScheme(primary = Color(0xFFB5F4BC), background = Color(0xFF101412), surface = Color(0xFF171D19))
+            val scheme = darkColorScheme(primary = Color(0xFFA6B3FF), background = Color(0xFF0C1020), surface = Color(0xFF141C30), secondary = Color(0xFFC0A6EE))
             MaterialTheme(colorScheme = scheme) {
                 var selected by remember { mutableStateOf<String?>(null) }
                 var query by remember { mutableStateOf("") }
@@ -30,12 +40,21 @@ class MainActivity : ComponentActivity() {
                 var history by remember { mutableStateOf(prefs.getString("last", "") ?: "") }
                 Surface(Modifier.fillMaxSize()) {
                     LazyColumn(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(top = 24.dp, bottom = 24.dp)) {
-                        item { Text("LR Toolbox X", style = MaterialTheme.typography.headlineLarge) }
-                        item { Text("本地工具箱 · 6 Native Actions · v0.1.0", color = scheme.primary) }
+                        item {
+                            Box(Modifier.fillMaxWidth().height(225.dp).clip(RoundedCornerShape(20.dp))) {
+                                Image(backdrop, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+                                Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0x22202A46), Color(0xEE0C142B)))))
+                                Column(Modifier.align(Alignment.BottomStart).padding(22.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                    Text("LR TOOLBOX X", style = MaterialTheme.typography.labelSmall, color = Color(0xFFCBD5F5))
+                                    Text("让一切更高效", style = MaterialTheme.typography.headlineMedium, color = Color.White)
+                                    Text("6 个原生工具 · 本地运行 · v0.2.0", style = MaterialTheme.typography.bodySmall, color = Color(0xFFD9E1FA))
+                                }
+                            }
+                        }
                         item { Text("无需登录。无网络权限。所有计算在本机完成。", style = MaterialTheme.typography.bodySmall) }
                         item { OutlinedTextField(query, { query = it }, label = { Text("搜索工具 / Search") }, modifier = Modifier.fillMaxWidth()) }
                         items(tools.filter { it.getString("name").contains(query, true) || it.getString("id").contains(query, true) }) { tool ->
-                            Card(onClick = { selected = tool.getString("id"); input = tool.getJSONObject("example").getString("text"); output = ""; problem = false }, modifier = Modifier.fillMaxWidth()) {
+                            Card(shape = RoundedCornerShape(14.dp), colors = CardDefaults.cardColors(containerColor = scheme.surface), onClick = { selected = tool.getString("id"); input = tool.getJSONObject("example").getString("text"); output = ""; problem = false }, modifier = Modifier.fillMaxWidth()) {
                                 Column(Modifier.padding(18.dp)) { Text(tool.getString("name"), style = MaterialTheme.typography.titleMedium); Text(tool.getString("id"), style = MaterialTheme.typography.bodySmall) }
                             }
                         }

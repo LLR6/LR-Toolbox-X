@@ -3,12 +3,13 @@
 <p align="center">LR OmniBox · Small tasks, handled.</p>
 <p align="center"><a href="https://github.com/LLR6/LR-Toolbox-X/actions">CI</a> · <a href="docs/actions.md">Actions</a> · <a href="ROADMAP.md">Roadmap</a> · <a href="LICENSE">Apache-2.0</a></p>
 
-本地优先、无账号、无追踪的跨平台个人工具箱。**首个开发里程碑 v0.1.0**，长期目标是 2000+ 个真实工具；当前没有达到这个目标。
+本地优先、无账号、无追踪的跨平台个人工具箱。**雪山工作台里程碑 v0.2.0**，长期目标是 2000+ 个真实工具；当前没有达到这个目标。
 
 ## What works now
 
-- **54 portable actions**: JSON, UTF-8/Base64/hex/binary/URI, Unicode, text, SHA-2, timestamps, URL/JWT inspection, colors, math and units.
+- **94 portable actions**: JSON, UTF-8/Base64/hex/binary/URI, Unicode, text, SHA-2, timestamps, URL/JWT inspection, colors, math and units; CSV, SemVer, dotenv, HTTP headers/Basic auth, IPv4/IPv6/MAC, HMAC, Markdown, time zones and matrix/integer arithmetic.
 - **6 additional Rust actions**: file info, bounded UTF-8 reads, directory listing, streaming SHA-256, file comparison, OS/architecture information.
+- Alpine dusk dashboard: three-column layout, real activity/favorite statistics, quick access, responsive navigation and blue/violet glass panels.
 - React desktop/web interface: schema forms, real results, errors, search, Ctrl/Cmd+K palette, favorites, metadata-only history, Chinese/English controls, light/dark/system theme, result export.
 - A sequential workflow runner using the same registry; JSON editing, save/import/export, previous-result binding, stop on first failure, maximum 20 steps. Visual node editing is a later milestone.
 - Web PWA: generated service worker caches the built application and tool catalog after the first successful visit over HTTPS.
@@ -16,7 +17,7 @@
 - Rust SQLite history data layer and Tauri bridge. Browser preferences/history use localStorage. Tool input and output are not stored in history.
 - TypeScript CLI shares the portable registry; the Rust CLI shares the native registry. They are separate executables at this milestone.
 
-**Distinct Action IDs: 60. Web/portable CLI: 54. Desktop: 60 when built. Android: 6.** No AI provider, plugin installation, destructive file operations, or invented external-tool results are exposed.
+**Distinct Action IDs: 100. Web/portable CLI: 94. Desktop: 100 when built. Android: 6.** No AI provider, plugin installation, destructive file operations, or invented external-tool results are exposed.
 
 ## Run locally
 
@@ -95,4 +96,4 @@ Tauri uses `unsafe-eval` solely for Ajv compiling trusted built-in schemas. Thir
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Features must have executable handlers, schema validation, error cases, real examples and tests before being counted. Counts are generated from registered handlers, not marketing targets. Release signing, full platform installation testing, AI, sandboxed plugins and a visual workflow editor are later deliverables, explicitly tracked in [ROADMAP.md](ROADMAP.md).
 
-English: a local-first toolbox with 54 portable actions and 6 native actions. This is an early working milestone, not the complete 2000-action product. Apache-2.0 applies to original project code; upstream dependencies retain their licenses.
+English: a local-first toolbox with 94 portable actions and 6 native actions. This is an early working milestone, not the complete 2000-action product. Apache-2.0 applies to original project code; upstream dependencies retain their licenses.

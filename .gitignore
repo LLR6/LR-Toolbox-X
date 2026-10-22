@@ -16,3 +16,6 @@ artifacts/
 
 dist-cli/
 *.log
+
+test-results/
+playwright-report/
