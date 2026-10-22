@@ -42,3 +42,9 @@ Large repeated-heading input is bounded at 10000 headings; anchor counters avoid
 - Native Compose UI now has vector artwork, a two-column card grid, search, full-page input/output workspaces and result copy/selection; inputs/results remain excluded from history. Physical Android installation and visual verification remain pending.
 
 - Tool execution now uses a dedicated responsive workspace with input/output editors, syntax coloring, local text import (1 MB), output download, actual run status, metadata history and Ctrl/Cmd+Enter. Native Android tools use full pages with system Back navigation.
+
+### Web update delivery repair
+
+- Navigation now requests fresh HTML with HTTP cache bypass and falls back to the precached shell only on network failure or unsuccessful status. Static assets remain offline-capable.
+- Service worker update checks bypass the HTTP cache, run on returning to the app/going online, and show a refresh notice after a new worker takes control. Refresh is explicit so an in-progress input/result is not discarded automatically. Local favorites/history are not cleared.
+- Browser regression tests now run against the production build. A dedicated test injects a stale cached entry, reloads online, then opens and executes a full-page tool offline at a query URL.

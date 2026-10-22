@@ -1776,3 +1776,61 @@ header {
   color: #4963b2;
   fill: #8398dc20;
 }
+.update-notice {
+  position: fixed;
+  z-index: 100;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(650px, calc(100vw - 32px));
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid #7f92d8;
+  border-radius: 18px;
+  background: #152139;
+  color: #eff2ff;
+  box-shadow:
+    0 12px 60px #0008,
+    0 0 28px #8c83ef24;
+}
+.update-notice > .ui-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: #a5b8ff;
+}
+.update-notice > div {
+  flex: 1;
+}
+.update-notice strong {
+  font-size: 14px;
+}
+.update-notice p {
+  margin: 6px 0 0;
+  color: #c4cfe5;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.update-notice button {
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  background: #a7b6ff;
+  color: #10192e;
+  font-weight: 650;
+  cursor: pointer;
+}
+@media (max-width: 600px) {
+  .update-notice {
+    flex-wrap: wrap;
+    bottom: 12px;
+    padding: 15px;
+    gap: 12px;
+  }
+  .update-notice button {
+    margin-left: auto;
+  }
+}

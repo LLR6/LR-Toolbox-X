@@ -15,6 +15,7 @@ import {
 import { load, save, download, type Run } from "./storage.ts";
 import "./style.css";
 import "./dashboard.css";
+import { UpdateNotice } from "./UpdateNotice.tsx";
 import { Workbench } from "./Workbench.tsx";
 import { Dashboard } from "./Dashboard.tsx";
 import { ToolIcon, UiIcon } from "./Icons.tsx";
@@ -882,10 +883,7 @@ class Boundary extends React.Component<
 createRoot(document.getElementById("root")!).render(
   <Boundary>
     <App />
+    <UpdateNotice enabled={!desktop && import.meta.env.PROD} />
   </Boundary>,
 );
-if ("serviceWorker" in navigator && !desktop && import.meta.env.PROD)
-  navigator.serviceWorker
-    .register("./sw.js")
-    .catch(() => console.warn("Offline cache unavailable"));
 void AppError;
