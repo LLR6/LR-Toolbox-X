@@ -1,0 +1,14 @@
+[
+  "encoding.base64.encode",
+  "encoding.base64.decode",
+  "encoding.hex.encode",
+  "encoding.hex.decode",
+  "encoding.base64url.encode",
+  "encoding.base64url.decode",
+  "hash.sha256",
+  "hash.sha384",
+  "hash.sha512",
+  "text.trim",
+  "text.newlines.lf",
+  "text.html.escape"
+]

@@ -29,3 +29,33 @@ test("workflow runs shared handlers", async ({ page }) => {
   await page.getByRole("button", { name: /运行工作流/ }).click();
   await expect(page.getByRole("status")).toContainText("SGVsbG8gTFI=");
 });
+test("workspace imports text, exports output and renders a JSON pointer null value", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByTestId("dashboard-json.format").click();
+  await page.locator('input[type="file"]').setInputFiles({
+    name: "example.json",
+    mimeType: "application/json",
+    buffer: Buffer.from('{"imported":true}'),
+  });
+  await page.getByRole("button", { name: "运行工具" }).click();
+  await expect(page.getByRole("status")).toContainText('"imported": true');
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "下载", exact: true }).click();
+  expect((await download).suggestedFilename()).toContain("json.format");
+  await page.getByRole("button", { name: "Close tool" }).click();
+  await page.getByRole("textbox", { name: "搜索工具" }).fill("json.pointer");
+  await page.getByTestId("action-json.pointer").click();
+  await page
+    .getByRole("textbox", { name: "text", exact: true })
+    .fill('{"value":null}');
+  await page
+    .getByRole("textbox", { name: "pointer", exact: true })
+    .fill("/value");
+  await page.getByRole("button", { name: "运行工具" }).click();
+  await expect(page.getByRole("status")).toHaveText('{ "value": null }');
+  await expect(
+    page.getByRole("button", { name: "下载", exact: true }),
+  ).toBeEnabled();
+});

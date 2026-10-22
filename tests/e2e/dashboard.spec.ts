@@ -52,6 +52,9 @@ test("mobile layout keeps navigation, search and workflow usable", async ({
   await page.getByTestId("action-network.ipv4.inspect").click();
   await page.getByRole("button", { name: "运行工具" }).click();
   await expect(page.getByRole("status")).toContainText("192.168.1.0");
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(390);
   await page.getByRole("button", { name: "Close tool" }).click();
   await page
     .locator(".sidebar")
@@ -76,4 +79,65 @@ test("theme and language controls preserve the working dashboard", async ({
   await page.getByTestId("action-semver.compare").click();
   await page.getByRole("button", { name: "Run action" }).click();
   await expect(page.getByRole("status")).toContainText("-1");
+});
+test("home favorites persist and open the matching real tool", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByTestId("dashboard-csv.to.json").hover();
+  await page
+    .getByRole("button", { name: "Favorite csv.to.json", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Unfavorite csv.to.json", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.reload();
+  await page
+    .locator(".sidebar")
+    .getByRole("button", { name: /我的收藏/ })
+    .click();
+  await page.getByTestId("action-csv.to.json").click();
+  await expect(page.getByRole("region")).toHaveAccessibleName("CSV to JSON");
+});
+test("keyboard palette opens a full workspace and preserves it on Escape", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: /让一切更高效/ }),
+  ).toBeVisible();
+  await page.keyboard.press("Control+k");
+  await page
+    .getByRole("textbox", { name: "Command search" })
+    .fill("hash.sha256");
+  await page.getByRole("textbox", { name: "Command search" }).press("Enter");
+  const workspace = page.getByRole("region", {
+    name: "SHA-256 digest",
+    exact: true,
+  });
+  await expect(workspace).toBeFocused();
+  await page.keyboard.press("Control+Enter");
+  await expect(page.getByRole("status")).toContainText("ba7816bf");
+  await page.keyboard.press("Control+k");
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(workspace).toBeVisible();
+  await page.getByRole("button", { name: "Close tool" }).click();
+  await expect(workspace).toHaveCount(0);
+});
+
+test("home search Enter opens a matching action without clearing the query", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("textbox", { name: "搜索工具" })
+    .fill("encoding.base64url.encode");
+  await page.getByRole("textbox", { name: "搜索工具" }).press("Enter");
+  await expect(page.getByRole("region")).toHaveAccessibleName(
+    "Encode Base64URL",
+  );
+  await page.getByRole("button", { name: "运行工具" }).click();
+  await expect(page.getByRole("status")).toHaveText("SGVsbG8_");
 });

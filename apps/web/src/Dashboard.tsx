@@ -1,3 +1,4 @@
+import { ToolIcon, UiIcon } from "./Icons.tsx";
 import type { Action } from "../../../packages/registry/src/types.ts";
 import type { Run } from "./storage.ts";
 
@@ -10,29 +11,10 @@ type Props = {
   navigate: (page: string, category?: string) => void;
   query: string;
   setQuery: (q: string) => void;
-};
-const glyphs: Record<string, string> = {
-  JSON: "{}",
-  Text: "Aa",
-  Encoding: "⌘",
-  Hash: "#",
-  Developer: "</>",
-  Time: "◷",
-  Math: "∑",
-  Numbers: "01",
-  Units: "⇄",
-  Colors: "◉",
-  CSV: "▤",
-  Network: "◎",
-  Markdown: "M↓",
-  Crypto: "◇",
+  toggle: (id: string) => void;
 };
 export function ToolBadge({ category }: { category: string }) {
-  return (
-    <span className={"app-badge tone-" + category}>
-      {glyphs[category] ?? "✦"}
-    </span>
-  );
+  return <ToolIcon category={category} className="app-badge" />;
 }
 export function Dashboard({
   actions,
@@ -43,6 +25,7 @@ export function Dashboard({
   navigate,
   query,
   setQuery,
+  toggle,
 }: Props) {
   const t = (zh: string, english: string) => (en ? english : zh);
   const pick = (id: string) => {
@@ -72,44 +55,50 @@ export function Dashboard({
       name: "文本处理",
       en: "Text tools",
       desc: "整理文字，释放表达",
-      icon: "Aa",
     },
     {
       id: "JSON",
       name: "数据与 JSON",
       en: "Data & JSON",
       desc: "结构清晰，转换自如",
-      icon: "{}",
     },
     {
       id: "Encoding",
       name: "编码与解码",
       en: "Encoding",
       desc: "让信息自由转换",
-      icon: "⌘",
     },
     {
       id: "Developer",
       name: "开发者工具",
       en: "Developer",
       desc: "专注创造，高效开发",
-      icon: "</>",
     },
     {
       id: "Math",
       name: "计算与换算",
       en: "Math & numbers",
       desc: "从日常到精确计算",
-      icon: "∑",
     },
     {
       id: "workflow",
       name: "自动化工作流",
       en: "Workflows",
       desc: "串联操作，一次完成",
-      icon: "⌥",
     },
   ];
+  const firstMatch = query.trim()
+    ? actions.find((a) =>
+        [a.id, a.name, a.nameEn, a.description, a.category, ...a.tags]
+          .join(" ")
+          .toLowerCase()
+          .includes(query.trim().toLowerCase()),
+      )
+    : undefined;
+  const openSearch = () => {
+    if (firstMatch) choose(firstMatch);
+    else if (!query.trim()) navigate("tools");
+  };
   const success = history.filter((h) => h.status === "success").length;
   return (
     <div className={"dashboard-layout" + (query ? " searching" : "")}>
@@ -130,12 +119,25 @@ export function Dashboard({
               )}
             </p>
           </div>
+          <blockquote className="hero-quote">
+            {t("工具的意义，", "Good tools")}
+            <br />
+            {t("不是替代你，", "make room")}
+            <br />
+            {t("而是让你看到更大的可能。", "for greater possibilities.")}
+          </blockquote>
           <div className="hero-search">
-            <span aria-hidden="true">⌕</span>
+            <UiIcon name="search" />
             <input
               aria-label={t("搜索工具", "Search tools")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  openSearch();
+                }
+              }}
               placeholder={t(
                 `搜索 ${actions.length} 个工具，开始你的高效时刻…`,
                 `Search ${actions.length} tools to find your flow…`,
@@ -144,9 +146,10 @@ export function Dashboard({
             <kbd>CTRL K</kbd>
             <button
               aria-label={t("浏览工具", "Browse tools")}
-              onClick={() => navigate("tools")}
+              disabled={!!query.trim() && !firstMatch}
+              onClick={openSearch}
             >
-              →
+              <UiIcon name="arrow" />
             </button>
           </div>
           <div className="hero-chips">
@@ -166,7 +169,10 @@ export function Dashboard({
           </div>
         </section>
         <div className="dashboard-section-head">
-          <h2>{t("探索工具分类", "Explore collections")}</h2>
+          <h2>
+            <UiIcon name="tools" />
+            {t("探索工具分类", "Explore collections")}
+          </h2>
           <button onClick={() => navigate("tools")}>
             {t("全部工具", "All tools")} <span>→</span>
           </button>
@@ -183,7 +189,7 @@ export function Dashboard({
                 )
               }
             >
-              <span className="collection-icon">{c.icon}</span>
+              <ToolIcon category={c.id} className="collection-icon" />
               <strong>{en ? c.en : c.name}</strong>
               <small>
                 {en
@@ -205,7 +211,10 @@ export function Dashboard({
         <div className="activity-grid">
           <section className="glass-panel">
             <div className="dashboard-section-head">
-              <h2>{t("最近使用", "Recently used")}</h2>
+              <h2>
+                <UiIcon name="history" />
+                {t("最近使用", "Recently used")}
+              </h2>
               <button onClick={() => navigate("history")}>
                 {t("查看全部", "View all")} →
               </button>
@@ -223,13 +232,13 @@ export function Dashboard({
                       <strong>{en ? a.nameEn : a.name}</strong>
                       <small>{a.category}</small>
                     </span>
-                    <span className="subtle-arrow">↗</span>
+                    <UiIcon name="external" className="subtle-arrow" />
                   </button>
                 ))}
               </div>
             ) : (
               <div className="welcome-state">
-                <span className="welcome-orbit">◷</span>
+                <ToolIcon category="Time" className="welcome-orbit" />
                 <div>
                   <strong>
                     {t(
@@ -252,7 +261,10 @@ export function Dashboard({
           </section>
           <section className="glass-panel task-panel">
             <div className="dashboard-section-head">
-              <h2>{t("执行记录", "Activity")}</h2>
+              <h2>
+                <UiIcon name="workflow" />
+                {t("执行记录", "Activity")}
+              </h2>
               <span className="live-tag">LOCAL</span>
             </div>
             {history.length ? (
@@ -301,34 +313,48 @@ export function Dashboard({
         </div>
         <div className="dashboard-section-head">
           <h2>
+            <UiIcon name="tools" />
             {t("精选实用工具", "Everyday essentials")}{" "}
             <span className="section-hint">
               {t("把时间留给更重要的事", "A little less busywork")}
             </span>
           </h2>
           <button onClick={() => navigate("favorites")}>
-            ☆ {t("我的收藏", "Favorites")} {favorites.length}
+            <UiIcon name="favorites" /> {t("我的收藏", "Favorites")}{" "}
+            {favorites.length}
           </button>
         </div>
         <div className="essentials-grid">
           {popular.map((a) => (
-            <button
-              className="essential-tool"
-              data-testid={"dashboard-" + a.id}
-              onClick={() => choose(a)}
-              key={a.id}
-            >
-              <ToolBadge category={a.category} />
-              <span>
-                <strong>{en ? a.nameEn : a.name}</strong>
-                <small>{en ? a.id : a.description}</small>
-              </span>
-              <span className="subtle-arrow">↗</span>
-            </button>
+            <article className="essential-card" key={a.id}>
+              <button
+                className="essential-tool"
+                data-testid={"dashboard-" + a.id}
+                onClick={() => choose(a)}
+              >
+                <ToolBadge category={a.category} />
+                <span>
+                  <strong>{en ? a.nameEn : a.name}</strong>
+                  <small>{en ? a.id : a.description}</small>
+                </span>
+                <UiIcon name="external" className="subtle-arrow" />
+              </button>
+              <button
+                className={
+                  "pin-tool" + (favorites.includes(a.id) ? " pinned" : "")
+                }
+                aria-label={`${favorites.includes(a.id) ? "Unfavorite" : "Favorite"} ${a.id}`}
+                title={t("收藏工具", "Favorite tool")}
+                aria-pressed={favorites.includes(a.id)}
+                onClick={() => toggle(a.id)}
+              >
+                <UiIcon name="favorites" />
+              </button>
+            </article>
           ))}
         </div>
         <section className="discover-banner">
-          <div className="banner-symbol">✦</div>
+          <ToolIcon category="workflow" className="banner-symbol" />
           <div>
             <strong>
               {t("让工具配合你的节奏", "Make tools work at your pace")}
@@ -376,11 +402,14 @@ export function Dashboard({
         </section>
         <section className="glass-panel">
           <div className="dashboard-section-head">
-            <h2>{t("快捷工具", "Quick access")}</h2>
-            <span>⌘</span>
+            <h2>
+              <UiIcon name="tools" />
+              {t("快捷工具", "Quick access")}
+            </h2>
+            <UiIcon name="command" />
           </div>
           <div className="quick-grid">
-            {popular.slice(0, 6).map((a) => (
+            {popular.slice(0, 9).map((a) => (
               <button key={a.id} onClick={() => choose(a)}>
                 <ToolBadge category={a.category} />
                 <span>{en ? a.nameEn : a.name}</span>
@@ -390,7 +419,10 @@ export function Dashboard({
         </section>
         <section className="glass-panel usage-panel">
           <div className="dashboard-section-head">
-            <h2>{t("我的工作空间", "Your workspace")}</h2>
+            <h2>
+              <UiIcon name="shield" />
+              {t("我的工作空间", "Your workspace")}
+            </h2>
             <span className="dot" />
           </div>
           <div className="usage-rings">
@@ -425,7 +457,7 @@ export function Dashboard({
           </div>
         </section>
         <section className="glass-panel workflow-promo">
-          <span className="promo-icon">⌥</span>
+          <ToolIcon category="workflow" className="promo-icon" />
           <h3>{t("一个流程，完成更多", "A little flow goes a long way")}</h3>
           <p>
             {t(
