@@ -17,5 +17,5 @@ for item in metadata['packages']:
         component['licenses'] = [{'expression': item['license']}]
     components.append(component)
 out = pathlib.Path('artifacts'); out.mkdir(exist_ok=True)
-(out / 'SBOM.cdx.json').write_text(json.dumps({'bomFormat':'CycloneDX','specVersion':'1.5','version':1,'metadata':{'component':{'type':'application','name':'LR Toolbox X','version':'0.1.0'}},'components':components}, indent=2)+'\n')
+(out / 'SBOM.cdx.json').write_text(json.dumps({'bomFormat':'CycloneDX','specVersion':'1.5','version':1,'metadata':{'component':{'type':'application','name':'LR Toolbox X','version':json.loads(pathlib.Path('package.json').read_text())['version']}},'components':components}, indent=2)+'\n')
 print(f'Wrote {len(components)} resolved components (portable + native core; desktop and Android not included).')

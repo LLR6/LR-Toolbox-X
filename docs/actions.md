@@ -58,3 +58,43 @@ Generated from executable registry. Native actions are listed separately.
 | units.mass | 质量换算 | Units | web, windows, linux, macos, cli | safe |
 | numbers.roman | 罗马数字 | Numbers | web, windows, linux, macos, cli | safe |
 | numbers.percent | 百分比变化 | Numbers | web, windows, linux, macos, cli | safe |
+| csv.to.json | CSV 转 JSON | CSV | web, windows, linux, macos, cli | safe |
+| csv.from.json | JSON 转 CSV | CSV | web, windows, linux, macos, cli | safe |
+| csv.transpose | CSV 行列转置 | CSV | web, windows, linux, macos, cli | safe |
+| csv.stats | CSV 数据概览 | CSV | web, windows, linux, macos, cli | safe |
+| semver.parse | 语义版本解析 | Developer | web, windows, linux, macos, cli | safe |
+| semver.compare | 语义版本比较 | Developer | web, windows, linux, macos, cli | safe |
+| semver.bump | 版本号递增 | Developer | web, windows, linux, macos, cli | safe |
+| dotenv.parse | 环境变量解析 | Developer | web, windows, linux, macos, cli | safe |
+| dotenv.format | 生成环境变量文件 | Developer | web, windows, linux, macos, cli | safe |
+| http.headers.parse | HTTP 请求头解析 | Developer | web, windows, linux, macos, cli | safe |
+| http.cookie.parse | Cookie 字段解析 | Developer | web, windows, linux, macos, cli | safe |
+| http.basic.encode | Basic Auth 编码 | Developer | web, windows, linux, macos, cli | safe |
+| http.basic.decode | Basic Auth 解码 | Developer | web, windows, linux, macos, cli | safe |
+| developer.uuid.inspect | UUID 信息查看 | Developer | web, windows, linux, macos, cli | safe |
+| network.ipv4.inspect | IPv4 子网计算 | Network | web, windows, linux, macos, cli | safe |
+| network.ipv4.to_integer | IPv4 转整数 | Network | web, windows, linux, macos, cli | safe |
+| network.ipv4.from_integer | 整数转 IPv4 | Network | web, windows, linux, macos, cli | safe |
+| network.ipv6.normalize | IPv6 地址规范化 | Network | web, windows, linux, macos, cli | safe |
+| network.mac.inspect | MAC 地址解析 | Network | web, windows, linux, macos, cli | safe |
+| network.cidr.contains | IP 网段归属判断 | Network | web, windows, linux, macos, cli | safe |
+| network.cidr.subnets | IPv4 子网划分 | Network | web, windows, linux, macos, cli | safe |
+| encoding.base64url.encode | Base64URL 编码 | Encoding | web, windows, linux, macos, cli | safe |
+| encoding.base64url.decode | Base64URL 解码 | Encoding | web, windows, linux, macos, cli | safe |
+| crypto.random.bytes | 安全随机字节 | Crypto | web, windows, linux, macos, cli | safe |
+| crypto.hmac.sha256 | HMAC SHA-256 | Crypto | web, windows, linux, macos, cli | safe |
+| markdown.toc | Markdown 目录生成 | Markdown | web, windows, linux, macos, cli | safe |
+| markdown.links | Markdown 链接提取 | Markdown | web, windows, linux, macos, cli | safe |
+| markdown.table | CSV 转 Markdown 表格 | Markdown | web, windows, linux, macos, cli | safe |
+| time.iso_week | ISO 周数计算 | Time | web, windows, linux, macos, cli | safe |
+| time.duration.parse | ISO 时长解析 | Time | web, windows, linux, macos, cli | safe |
+| time.timezone.format | 时区时间转换 | Time | web, windows, linux, macos, cli | safe |
+| math.matrix.transpose | 矩阵转置 | Math | web, windows, linux, macos, cli | safe |
+| math.matrix.multiply | 矩阵乘法 | Math | web, windows, linux, macos, cli | safe |
+| math.matrix.determinant | 矩阵行列式 | Math | web, windows, linux, macos, cli | safe |
+| math.matrix.solve | 线性方程组求解 | Math | web, windows, linux, macos, cli | safe |
+| math.matrix.inverse | 矩阵求逆 | Math | web, windows, linux, macos, cli | safe |
+| math.combinations | 组合数计算 | Math | web, windows, linux, macos, cli | safe |
+| math.factorial | 大整数阶乘 | Math | web, windows, linux, macos, cli | safe |
+| numbers.primality | 质数判断 | Numbers | web, windows, linux, macos, cli | safe |
+| math.fraction.reduce | 分数约分 | Math | web, windows, linux, macos, cli | safe |

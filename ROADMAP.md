@@ -4,15 +4,15 @@ Read README, this file, git history, Issues, CI, both registries and Releases be
 
 ## Current milestone
 
-54 portable actions and 6 Rust native actions; 6 existing IDs reimplemented on Android. Web + CLI build locally; Rust tests and Clippy pass. Desktop and Android require CI and real installation evidence before claiming support. Full specification: docs/PROJECT_BRIEF.txt. The original specification is a target, not a list of delivered features.
+94 portable actions and 6 Rust native actions; 6 existing IDs reimplemented on Android. Web + CLI build locally; Rust tests and Clippy pass. Desktop and Android require CI and real installation evidence before claiming support. Full specification: docs/PROJECT_BRIEF.txt. The original specification is a target, not a list of delivered features.
 
 ## Next work, in order
 
 1. Read current CI logs. Repair Android/desktop packaging, then download and verify APK and desktop installers. Smoke-test on real Windows 10/11, Android 8+, Ubuntu 22/24, Debian and Kali; add evidence to docs/verification.md. Do not mark these checks passed on compile success alone.
 2. Precompile Ajv validators and remove desktop unsafe-eval; replace filesystem canonicalize/open race with platform-safe handle-based access before any remote or untrusted plugin execution.
-3. Consolidate CLI dispatch and generated platform metadata; add Android conformance fixtures from portable action examples. Add translated descriptions and keyboard focus trapping for dialogs; settings import and workflow visual nodes.
+3. Consolidate CLI dispatch and generated platform metadata; add Android conformance fixtures from portable action examples. Add translated descriptions; dialog focus trapping is implemented in v0.2.0; settings import and workflow visual nodes.
 4. Add tested native file write/rename/trash with preview, explicit grant, confirmation, undo where reliable. Add environment doctor with versioned external adapters, no shell interpolation and enforced child-process deadlines.
-5. Research and record licenses/security of PDF, image, archive and QR libraries before choosing them. Ship 100 distinct working actions before further expansion.
+5. The 100 distinct-action milestone is implemented (94 portable + 6 Rust). Research and record licenses/security of PDF, image, archive and QR libraries before choosing them and expanding further.
 6. Add AI provider abstraction, system credential vault, explicit upload review and inspectable action plan. No fabricated AI execution or results.
 7. Design isolated plugins and permission manifests, then a visual workflow builder with cancellation and robust scheduling. Do not execute community code in the renderer.
 8. Expand in independently releasable milestones to 300, 500, 800, 1000, 1500 and 2000+ actions. Count actual distinct capabilities, not renamed copies.

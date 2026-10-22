@@ -1,3 +1,7 @@
+import { dataActions } from "./data.ts";
+import { networkActions } from "./network.ts";
+import { productivityActions } from "./productivity.ts";
+import { advancedMathActions } from "./advanced-math.ts";
 import { Ajv } from "ajv";
 import { textActions } from "./text.ts";
 import { encodingActions } from "./encoding.ts";
@@ -18,6 +22,10 @@ export const actions: Action[] = [
   ...jsonActions,
   ...developerActions,
   ...mathActions,
+  ...dataActions,
+  ...networkActions,
+  ...productivityActions,
+  ...advancedMathActions,
 ];
 const map = new Map(actions.map((a) => [a.id, a]));
 if (map.size !== actions.length) throw Error("Duplicate action ID");

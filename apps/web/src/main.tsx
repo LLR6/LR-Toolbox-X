@@ -14,6 +14,8 @@ import {
 } from "../../../packages/registry/src/workflow.ts";
 import { load, save, download, type Run } from "./storage.ts";
 import "./style.css";
+import "./dashboard.css";
+import { Dashboard } from "./Dashboard.tsx";
 const desktop = "__TAURI_INTERNALS__" in window;
 const groups = [
   "All",
@@ -27,6 +29,10 @@ const groups = [
   "Numbers",
   "Units",
   "Colors",
+  "CSV",
+  "Network",
+  "Markdown",
+  "Crypto",
 ];
 const symbols: Record<string, string> = {
   JSON: "{ }",
@@ -39,6 +45,10 @@ const symbols: Record<string, string> = {
   Numbers: "01",
   Units: "⇄",
   Colors: "◉",
+  CSV: "▤",
+  Network: "◎",
+  Markdown: "M↓",
+  Crypto: "◇",
   Files: "▤",
   System: "⌨",
 };
@@ -82,12 +92,18 @@ function App() {
     fileRef = useRef<HTMLInputElement>(null);
   const all = [...actions, ...native];
   useEffect(() => {
-    const dark =
-      theme === "system"
-        ? matchMedia("(prefers-color-scheme: dark)").matches
-        : theme === "dark";
-    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    const preference = matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => {
+      document.documentElement.dataset.theme = (
+        theme === "system" ? preference.matches : theme === "dark"
+      )
+        ? "dark"
+        : "light";
+    };
+    apply();
     save("theme", theme);
+    preference.addEventListener("change", apply);
+    return () => preference.removeEventListener("change", apply);
   }, [theme]);
   useEffect(() => {
     save("language", language);
@@ -107,12 +123,53 @@ function App() {
       }
       if (e.key === "Escape") {
         setPalette(false);
-        setActive(null);
+        if (!busy) setActive(null);
       }
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, []);
+  }, [busy]);
+  useEffect(() => {
+    if (!active && !palette) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
+    const controls = () =>
+      Array.from(
+        dialog?.querySelectorAll<HTMLElement>(
+          'button:not(:disabled),input,textarea,select,[tabindex="0"]',
+        ) ?? [],
+      );
+    (
+      dialog?.querySelector<HTMLElement>("textarea,input,select") ??
+      controls()[0]
+    )?.focus();
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const items = controls(),
+        first = items[0],
+        last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    document.addEventListener("keydown", trap);
+    return () => {
+      document.removeEventListener("keydown", trap);
+      previous?.focus();
+    };
+  }, [active, palette]);
+  const paletteMatches = all
+    .filter((a) =>
+      [a.name, a.nameEn, a.id, a.description]
+        .join(" ")
+        .toLowerCase()
+        .includes(query.toLowerCase()),
+    )
+    .slice(0, 10);
   const matches = all.filter(
     (a) =>
       [a.id, a.name, a.nameEn, a.description, a.category, ...a.tags]
@@ -215,6 +272,11 @@ function App() {
       {id === "favorites" && <small>{favorite.length}</small>}
     </button>
   );
+  const navigate = (destination: string, group = "All") => {
+    setPage(destination);
+    setCategory(group);
+    setQuery("");
+  };
   return (
     <div className="shell">
       <aside className="sidebar">
@@ -278,7 +340,7 @@ function App() {
             <div className="avatar">LR</div>
             <div>
               Personal workspace
-              <small>v0.1.0 · {desktop ? "Desktop" : "Web"}</small>
+              <small>v0.2.0 · {desktop ? "Desktop" : "Web"}</small>
             </div>
           </div>
         </div>
@@ -300,6 +362,10 @@ function App() {
             )}
           </div>
           <div className="top-actions">
+            <button className="header-search" onClick={() => setPalette(true)}>
+              ⌕ <span>{t("搜索你的工具…", "Find your tools…")}</span>
+              <kbd>⌘ K</kbd>
+            </button>
             <span className="local-pill">
               <span className="dot" />
               LOCAL FIRST
@@ -318,70 +384,90 @@ function App() {
             </button>
           </div>
         </header>
-        {["home", "tools", "favorites"].includes(page) && (
+        {page === "home" && (
+          <Dashboard
+            actions={all}
+            history={history}
+            favorites={favorite}
+            en={en}
+            choose={choose}
+            navigate={navigate}
+            query={query}
+            setQuery={setQuery}
+          />
+        )}
+        {(["tools", "favorites"].includes(page) ||
+          (page === "home" && !!query)) && (
           <div className="content">
-            <div className="eyebrow">LESS FRICTION. MORE FLOW.</div>
-            <div className="heading-row">
-              <div>
-                <h1>
-                  {page === "favorites"
-                    ? t("好工具，常在手边。", "Keep your favorites close.")
-                    : t("小事交给工具，", "Small tasks, handled.")}
-                  <br />
-                  {page !== "favorites" && (
-                    <span>
-                      {t("专注真正重要的事。", "Make room for what matters.")}
-                    </span>
-                  )}
-                </h1>
-                <p>
-                  {t(
-                    "你的日常工具箱。打开即用，数据留在本地。",
-                    "Your everyday toolkit. Ready to run. Your data stays here.",
-                  )}
-                </p>
-              </div>
-              <div className="cube" aria-hidden="true">
-                <div>
-                  LR<span>✦</span>
+            {page !== "home" && (
+              <>
+                <div className="eyebrow">LESS FRICTION. MORE FLOW.</div>
+                <div className="heading-row">
+                  <div>
+                    <h1>
+                      {page === "favorites"
+                        ? t("好工具，常在手边。", "Keep your favorites close.")
+                        : t("小事交给工具，", "Small tasks, handled.")}
+                      <br />
+                      {page !== "favorites" && (
+                        <span>
+                          {t(
+                            "专注真正重要的事。",
+                            "Make room for what matters.",
+                          )}
+                        </span>
+                      )}
+                    </h1>
+                    <p>
+                      {t(
+                        "你的日常工具箱。打开即用，数据留在本地。",
+                        "Your everyday toolkit. Ready to run. Your data stays here.",
+                      )}
+                    </p>
+                  </div>
+                  <div className="cube" aria-hidden="true">
+                    <div>
+                      LR<span>✦</span>
+                    </div>
+                    <small>TOOLBOX / X</small>
+                  </div>
                 </div>
-                <small>TOOLBOX / X</small>
-              </div>
-            </div>
-            <div className="searchbar">
-              <span>⌕</span>
-              <input
-                ref={searchRef}
-                aria-label={t("搜索工具", "Search tools")}
-                placeholder={t(
-                  "搜索工具、操作或关键词…",
-                  "Search tools, actions or keywords…",
-                )}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-              <kbd>CTRL K</kbd>
-            </div>
-            <div className="metrics">
-              <div>
-                <strong>{all.length}</strong>
-                <span>{t("可用 Actions", "Available actions")}</span>
-              </div>
-              <div>
-                <strong>{new Set(all.map((a) => a.category)).size}</strong>
-                <span>{t("工具分类", "Collections")}</span>
-              </div>
-              <div>
-                <strong>{history.length}</strong>
-                <span>{t("本地执行记录", "Local executions")}</span>
-              </div>
-              <div>
-                <strong>
-                  100<span className="percent">%</span>
-                </strong>
-                <span>{t("离线核心工具", "Offline core tools")}</span>
-              </div>
-            </div>
+                <div className="searchbar">
+                  <span>⌕</span>
+                  <input
+                    ref={searchRef}
+                    aria-label={t("搜索工具", "Search tools")}
+                    placeholder={t(
+                      "搜索工具、操作或关键词…",
+                      "Search tools, actions or keywords…",
+                    )}
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
+                  <kbd>CTRL K</kbd>
+                </div>
+                <div className="metrics">
+                  <div>
+                    <strong>{all.length}</strong>
+                    <span>{t("可用 Actions", "Available actions")}</span>
+                  </div>
+                  <div>
+                    <strong>{new Set(all.map((a) => a.category)).size}</strong>
+                    <span>{t("工具分类", "Collections")}</span>
+                  </div>
+                  <div>
+                    <strong>{history.length}</strong>
+                    <span>{t("本地执行记录", "Local executions")}</span>
+                  </div>
+                  <div>
+                    <strong>
+                      100<span className="percent">%</span>
+                    </strong>
+                    <span>{t("离线核心工具", "Offline core tools")}</span>
+                  </div>
+                </div>
+              </>
+            )}
             <div className="section-title">
               <h2>
                 {query
@@ -420,7 +506,11 @@ function App() {
                       {favorite.includes(a.id) ? "★" : "☆"}
                     </button>
                   </div>
-                  <button className="card-open" onClick={() => choose(a)}>
+                  <button
+                    className="card-open"
+                    data-testid={"action-" + a.id}
+                    onClick={() => choose(a)}
+                  >
                     <h3>{en ? a.nameEn : a.name}</h3>
                     <p>{en ? a.nameEn + " · " + a.id : a.description}</p>
                     <div className="card-foot">
@@ -617,7 +707,7 @@ function App() {
               </button>
             </div>
             <div className="settings-card">
-              <h2>LR Toolbox X · 0.1.0</h2>
+              <h2>LR Toolbox X · 0.2.0</h2>
               <p>
                 {all.length} {t("已实现 Action", "implemented actions")} ·{" "}
                 {desktop ? "Tauri / Rust" : "React / Web"} · Apache-2.0
@@ -704,7 +794,21 @@ function App() {
                       ? ` · ≥ ${schema.minimum}`
                       : ""}
                   </span>
-                  {schema.type === "string" ? (
+                  {schema.enum ? (
+                    <select
+                      aria-label={key}
+                      value={String(input[key] ?? "")}
+                      onChange={(e) =>
+                        setInput({ ...input, [key]: e.target.value })
+                      }
+                    >
+                      {schema.enum.map((value) => (
+                        <option key={String(value)} value={String(value)}>
+                          {String(value)}
+                        </option>
+                      ))}
+                    </select>
+                  ) : schema.type === "string" ? (
                     <textarea
                       aria-label={key}
                       value={String(input[key] ?? "")}
@@ -801,23 +905,16 @@ function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && matches[0]) choose(matches[0]);
+                if (e.key === "Enter" && paletteMatches[0])
+                  choose(paletteMatches[0]);
               }}
             />
-            {all
-              .filter((a) =>
-                [a.name, a.nameEn, a.id, a.description]
-                  .join(" ")
-                  .toLowerCase()
-                  .includes(query.toLowerCase()),
-              )
-              .slice(0, 10)
-              .map((a) => (
-                <button key={a.id} onClick={() => choose(a)}>
-                  <span>{en ? a.nameEn : a.name}</span>
-                  <code>{a.id}</code>
-                </button>
-              ))}
+            {paletteMatches.map((a) => (
+              <button key={a.id} onClick={() => choose(a)}>
+                <span>{en ? a.nameEn : a.name}</span>
+                <code>{a.id}</code>
+              </button>
+            ))}
           </div>
         </div>
       )}

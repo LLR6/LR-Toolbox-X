@@ -19,3 +19,18 @@ Windows/macOS/Linux desktop installation and Android emulator/device installatio
 Commit 16c1cf1ec63582147c19be62a0b0f6757b958637: CI run 39736825922 succeeded, including Windows 2022, Ubuntu 22.04/24.04 and macOS 14 quality/CLI builds, E2E, dependency audit and Android unit tests/lint/APK/AAB. CodeQL run 39736826006 succeeded. Downloaded Android artifact digest verified against GitHub metadata; APK 9,290,945 bytes and AAB 6,490,613 bytes contain expected manifests and code/resources. Physical installation remains pending.
 
 Desktop run 39736823244 failed on mismatched Tauri crate/npm minor versions. Updated npm API/CLI to 2.12.4 to match Rust 2.12.x and added a macOS ICNS icon. Revalidation follows in CI.
+
+## v0.2.0 alpine dashboard — local evidence
+
+- 94 portable actions + 6 distinct Rust actions = 100 IDs; Android continues to implement 6 existing IDs. Catalog regenerated for both applications.
+- TypeScript strict build and ESLint passed. 215 unit/integration tests passed, including CSV quoted-line round trips, SemVer precedence, prototype-shaped keys, IPv4 boundaries, IPv6 validation, Unicode credentials, matrix pivoting/singular rejection, ISO week boundaries and invalid durations/time zones.
+- Rust workspace tests (3 groups), formatting and Clippy with warnings denied passed. Portable CLI bundled successfully. Production Web build includes the generated alpine background and offline cache.
+- Managed browser: inspected the three-column alpine dashboard; CSV conversion returned actual Chinese values and updated local history/counts.
+- Local Playwright execution cannot start its standalone Vite server in this managed environment (`uv_interface_addresses` denied). The committed E2E suite will run on GitHub's normal runner, including a 390px mobile navigation/overflow/IPv4/workflow check and favorites/theme/language checks. No local E2E pass is claimed.
+- Android visual changes remain native Compose and retain no Internet permission. Compilation/lint and desktop installer builds require the new CI run. Physical device/OS installation remains unverified.
+
+### CI confirmation of functional source 4faca29223679cc277ba7074fe59b581be4f839a
+
+CI 39745189046 passed all four quality matrices (Ubuntu 22.04/24.04, Windows 2022, macOS 14), five Playwright E2E cases, Android tests/lint/APK/AAB and dependency audit. CodeQL 39745189058 passed. Android artifact 12411431467 ZIP SHA-256 matched `a53b6387e4eb3c0a316566111bff16b28aad0078b73ac9d17ccfed49a51551ee`; APK was 11,486,813 bytes with complete alpine background, Android manifest and native DEX. Browser also verified SemVer form dropdown and backward Tab wrapping inside the modal. A subsequent display-only correction updates the remaining CLI help/About version labels to 0.2.0 and is subject to a fresh CI run before release.
+
+Large repeated-heading input is bounded at 10000 headings; anchor counters avoid quadratic duplicate scanning. Added regression checks for closing hashes and ISO week dates with years below 100. The final local suite has 215 passing tests.
