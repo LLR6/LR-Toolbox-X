@@ -109,7 +109,7 @@ test("keyboard palette ignores collection filters and dialog traps focus", async
     .getByRole("textbox", { name: "Command search" })
     .fill("hash.sha256");
   await page.getByRole("textbox", { name: "Command search" }).press("Enter");
-  await expect(page.getByRole("dialog")).toHaveAccessibleName("SHA-256");
+  await expect(page.getByRole("dialog")).toHaveAccessibleName("SHA-256 digest");
   await expect(
     page.getByRole("textbox", { name: "text", exact: true }),
   ).toBeFocused();
