@@ -14,7 +14,9 @@ object Codec {
         return when (id) {
             "encoding.base64.encode" -> Base64.getEncoder().encodeToString(text.toByteArray(Charsets.UTF_8))
             "encoding.base64.decode" -> {
-                require(text.length % 4 == 0 && Regex("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$").matches(text)) { "Invalid padded Base64" }
+                val core = text.trimEnd('=')
+                val padding = text.length - core.length
+                require(text.length % 4 == 0 && padding <= 2 && core.all { it in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" }) { "Invalid padded Base64" }
                 utf8(Base64.getDecoder().decode(text))
             }
             "encoding.hex.encode" -> text.toByteArray(Charsets.UTF_8).joinToString("") { "%02x".format(it.toInt() and 255) }
@@ -24,7 +26,7 @@ object Codec {
             }
             "encoding.base64url.encode" -> Base64.getUrlEncoder().withoutPadding().encodeToString(text.toByteArray(Charsets.UTF_8))
             "encoding.base64url.decode" -> {
-                require(Regex("^[A-Za-z0-9_-]*$").matches(text) && text.length % 4 != 1) { "Invalid unpadded Base64URL" }
+                require(text.all { it in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-" } && text.length % 4 != 1) { "Invalid unpadded Base64URL" }
                 val bytes = Base64.getUrlDecoder().decode(text)
                 require(Base64.getUrlEncoder().withoutPadding().encodeToString(bytes) == text) { "Noncanonical Base64URL" }
                 utf8(bytes)

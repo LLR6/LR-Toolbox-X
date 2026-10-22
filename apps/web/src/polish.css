@@ -1766,3 +1766,13 @@ header {
     display: none;
   }
 }
+[data-theme="light"] .nav.selected {
+  color: #2b427d;
+  background: linear-gradient(100deg, #bdcaff, #e3eafa);
+  border-color: #9db2ea;
+  box-shadow: inset 2px 0 #7383cf;
+}
+[data-theme="light"] .nav.selected > .ui-icon {
+  color: #4963b2;
+  fill: #8398dc20;
+}
