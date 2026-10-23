@@ -3,16 +3,19 @@
 <p align="center">LR OmniBox · Small tasks, handled.</p>
 <p align="center"><a href="https://github.com/LLR6/LR-Toolbox-X/actions">CI</a> · <a href="docs/actions.md">Actions</a> · <a href="ROADMAP.md">Roadmap</a> · <a href="LICENSE">Apache-2.0</a></p>
 
-本地优先、无账号、无追踪的跨平台个人工具箱。**代码与 XML 工作台里程碑 v0.7.0**，长期目标是 2000+ 个真实工具；当前没有达到这个目标。
+本地优先、无账号、无追踪的跨平台个人工具箱。**精选推荐与创作工作台里程碑 v0.8.0**，长期目标是 2000+ 个真实工具；当前没有达到这个目标。
 
 ## What works now
 
-- **122 portable actions**: JSON, UTF-8/Base64/hex/binary/URI, Unicode, text, SHA-2, timestamps, URL/JWT inspection, colors, math and units; CSV, SemVer, dotenv, HTTP headers/Basic auth, IPv4/IPv6/MAC, HMAC, Markdown, time zones and matrix/integer arithmetic.
+- **123 portable actions**: JSON, UTF-8/Base64/hex/binary/URI, Unicode, text, SHA-2, timestamps, URL/JWT inspection, colors, math and units; CSV, SemVer, dotenv, HTTP headers/Basic auth, IPv4/IPv6/MAC, HMAC, Markdown, time zones and matrix/integer arithmetic.
 - New table tools: column selection, filtering, stable sorting, deduplication, header renaming and grouped numeric summaries. CSV outputs have a bounded table preview with full-file download.
 - Offline UTF-8 QR generation using MIT-licensed `qrcode-generator`: image preview, SVG/PNG export and four correction levels; independently decoded in tests.
 - Offline archives using MIT-licensed `fflate`: GZIP/Zlib text compression and decompression, ZIP text-file creation, directory listing and selected binary-file extraction. Actual archive import/download, CRC/checksum verification, 512 KB compressed-input and 4 MB expanded-output bounds. ZIP supports Store/Deflate, UTF-8 and single-disk ZIP32, up to 64 entries.
 - Text/document studio: jsdiff-powered line/word/character comparison and single-file patch generation/application; js-yaml conversion/validation; Marked Markdown preview and HTML export. Dedicated full-page workspaces, colored differences and sandboxed document previews. Dependencies load on demand and are included in the offline cache.
 - Prettier code studio: JavaScript, TypeScript, CSS and HTML formatting with indentation/line-width controls and matching file downloads; code is parsed, never executed. XML ordered JSON conversion, validation and visual structure browser preserve mixed content and repeated elements.
+- Guided discovery homepage: seven curated studios with plain-language introductions, three scenario recommendations at a time, searchable full library, collapsed specialist navigation, larger text and stronger dark/light contrast.
+- Six additional browser file workspaces (not counted as portable Action IDs): PDF merge/extract/reorder/rotate/number/watermark; batch image compression/resize/format conversion; interactive Cropper.js selection/rotation; local Chinese/English OCR; DOCX content/image extraction with isolated sanitized preview; media MP3/MP4/GIF processing. SQL formatting is the seventh studio and shares the portable registry.
+- OCR models/workers ship locally. Media first use downloads the separately licensed, pinned ~31 MB FFmpeg engine from jsDelivr; files stay in the browser and the engine is cached for reuse. Browser studios are not implemented in native Android. Desktop runtime validation remains pending.
 - **6 additional Rust actions**: file info, bounded UTF-8 reads, directory listing, streaming SHA-256, file comparison, OS/architecture information.
 - Illustrated SVG icon system: 21 original category illustrations, matching navigation icons, LR monogram, favorite buttons on the home screen and consistent tool workspace artwork.
 - Alpine dusk dashboard: three-column layout, real activity/favorite statistics, quick access, responsive navigation and blue/violet glass panels.
@@ -23,7 +26,7 @@
 - Rust SQLite history data layer and Tauri bridge. Browser preferences/history use localStorage. Tool input and output are not stored in history.
 - TypeScript CLI shares the portable registry; the Rust CLI shares the native registry. They are separate executables at this milestone.
 
-**Distinct Action IDs: 128. Web/portable CLI: 122. Desktop: 128 when built. Android: 12.** No AI provider, plugin installation, destructive file operations, or invented external-tool results are exposed.
+**Distinct Action IDs: 129. Web/portable CLI: 123. Desktop: 129 when built. Android: 12.** No AI provider, plugin installation, destructive file operations, or invented external-tool results are exposed.
 
 ## Run locally
 
@@ -102,6 +105,6 @@ Tauri uses `unsafe-eval` solely for Ajv compiling trusted built-in schemas. Thir
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Features must have executable handlers, schema validation, error cases, real examples and tests before being counted. Counts are generated from registered handlers, not marketing targets. Release signing, full platform installation testing, AI, sandboxed plugins and a visual workflow editor are later deliverables, explicitly tracked in [ROADMAP.md](ROADMAP.md).
 
-English: a local-first toolbox with 122 portable actions and 6 native actions. This is an early working milestone, not the complete 2000-action product. Apache-2.0 applies to original project code; upstream dependencies retain their licenses.
+English: a local-first toolbox with 123 portable actions and 6 native actions. This is an early working milestone, not the complete 2000-action product. Apache-2.0 applies to original project code; upstream dependencies retain their licenses.
 
 - Tool execution now uses a dedicated responsive workspace with input/output editors, syntax coloring, local text import (1 MB), output download, actual run status, metadata history and Ctrl/Cmd+Enter. Native Android tools use full pages with system Back navigation.

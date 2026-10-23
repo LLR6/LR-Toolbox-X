@@ -6,7 +6,10 @@ test("dashboard opens real tools, saves favorites and keeps content private", as
   await expect(
     page.getByRole("heading", { name: /让一切更高效/ }),
   ).toBeVisible();
-  await page.getByTestId("dashboard-csv.to.json").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("csv.to.json");
+  await page.getByTestId("action-csv.to.json").click();
   await page
     .getByRole("textbox", { name: "text", exact: true })
     .fill("name,value\nLR,42");
@@ -84,20 +87,20 @@ test("home favorites persist and open the matching real tool", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.getByTestId("dashboard-csv.to.json").hover();
+  await page.getByRole("button", { name: "编程与开发", exact: true }).click();
   await page
-    .getByRole("button", { name: "Favorite csv.to.json", exact: true })
+    .getByRole("button", { name: "Favorite json.format", exact: true })
     .click();
   await expect(
-    page.getByRole("button", { name: "Unfavorite csv.to.json", exact: true }),
+    page.getByRole("button", { name: "Unfavorite json.format", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
   await page.reload();
   await page
     .locator(".sidebar")
     .getByRole("button", { name: /我的收藏/ })
     .click();
-  await page.getByTestId("action-csv.to.json").click();
-  await expect(page.getByRole("region")).toHaveAccessibleName("CSV to JSON");
+  await page.getByTestId("action-json.format").click();
+  await expect(page.getByRole("region")).toHaveAccessibleName("Format JSON");
 });
 test("keyboard palette opens a full workspace and preserves it on Escape", async ({
   page,

@@ -35,3 +35,10 @@ Complete installed license texts, including Marked's original Markdown notices, 
 
 - `prettier` 3.9.10 — Copyright James Long and contributors; MIT. https://github.com/prettier/prettier. Its complete LICENSE includes embedded component notices and is bundled during build.
 - `fast-xml-parser` 5.11.2 — Copyright Amit Gupta and contributors; MIT. https://github.com/NaturalIntelligence/fast-xml-parser. Runtime dependency notices are collected from locked installed packages by scripts/licenses.mjs.
+
+## Creative studios
+
+- pdf-lib 1.17.1, Compressor.js 1.4.0, Cropper.js 2.3.1, SQL Formatter 15.9.0, DOMPurify (locked version): MIT/Apache-2.0/MPL-2.0 according to each installed package; complete package notices are bundled in THIRD_PARTY_LICENSES.txt.
+- Mammoth 1.13.0: BSD-2-Clause; Tesseract.js 7.0.0 and tesseract.js-core: Apache-2.0.
+- English and simplified Chinese trained data: upstream tessdata Apache-2.0 license retained in licenses/tesseract-language-data-LICENSE (npm metadata declares MIT).
+- @ffmpeg/ffmpeg 0.12.15 browser wrapper: MIT; upstream root LICENSE retained in licenses/ffmpeg-wrapper-0.12.15-LICENSE. The separate @ffmpeg/core 0.12.10 binary is GPL-2.0-or-later. It is NOT copied into the hosted/distributed application. When requested, the browser downloads it directly from the pinned upstream npm distribution via jsDelivr. Corresponding upstream source/build scripts: https://github.com/ffmpegwasm/ffmpeg.wasm/tree/core%400.12.10 . The core devDependency is for deterministic interoperability tests only. Do not bundle that binary without satisfying its GPL redistribution requirements.

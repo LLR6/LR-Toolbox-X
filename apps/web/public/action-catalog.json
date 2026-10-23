@@ -4517,6 +4517,67 @@
     }
   },
   {
+    "id": "sql.format",
+    "name": "SQL 格式化",
+    "nameEn": "Format SQL",
+    "description": "整理 SQL 语句，保留注释与字面量；只排版、不连接数据库、不执行查询。",
+    "category": "Code",
+    "tags": [
+      "Code",
+      "sql",
+      "format"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 40000
+        },
+        "dialect": {
+          "type": "string",
+          "enum": [
+            "sql",
+            "mysql",
+            "postgresql",
+            "sqlite"
+          ]
+        },
+        "indent": {
+          "type": "integer",
+          "enum": [
+            2,
+            4
+          ]
+        }
+      },
+      "required": [
+        "text",
+        "dialect",
+        "indent"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "select id,name from users where active=1 order by id;",
+      "dialect": "mysql",
+      "indent": 2
+    }
+  },
+  {
     "id": "network.ipv4.inspect",
     "name": "IPv4 子网计算",
     "nameEn": "IPv4 subnet calculator",

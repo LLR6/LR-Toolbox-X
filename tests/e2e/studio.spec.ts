@@ -5,7 +5,10 @@ test("mobile diff workspace shows additions/deletions and switches to source", a
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByTestId("dashboard-text.diff").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("text.diff");
+  await page.getByTestId("action-text.diff").click();
   await page
     .getByRole("textbox", { name: "before", exact: true })
     .fill("你好\n旧内容\n");
@@ -27,7 +30,10 @@ test("YAML conversion exports JSON and rejects duplicate keys", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.getByTestId("dashboard-yaml.to.json").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("yaml.to.json");
+  await page.getByTestId("action-yaml.to.json").click();
   const input = page.getByRole("textbox", { name: "text", exact: true });
   await input.fill('name: 中文🧪\ncode: "001"');
   await page.getByRole("button", { name: "运行工具" }).click();
@@ -52,7 +58,10 @@ test("Markdown preview is isolated, blocks remote images and exports a safe docu
       remoteRequests.push(request.url());
   });
   await page.goto("/");
-  await page.getByTestId("dashboard-markdown.render").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("markdown.render");
+  await page.getByTestId("action-markdown.render").click();
   await page
     .getByRole("textbox", { name: "text", exact: true })
     .fill(

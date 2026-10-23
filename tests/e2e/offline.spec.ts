@@ -30,7 +30,10 @@ test("online navigation bypasses a stale shell and the full workspace still work
   await expect(
     page.getByRole("heading", { name: /让一切更高效/ }),
   ).toBeVisible();
-  await page.getByTestId("dashboard-json.format").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("json.format");
+  await page.getByTestId("action-json.format").click();
   await expect(
     page.getByRole("region", { name: "Format JSON", exact: true }),
   ).toBeVisible();

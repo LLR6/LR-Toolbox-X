@@ -33,7 +33,10 @@ test("workspace imports text, exports output and renders a JSON pointer null val
   page,
 }) => {
   await page.goto("/");
-  await page.getByTestId("dashboard-json.format").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("json.format");
+  await page.getByTestId("action-json.format").click();
   await page.locator('input[type="file"]').setInputFiles({
     name: "example.json",
     mimeType: "application/json",

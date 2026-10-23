@@ -9,7 +9,10 @@ test("formatter loads offline without executing source and downloads JavaScript"
     .poll(() => page.evaluate(() => !!navigator.serviceWorker.controller))
     .toBe(true);
   await context.setOffline(true);
-  await page.getByTestId("dashboard-code.format.javascript").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("code.format.javascript");
+  await page.getByTestId("action-code.format.javascript").click();
   await page
     .getByRole("textbox", { name: "text", exact: true })
     .fill(
@@ -40,7 +43,10 @@ test("mobile XML structure displays indexed paths and rejects DTD", async ({
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByTestId("dashboard-xml.inspect").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("xml.inspect");
+  await page.getByTestId("action-xml.inspect").click();
   await page
     .getByRole("textbox", { name: "text", exact: true })
     .fill('<root><item id="001">中文🧪</item><item id="002"/></root>');
@@ -65,7 +71,10 @@ test("XML ordered JSON export preserves mixed content and string attributes", as
   page,
 }) => {
   await page.goto("/");
-  await page.getByTestId("dashboard-xml.to.json").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("xml.to.json");
+  await page.getByTestId("action-xml.to.json").click();
   await page
     .getByRole("textbox", { name: "text", exact: true })
     .fill('<p id="001">前<b>中文</b>后</p>');
