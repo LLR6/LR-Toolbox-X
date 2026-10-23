@@ -1,0 +1,176 @@
+name: Sync v0.11 power studios
+
+on:
+  push:
+    branches: [feature/v0.11-power-studios]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: ${{ !contains(github.event.head_commit.message, '[v011-sync]') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/v0.11-power-studios
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install pinned power engines
+        run: |
+          npm install --save-exact quicktype-core echarts mathjs katex lottie-web bwip-js @zxing/browser
+          npm version 0.11.0 --no-git-tag-version --allow-same-version
+      - name: Wire power studios into discovery and router
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          studios = Path("apps/web/src/studios.ts")
+          text = studios.read_text()
+          text = text.replace('  | "time";','  | "time"\n  | "quicktype"\n  | "charts"\n  | "math"\n  | "latex"\n  | "lottie"\n  | "barcode";')
+          old = '''export type VisualStudioId = Exclude<\n  StudioId,\n  "pdf" | "compress" | "crop" | "ocr" | "word" | "media" | "sql"\n>;\nexport type LegacyStudioId = Exclude<StudioId, VisualStudioId | "sql">;'''
+          new = '''export type PowerStudioId = Extract<StudioId, "quicktype" | "charts" | "math" | "latex" | "lottie" | "barcode">;\nexport type VisualStudioId = Exclude<\n  StudioId,\n  "pdf" | "compress" | "crop" | "ocr" | "word" | "media" | "sql" | PowerStudioId\n>;\nexport type LegacyStudioId = Exclude<StudioId, VisualStudioId | PowerStudioId | "sql">;'''
+          if old not in text:
+              raise SystemExit("VisualStudioId block changed; refusing blind patch")
+          text = text.replace(old, new)
+          needle = '''export const isVisualStudio = (id: StudioId): id is VisualStudioId =>\n  visualStudioIds.includes(id as VisualStudioId);\n'''
+          addition = needle + '''\nexport const powerStudioIds: PowerStudioId[] = ["quicktype", "charts", "math", "latex", "lottie", "barcode"];\nexport const isPowerStudio = (id: StudioId): id is PowerStudioId =>\n  powerStudioIds.includes(id as PowerStudioId);\n'''
+          if needle not in text:
+              raise SystemExit("isVisualStudio block changed; refusing blind patch")
+          text = text.replace(needle, addition)
+          entries = r'''  {
+    id: "quicktype",
+    name: "JSON → 代码模型",
+    en: "JSON to Code Models",
+    category: "Code",
+    intro: "把一份真实 JSON，直接变成多语言数据模型。",
+    introEn: "Turn real JSON into typed models for multiple languages.",
+    use: "TypeScript · Python · Go · Java · Rust · Swift",
+    useEn: "TypeScript · Python · Go · Java · Rust · Swift",
+    engine: "quicktype",
+    repo: "https://github.com/glideapps/quicktype",
+    accent: "blue",
+  },
+  {
+    id: "charts",
+    name: "数据图表工作室",
+    en: "Data Chart Studio",
+    category: "CSV",
+    intro: "贴入 CSV 或 JSON，把数据直接变成可交互图表。",
+    introEn: "Turn CSV or JSON into interactive charts locally.",
+    use: "柱状图 · 折线图 · 饼图 · PNG 导出",
+    useEn: "Bar · Line · Pie · PNG export",
+    engine: "Apache ECharts",
+    repo: "https://github.com/apache/echarts",
+    accent: "coral",
+  },
+  {
+    id: "math",
+    name: "数学与矩阵实验室",
+    en: "Math & Matrix Lab",
+    category: "Time",
+    intro: "表达式、复数、单位和矩阵放到同一块计算台。",
+    introEn: "Expressions, units, complex values and matrices on one console.",
+    use: "表达式 · 行列式 · 逆矩阵 · 转置",
+    useEn: "Expressions · Determinant · Inverse · Transpose",
+    engine: "Math.js",
+    repo: "https://github.com/josdejong/mathjs",
+    accent: "mint",
+  },
+  {
+    id: "latex",
+    name: "LaTeX 公式排版台",
+    en: "LaTeX Formula Studio",
+    category: "Markdown",
+    intro: "把公式源码立即排成适合报告和分享的成品。",
+    introEn: "Typeset formula source into presentation-ready math.",
+    use: "KaTeX 预览 · MathML · TEX / PNG 导出",
+    useEn: "KaTeX preview · MathML · TEX / PNG export",
+    engine: "KaTeX",
+    repo: "https://github.com/KaTeX/KaTeX",
+    accent: "violet",
+  },
+  {
+    id: "lottie",
+    name: "Lottie 动画检查台",
+    en: "Lottie Animation Lab",
+    category: "Media",
+    intro: "打开动画 JSON，立即预览、检查帧数并调速。",
+    introEn: "Open Lottie JSON, preview it, inspect timing and change speed.",
+    use: "JSON 导入 · SVG 预览 · 播放控制 · 帧信息",
+    useEn: "JSON import · SVG preview · Playback · Frame details",
+    engine: "lottie-web",
+    repo: "https://github.com/airbnb/lottie-web",
+    accent: "violet",
+  },
+  {
+    id: "barcode",
+    name: "条码生成与识别",
+    en: "Barcode Studio",
+    category: "QR",
+    intro: "常见一维码、二维码生成和图片识别放在同一处。",
+    introEn: "Generate and decode common 1D and 2D barcodes in one place.",
+    use: "Code128 · EAN13 · QR · Data Matrix · PDF417",
+    useEn: "Code128 · EAN13 · QR · Data Matrix · PDF417",
+    engine: "BWIP-JS + ZXing",
+    repo: "https://github.com/metafloor/bwip-js",
+    accent: "blue",
+  },
+'''
+          marker = '];\n\nexport const studioMatches'
+          if marker not in text:
+              raise SystemExit("studio array tail changed; refusing blind patch")
+          text = text.replace(marker, entries + '];\n\nexport const studioMatches', 1)
+          studios.write_text(text)
+
+          router = Path("apps/web/src/StudioWorkspace.tsx")
+          route = router.read_text()
+          route = route.replace(
+              'import { isVisualStudio, type LegacyStudioId, type StudioId } from "./studios.ts";',
+              'import { isPowerStudio, isVisualStudio, type LegacyStudioId, type StudioId } from "./studios.ts";',
+          )
+          route = route.replace(
+              'import { VisualStudioWorkspace } from "./VisualStudioWorkspace.tsx";',
+              'import { VisualStudioWorkspace } from "./VisualStudioWorkspace.tsx";\nimport { PowerStudioWorkspace } from "./PowerStudioWorkspace.tsx";',
+          )
+          route = route.replace(
+              'export function StudioWorkspace(props: Props) {\n  if (isVisualStudio(props.id)) {',
+              'export function StudioWorkspace(props: Props) {\n  if (isPowerStudio(props.id)) {\n    return <PowerStudioWorkspace {...props} id={props.id} />;\n  }\n  if (isVisualStudio(props.id)) {',
+          )
+          router.write_text(route)
+
+          power = Path("apps/web/src/PowerStudioWorkspace.tsx")
+          p = power.read_text().replace('import "./visual-studios.css";\n', 'import "./visual-studios.css";\nimport "katex/dist/katex.min.css";\n')
+          power.write_text(p)
+
+          creative = Path("tests/e2e/creative.spec.ts")
+          c = creative.read_text().replace("discovery exposes seventeen studios", "discovery exposes twenty-three studios").replace('toHaveCount(17)', 'toHaveCount(23)')
+          creative.write_text(c)
+
+          notices = Path("THIRD_PARTY_NOTICES.md")
+          n = notices.read_text()
+          block = '''\n## v0.11 power studios\n\n- `quicktype-core` — Apache-2.0; local JSON/schema to typed code generation. https://github.com/glideapps/quicktype\n- `echarts` — Apache-2.0; local interactive chart rendering and PNG export. https://github.com/apache/echarts\n- `mathjs` — Apache-2.0; expression and matrix calculation. https://github.com/josdejong/mathjs\n- `katex` — MIT; local LaTeX math typesetting. https://github.com/KaTeX/KaTeX\n- `lottie-web` — MIT; local Lottie JSON animation rendering. https://github.com/airbnb/lottie-web\n- `bwip-js` — MIT; local barcode generation. https://github.com/metafloor/bwip-js\n- `@zxing/browser` — MIT; local barcode image decoding. https://github.com/zxing-js/browser\n'''
+          if "## v0.11 power studios" not in n:
+              notices.write_text(n.rstrip() + "\n" + block)
+          PY
+      - name: Validate production build and dependency security
+        run: |
+          npm run lint
+          npm run typecheck
+          npm run build
+          npm audit --omit=dev --audit-level=moderate
+      - name: Run browser integration suite
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e
+      - name: Commit deterministic v0.11 changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json apps/web/src/studios.ts apps/web/src/StudioWorkspace.tsx apps/web/src/PowerStudioWorkspace.tsx tests/e2e/creative.spec.ts THIRD_PARTY_NOTICES.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "build: lock and wire v0.11 power studios [v011-sync]"
+          git push origin HEAD:feature/v0.11-power-studios
