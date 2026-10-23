@@ -13,8 +13,7 @@ const newOptions = `        scale: 4,
         height: barcodeType === "qrcode" || barcodeType === "datamatrix" ? 28 : 16,
         includetext: barcodeType !== "qrcode" && barcodeType !== "datamatrix",
         textxalign: "center",
-        paddingwidth: barcodeType === "qrcode" || barcodeType === "datamatrix" ? 4 : 12,
-        paddingheight: 6,
+        padding: barcodeType === "qrcode" || barcodeType === "datamatrix" ? 4 : 12,
         backgroundcolor: "FFFFFF",
 `;
 if (!text.includes(oldOptions)) throw new Error("barcode render options anchor not found");
