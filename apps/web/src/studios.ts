@@ -25,7 +25,16 @@ export type StudioId =
   | "sqlite"
   | "jsondiff"
   | "phone"
-  | "chrono";
+  | "chrono"
+  | "jsonata"
+  | "protobuf"
+  | "msgpack"
+  | "cbor";
+
+export type SerializationStudioId = Extract<
+  StudioId,
+  "jsonata" | "protobuf" | "msgpack" | "cbor"
+>;
 
 export type DataUtilityStudioId = Extract<
   StudioId,
@@ -47,10 +56,11 @@ export type VisualStudioId = Exclude<
   | "sql"
   | PowerStudioId
   | DataUtilityStudioId
+  | SerializationStudioId
 >;
 export type LegacyStudioId = Exclude<
   StudioId,
-  VisualStudioId | PowerStudioId | DataUtilityStudioId | "sql"
+  VisualStudioId | PowerStudioId | DataUtilityStudioId | SerializationStudioId | "sql"
 >;
 
 export const visualStudioIds: VisualStudioId[] = [
@@ -64,6 +74,13 @@ export const visualStudioIds: VisualStudioId[] = [
   "cron",
   "password",
   "time",
+];
+
+export const serializationStudioIds: SerializationStudioId[] = [
+  "jsonata",
+  "protobuf",
+  "msgpack",
+  "cbor",
 ];
 
 export const dataUtilityStudioIds: DataUtilityStudioId[] = [
@@ -88,6 +105,8 @@ export const isPowerStudio = (id: StudioId): id is PowerStudioId =>
   powerStudioIds.includes(id as PowerStudioId);
 export const isDataUtilityStudio = (id: StudioId): id is DataUtilityStudioId =>
   dataUtilityStudioIds.includes(id as DataUtilityStudioId);
+export const isSerializationStudio = (id: StudioId): id is SerializationStudioId =>
+  serializationStudioIds.includes(id as SerializationStudioId);
 
 export const studios: {
   id: StudioId;
@@ -452,6 +471,58 @@ export const studios: {
     engine: "chrono-node",
     repo: "https://github.com/wanasit/chrono",
     accent: "violet",
+  },
+  {
+    id: "jsonata",
+    name: "JSONata 查询转换台",
+    en: "JSONata Query Lab",
+    category: "Code",
+    intro: "像查询数据库一样筛选、聚合和重塑复杂 JSON。",
+    introEn: "Query, aggregate and reshape complex JSON with expressive local formulas.",
+    use: "查询 · 筛选 · 聚合 · 对象重塑 · JSON 导出",
+    useEn: "Query · Filter · Aggregate · Reshape · JSON export",
+    engine: "JSONata 2.2.2",
+    repo: "https://github.com/jsonata-js/jsonata",
+    accent: "violet",
+  },
+  {
+    id: "protobuf",
+    name: "Protocol Buffers 编解码台",
+    en: "Protocol Buffers Workbench",
+    category: "Code",
+    intro: "从 .proto schema 到真实 wire bytes，再完整解码回 JSON。",
+    introEn: "Compile a .proto schema into real wire bytes and decode them back to JSON.",
+    use: ".proto · 类型校验 · Encode · Decode · 二进制导出",
+    useEn: ".proto · Verify · Encode · Decode · Binary export",
+    engine: "protobuf.js",
+    repo: "https://github.com/protobufjs/protobuf.js",
+    accent: "blue",
+  },
+  {
+    id: "msgpack",
+    name: "MessagePack 二进制实验室",
+    en: "MessagePack Binary Lab",
+    category: "Code",
+    intro: "把 JSON 压成紧凑二进制，查看字节、比例并随时回读。",
+    introEn: "Turn JSON into compact MessagePack bytes, inspect them and round-trip locally.",
+    use: "JSON ↔ MessagePack · Hex · Base64 · 大小对比 · 下载",
+    useEn: "JSON ↔ MessagePack · Hex · Base64 · Size ratio · Download",
+    engine: "@msgpack/msgpack",
+    repo: "https://github.com/msgpack/msgpack-javascript",
+    accent: "mint",
+  },
+  {
+    id: "cbor",
+    name: "CBOR 编解码实验室",
+    en: "CBOR Codec Lab",
+    category: "Code",
+    intro: "把结构化数据编码成 CBOR，观察真实字节并验证回读结果。",
+    introEn: "Encode structured data as CBOR, inspect real bytes and verify the round trip.",
+    use: "JSON ↔ CBOR · Hex · Base64 · 二进制下载",
+    useEn: "JSON ↔ CBOR · Hex · Base64 · Binary download",
+    engine: "cbor-x",
+    repo: "https://github.com/kriszyp/cbor-x",
+    accent: "coral",
   },
 ];
 
