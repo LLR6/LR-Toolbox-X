@@ -391,7 +391,7 @@ function App() {
             <div className="avatar">LR</div>
             <div>
               Personal workspace
-              <small>v0.8.0 · {desktop ? "Desktop" : "Web"}</small>
+              <small>v0.10.0 · {desktop ? "Desktop" : "Web"}</small>
             </div>
           </div>
         </div>
@@ -580,8 +580,8 @@ function App() {
                 <h1>{t("从一个小任务开始。", "Start with one small task.")}</h1>
                 <p>
                   {t(
-                    "七个有介绍、有预览的完整工作台。",
-                    "Seven guided workspaces with real previews.",
+                    "一组有介绍、有预览、按任务设计的特色工作台。",
+                    "A growing set of guided workspaces with real previews.",
                   )}
                 </p>
                 <StudioCards en={en} open={openStudio} />
