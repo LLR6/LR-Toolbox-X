@@ -1,6 +1,7 @@
 import {
   isDataUtilityStudio,
   isPowerStudio,
+  isSerializationStudio,
   isVisualStudio,
   type LegacyStudioId,
   type StudioId,
@@ -9,6 +10,7 @@ import { StudioWorkspace as LegacyStudioWorkspace } from "./LegacyStudioWorkspac
 import { VisualStudioWorkspace } from "./VisualStudioWorkspace.tsx";
 import { PowerStudioWorkspace } from "./PowerStudioEntry.tsx";
 import { DataUtilityStudioWorkspace } from "./DataUtilityStudioWorkspace.tsx";
+import { SerializationStudioWorkspace } from "./SerializationStudioWorkspace.tsx";
 
 type Props = {
   id: Exclude<StudioId, "sql">;
@@ -18,6 +20,9 @@ type Props = {
 };
 
 export function StudioWorkspace(props: Props) {
+  if (isSerializationStudio(props.id)) {
+    return <SerializationStudioWorkspace {...props} id={props.id} />;
+  }
   if (isDataUtilityStudio(props.id)) {
     return <DataUtilityStudioWorkspace {...props} id={props.id} />;
   }
