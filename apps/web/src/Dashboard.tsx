@@ -41,6 +41,9 @@ export function Dashboard({
     "developer.uuid.v4",
     "csv.to.json",
     "network.ipv4.inspect",
+    "qr.generate",
+    "csv.sort",
+    "csv.aggregate",
     "markdown.toc",
   ]
     .map((id) => actions.find((a) => a.id === id))

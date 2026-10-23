@@ -12,3 +12,9 @@ Original LR Toolbox X code is Apache-2.0. Dependencies keep their own copyrights
 - Playwright — Copyright Microsoft Corporation; Apache-2.0.
 
 Run scripts/sbom.py after installing locked dependencies for the resolved portable/core CycloneDX inventory. Full license texts remain with installed dependencies; before redistributing complete installers, retain upstream license texts and extend the SBOM to the Tauri and Android dependency graphs. This first milestone does not claim a completed legal/security audit of every transitive dependency.
+
+## QR milestone
+
+- `qrcode-generator` 2.0.4 by Kazuhiko Arase, MIT: https://github.com/kazuhikoarase/qrcode-generator. Full license included in built THIRD_PARTY_LICENSES.txt.
+- `jsqr` 1.4.0, Apache-2.0, used only for independent test verification: https://github.com/cozmo/jsQR.
+- QR Code is a registered trademark of DENSO WAVE INCORPORATED.

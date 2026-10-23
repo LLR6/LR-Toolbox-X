@@ -15,6 +15,7 @@ export type Json =
 export type Input = Record<string, Json>;
 export interface Schema {
   type: string;
+  title?: string;
   properties?: Record<string, Schema>;
   required?: string[];
   additionalProperties?: boolean;

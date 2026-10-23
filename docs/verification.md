@@ -48,3 +48,10 @@ Large repeated-heading input is bounded at 10000 headings; anchor counters avoid
 - Navigation now requests fresh HTML with HTTP cache bypass and falls back to the precached shell only on network failure or unsuccessful status. Static assets remain offline-capable.
 - Service worker update checks bypass the HTTP cache, run on returning to the app/going online, and show a refresh notice after a new worker takes control. Refresh is explicit so an in-progress input/result is not discarded automatically. Local favorites/history are not cleared.
 - Browser regression tests now run against the production build. A dedicated test injects a stale cached entry, reloads online, then opens and executes a full-page tool offline at a query URL.
+
+## v0.4.0 tables and QR
+
+- Added six distinct CSV actions: select, filter, stable sort, deduplicate, rename and grouped numerical aggregation. Added one QR generator action with 1000-byte UTF-8 input bound and four correction levels.
+- Portable registry now has 101 IDs; six additional Rust IDs bring distinct desktop capability IDs to 107. Android remains at 12 shared IDs; these new portable tools are not claimed as Android native features.
+- CSV outputs support bounded table preview, source view and CSV export. QR results support image preview and SVG/PNG export, without injecting untrusted SVG text into the DOM.
+- Local registry/edge tests: 252 passing, including independent QR decode with jsQR. See docs/open-source-review.md for dependency choices. Physical installation checks remain pending.

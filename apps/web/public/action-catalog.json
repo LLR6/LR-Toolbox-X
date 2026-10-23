@@ -3064,6 +3064,437 @@
     }
   },
   {
+    "id": "csv.select",
+    "name": "CSV 选择列",
+    "nameEn": "Select CSV columns",
+    "description": "按 JSON 数组指定列名和顺序，保留引号与换行字段。",
+    "category": "CSV",
+    "tags": [
+      "CSV",
+      "csv",
+      "select"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "CSV 原始数据"
+        },
+        "columns": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "列名（JSON 数组）"
+        }
+      },
+      "required": [
+        "text",
+        "columns"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "name,city,score\nLR,Lanzhou,90",
+      "columns": "[\"name\",\"score\"]"
+    },
+    "expected": "name,score\r\nLR,90"
+  },
+  {
+    "id": "csv.filter",
+    "name": "CSV 条件筛选",
+    "nameEn": "Filter CSV rows",
+    "description": "按列精确匹配、包含、空值或数值大小筛选；数值比较拒绝非法数字。",
+    "category": "CSV",
+    "tags": [
+      "CSV",
+      "csv",
+      "filter"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "CSV 原始数据"
+        },
+        "column": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "目标列名"
+        },
+        "operator": {
+          "title": "筛选条件",
+          "type": "string",
+          "enum": [
+            "equals",
+            "not_equals",
+            "contains",
+            "empty",
+            "not_empty",
+            "greater",
+            "less"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "比较值"
+        }
+      },
+      "required": [
+        "text",
+        "column",
+        "operator",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "name,score\nLR,90\nAlex,70",
+      "column": "score",
+      "operator": "greater",
+      "value": "80"
+    },
+    "expected": "name,score\r\nLR,90"
+  },
+  {
+    "id": "csv.sort",
+    "name": "CSV 稳定排序",
+    "nameEn": "Sort CSV rows",
+    "description": "按列文本或数值稳定排序；文本按字符序，数值模式拒绝空值。",
+    "category": "CSV",
+    "tags": [
+      "CSV",
+      "csv",
+      "sort"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "CSV 原始数据"
+        },
+        "column": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "目标列名"
+        },
+        "mode": {
+          "title": "排序方式",
+          "type": "string",
+          "enum": [
+            "text",
+            "number"
+          ]
+        },
+        "direction": {
+          "title": "排序方向",
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "required": [
+        "text",
+        "column",
+        "mode",
+        "direction"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "name,score\nLR,90\nAlex,100",
+      "column": "score",
+      "mode": "number",
+      "direction": "desc"
+    },
+    "expected": "name,score\r\nAlex,100\r\nLR,90"
+  },
+  {
+    "id": "csv.unique",
+    "name": "CSV 按列去重",
+    "nameEn": "Deduplicate CSV rows",
+    "description": "按指定列去重并保留首条记录；列名填 [] 时按整行去重。",
+    "category": "CSV",
+    "tags": [
+      "CSV",
+      "csv",
+      "unique"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "CSV 原始数据"
+        },
+        "columns": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "列名（JSON 数组）"
+        }
+      },
+      "required": [
+        "text",
+        "columns"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "id,name\n1,LR\n1,Alex\n2,Sam",
+      "columns": "[\"id\"]"
+    },
+    "expected": "id,name\r\n1,LR\r\n2,Sam"
+  },
+  {
+    "id": "csv.rename",
+    "name": "CSV 重命名列",
+    "nameEn": "Rename CSV column",
+    "description": "修改指定表头，拒绝空名称和重复名称，不修改数据。",
+    "category": "CSV",
+    "tags": [
+      "CSV",
+      "csv",
+      "rename"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "CSV 原始数据"
+        },
+        "column": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "目标列名"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "新列名"
+        }
+      },
+      "required": [
+        "text",
+        "column",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "name,score\nLR,90",
+      "column": "score",
+      "name": "成绩"
+    },
+    "expected": "name,成绩\r\nLR,90"
+  },
+  {
+    "id": "csv.aggregate",
+    "name": "CSV 分组数值汇总",
+    "nameEn": "Aggregate CSV numbers",
+    "description": "按列分组统计计数、和、均值、最小和最大值；空值单列计数，groupBy 留空统计全表。",
+    "category": "CSV",
+    "tags": [
+      "CSV",
+      "csv",
+      "aggregate"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "CSV 原始数据"
+        },
+        "column": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "目标列名"
+        },
+        "groupBy": {
+          "type": "string",
+          "maxLength": 1000000,
+          "title": "分组列名（留空汇总全表）"
+        }
+      },
+      "required": [
+        "text",
+        "column",
+        "groupBy"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "team,score\nA,80\nA,100\nB,70",
+      "column": "score",
+      "groupBy": "team"
+    },
+    "expected": {
+      "groups": [
+        {
+          "group": "A",
+          "count": 2,
+          "empty": 0,
+          "sum": 180,
+          "min": 80,
+          "max": 100,
+          "mean": 90
+        },
+        {
+          "group": "B",
+          "count": 1,
+          "empty": 0,
+          "sum": 70,
+          "min": 70,
+          "max": 70,
+          "mean": 70
+        }
+      ]
+    }
+  },
+  {
+    "id": "qr.generate",
+    "name": "二维码生成",
+    "nameEn": "Generate QR code",
+    "description": "离线生成 UTF-8 二维码，可预览、下载 SVG 或 PNG；内容最多 1000 字节。",
+    "category": "QR",
+    "tags": [
+      "QR",
+      "qr",
+      "generate"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "title": "文字或链接",
+          "type": "string",
+          "maxLength": 1000
+        },
+        "correction": {
+          "title": "纠错等级",
+          "type": "string",
+          "enum": [
+            "L",
+            "M",
+            "Q",
+            "H"
+          ]
+        }
+      },
+      "required": [
+        "text",
+        "correction"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "https://example.com/你好",
+      "correction": "M"
+    }
+  },
+  {
     "id": "network.ipv4.inspect",
     "name": "IPv4 子网计算",
     "nameEn": "IPv4 subnet calculator",

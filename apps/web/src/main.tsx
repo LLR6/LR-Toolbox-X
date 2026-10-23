@@ -37,6 +37,7 @@ const groups = [
   "Network",
   "Markdown",
   "Crypto",
+  "QR",
 ];
 const categoryLabels: Record<string, string> = {
   JSON: "JSON 与数据",
@@ -49,7 +50,8 @@ const categoryLabels: Record<string, string> = {
   Numbers: "数字工具",
   Units: "单位换算",
   Colors: "色彩工具",
-  CSV: "表格转换",
+  CSV: "表格处理",
+  QR: "二维码工具",
   Network: "网络工具",
   Markdown: "Markdown",
   Crypto: "安全与加密",
@@ -355,7 +357,7 @@ function App() {
             <div className="avatar">LR</div>
             <div>
               Personal workspace
-              <small>v0.3.0 · {desktop ? "Desktop" : "Web"}</small>
+              <small>v0.4.0 · {desktop ? "Desktop" : "Web"}</small>
             </div>
           </div>
         </div>
@@ -434,11 +436,20 @@ function App() {
             onCopy={copy}
             onDownload={() =>
               download(
-                active.id + ".txt",
+                active.id +
+                  (active.id === "qr.generate"
+                    ? ".svg"
+                    : active.category === "CSV" && typeof output === "string"
+                      ? ".csv"
+                      : ".txt"),
                 typeof output === "string"
                   ? output
                   : JSON.stringify(output, null, 2),
-                "text/plain",
+                active.id === "qr.generate"
+                  ? "image/svg+xml"
+                  : active.category === "CSV" && typeof output === "string"
+                    ? "text/csv;charset=utf-8"
+                    : "text/plain",
               )
             }
             onFavorite={() => toggle(active.id)}
@@ -787,7 +798,7 @@ function App() {
                   </button>
                 </div>
                 <div className="settings-card">
-                  <h2>LR Toolbox X · 0.3.0</h2>
+                  <h2>LR Toolbox X · 0.4.0</h2>
                   <p>
                     {all.length} {t("已实现 Action", "implemented actions")} ·{" "}
                     {desktop ? "Tauri / Rust" : "React / Web"} · Apache-2.0

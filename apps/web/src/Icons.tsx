@@ -13,6 +13,7 @@ const palettes: Record<string, [string, string, string]> = {
   Numbers: ["#a7ece4", "#44b1ba", "#286777"],
   Units: ["#ffdda1", "#df9a53", "#936235"],
   Colors: ["#ffd0ed", "#d179c0", "#774b96"],
+  QR: ["#c9e8ff", "#788aef", "#414aa8"],
   CSV: ["#a5f4c0", "#48be87", "#207459"],
   Network: ["#9be7ff", "#45b3e6", "#235eab"],
   Markdown: ["#c8c0ff", "#9981eb", "#5b469e"],
@@ -459,6 +460,38 @@ function Artwork({
               <circle cx="39" cy="48" r="2" fill="#334257" />
             </g>
           ))}
+        </>
+      );
+    case "QR":
+      return (
+        <>
+          <rect x="13" y="10" width="52" height="48" rx="9" fill={deep} />
+          <rect
+            x="13"
+            y="7"
+            width="52"
+            height="48"
+            rx="9"
+            fill={face}
+            stroke={light}
+          />
+          <rect x="19" y="13" width="40" height="36" rx="3" fill="#eff6ff" />
+          {[
+            [22, 16],
+            [44, 16],
+            [22, 36],
+          ].map(([x, y]) => (
+            <g key={x + "," + y}>
+              <rect x={x} y={y} width="12" height="12" rx="1" fill="#293451" />
+              <rect x={x + 3} y={y + 3} width="6" height="6" fill="#eef6ff" />
+              <rect x={x + 4} y={y + 4} width="4" height="4" fill="#293451" />
+            </g>
+          ))}
+          <path
+            d="M39 32h5v5h-5zm9 0h8v4h-8zm-9 9h5v5h-5zm9-3h4v8h-4zm6 4h3v4h-3z"
+            fill="#293451"
+          />
+          <path d="M15 32h48" stroke="#74ccff" strokeWidth="2" opacity=".85" />
         </>
       );
     case "Files":
