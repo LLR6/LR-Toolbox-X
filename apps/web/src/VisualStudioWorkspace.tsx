@@ -529,9 +529,17 @@ export function VisualStudioWorkspace({
     t("强", "Strong"),
     t("很强", "Very strong"),
   ];
-  const worldZones = [localZone, "UTC", "Asia/Shanghai", "America/Los_Angeles", "Europe/London"].filter(
-    (value, index, list) => list.indexOf(value) === index,
-  );
+  const worldZones = [
+  ...new Set([
+    localZone,
+    "UTC",
+    "Asia/Shanghai",
+    "America/Los_Angeles",
+    "Europe/London",
+    "Asia/Tokyo",
+    "Australia/Sydney",
+  ]),
+].slice(0, 5);
 
   return (
     <section className={`visual-studio visual-${id}`} aria-label={meta.en}>
