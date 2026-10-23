@@ -1,9 +1,9 @@
-name: Sync v0.11 power studios
+name: Sync v0.11 power studios rescue
 
 on:
   push:
     branches:
-      - feature/v0.11-data-dev-studios
+      - feature/v0.11-sync-rescue
 
 permissions:
   contents: write
@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: feature/v0.11-data-dev-studios
+          ref: feature/v0.11-sync-rescue
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: "24"
@@ -57,4 +57,4 @@ jobs:
           git add package.json package-lock.json THIRD_PARTY_NOTICES.md apps/web/src/studios.ts apps/web/src/StudioWorkspace.tsx apps/web/src/PowerStudioWorkspace.tsx
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "build: wire v0.11 power studios [v011-sync]"
-          git push origin HEAD:feature/v0.11-data-dev-studios
+          git push origin HEAD:feature/v0.11-sync-rescue
