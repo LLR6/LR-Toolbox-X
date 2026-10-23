@@ -1,0 +1,44 @@
+name: Validate v0.11 security config studios
+
+on:
+  push:
+    branches:
+      - feature/v0.11-security-config-studios
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    if: ${{ !contains(github.event.head_commit.message, '[v11-security-sync]') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/v0.11-security-config-studios
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Resolve pinned engines
+        run: npm install --ignore-scripts --save-exact jose@6.2.13 smol-toml@1.9.1
+      - name: Sync registry and notices
+        run: node scripts/sync-v011-security-config.mjs
+      - name: Static and security checks
+        run: |
+          npm run lint
+          npm run typecheck
+          NODE_OPTIONS=--max-old-space-size=4096 npm run build
+          npm audit --omit=dev --audit-level=moderate
+      - name: Browser integration suite
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e
+      - name: Commit deterministic dependency and registry changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json apps/web/src/studios.ts tests/e2e/creative.spec.ts THIRD_PARTY_NOTICES.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "build: lock v0.11 security config studios [v11-security-sync]"
+          git push origin HEAD:feature/v0.11-security-config-studios
