@@ -74,3 +74,11 @@ Complete installed license texts, including Marked's original Markdown notices, 
 - `@zxing/browser` 0.2.1 — MIT; local barcode image decoding. https://github.com/zxing-js/browser
 
 Resolved full license texts for installed packages are collected into `THIRD_PARTY_LICENSES.txt` by the production build.
+
+## v0.11 data utility studios
+
+- `sql.js` 1.15.1 — MIT; SQLite compiled to WebAssembly for local in-browser databases. https://github.com/sql-js/sql.js
+- `jsondiffpatch` 0.7.6 — MIT; structural JSON diff and patch engine. https://github.com/benjamine/jsondiffpatch
+- `libphonenumber-js` 1.13.15 — MIT; international phone-number parsing and validation. https://github.com/catamphetamine/libphonenumber-js
+- `chrono-node` 2.10.1 — MIT; natural-language date and time parsing. https://github.com/wanasit/chrono
+- `@types/sql.js` 1.4.11 — MIT; development-only TypeScript declarations from DefinitelyTyped.
