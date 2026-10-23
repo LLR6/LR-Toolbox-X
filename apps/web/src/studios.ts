@@ -15,13 +15,33 @@ export type StudioId =
   | "screenshot"
   | "cron"
   | "password"
-  | "time";
+  | "time"
+  | "quicktype"
+  | "charts"
+  | "math"
+  | "latex"
+  | "lottie"
+  | "barcode";
 
+export type PowerStudioId = Extract<
+  StudioId,
+  "quicktype" | "charts" | "math" | "latex" | "lottie" | "barcode"
+>;
 export type VisualStudioId = Exclude<
   StudioId,
-  "pdf" | "compress" | "crop" | "ocr" | "word" | "media" | "sql"
+  | "pdf"
+  | "compress"
+  | "crop"
+  | "ocr"
+  | "word"
+  | "media"
+  | "sql"
+  | PowerStudioId
 >;
-export type LegacyStudioId = Exclude<StudioId, VisualStudioId | "sql">;
+export type LegacyStudioId = Exclude<
+  StudioId,
+  VisualStudioId | PowerStudioId | "sql"
+>;
 
 export const visualStudioIds: VisualStudioId[] = [
   "mermaid",
@@ -36,8 +56,19 @@ export const visualStudioIds: VisualStudioId[] = [
   "time",
 ];
 
+export const powerStudioIds: PowerStudioId[] = [
+  "quicktype",
+  "charts",
+  "math",
+  "latex",
+  "lottie",
+  "barcode",
+];
+
 export const isVisualStudio = (id: StudioId): id is VisualStudioId =>
   visualStudioIds.includes(id as VisualStudioId);
+export const isPowerStudio = (id: StudioId): id is PowerStudioId =>
+  powerStudioIds.includes(id as PowerStudioId);
 
 export const studios: {
   id: StudioId;
@@ -272,6 +303,84 @@ export const studios: {
     engine: "Day.js",
     repo: "https://github.com/iamkun/dayjs",
     accent: "violet",
+  },
+  {
+    id: "quicktype",
+    name: "JSON → 代码模型",
+    en: "JSON to Code Models",
+    category: "Code",
+    intro: "把一份真实 JSON，直接变成多语言数据模型。",
+    introEn: "Turn real JSON into typed models for multiple languages.",
+    use: "TypeScript · Python · Go · Java · Rust · Swift",
+    useEn: "TypeScript · Python · Go · Java · Rust · Swift",
+    engine: "quicktype",
+    repo: "https://github.com/glideapps/quicktype",
+    accent: "blue",
+  },
+  {
+    id: "charts",
+    name: "数据图表工作室",
+    en: "Data Chart Studio",
+    category: "CSV",
+    intro: "贴入 CSV 或 JSON，把数据直接变成可交互图表。",
+    introEn: "Turn CSV or JSON into interactive charts locally.",
+    use: "柱状图 · 折线图 · 饼图 · PNG 导出",
+    useEn: "Bar · Line · Pie · PNG export",
+    engine: "Apache ECharts",
+    repo: "https://github.com/apache/echarts",
+    accent: "coral",
+  },
+  {
+    id: "math",
+    name: "数学与矩阵实验室",
+    en: "Math & Matrix Lab",
+    category: "Time",
+    intro: "表达式、复数、单位和矩阵放到同一块计算台。",
+    introEn: "Expressions, units, complex values and matrices on one console.",
+    use: "表达式 · 行列式 · 逆矩阵 · 转置",
+    useEn: "Expressions · Determinant · Inverse · Transpose",
+    engine: "Math.js",
+    repo: "https://github.com/josdejong/mathjs",
+    accent: "mint",
+  },
+  {
+    id: "latex",
+    name: "LaTeX 公式排版台",
+    en: "LaTeX Formula Studio",
+    category: "Markdown",
+    intro: "把公式源码立即排成适合报告和分享的成品。",
+    introEn: "Typeset formula source into presentation-ready math.",
+    use: "KaTeX 预览 · MathML · TEX / PNG 导出",
+    useEn: "KaTeX preview · MathML · TEX / PNG export",
+    engine: "KaTeX",
+    repo: "https://github.com/KaTeX/KaTeX",
+    accent: "violet",
+  },
+  {
+    id: "lottie",
+    name: "Lottie 动画检查台",
+    en: "Lottie Animation Lab",
+    category: "Media",
+    intro: "打开动画 JSON，立即预览、检查帧数并调速。",
+    introEn: "Open Lottie JSON, preview it, inspect timing and change speed.",
+    use: "JSON 导入 · SVG 预览 · 播放控制 · 帧信息",
+    useEn: "JSON import · SVG preview · Playback · Frame details",
+    engine: "lottie-web",
+    repo: "https://github.com/airbnb/lottie-web",
+    accent: "violet",
+  },
+  {
+    id: "barcode",
+    name: "条码生成与识别",
+    en: "Barcode Studio",
+    category: "QR",
+    intro: "常见一维码、二维码生成和图片识别放在同一处。",
+    introEn: "Generate and decode common 1D and 2D barcodes in one place.",
+    use: "Code128 · EAN13 · QR · Data Matrix · PDF417",
+    useEn: "Code128 · EAN13 · QR · Data Matrix · PDF417",
+    engine: "BWIP-JS + ZXing",
+    repo: "https://github.com/metafloor/bwip-js",
+    accent: "blue",
   },
 ];
 
