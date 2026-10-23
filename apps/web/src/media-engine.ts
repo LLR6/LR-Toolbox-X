@@ -23,7 +23,10 @@ export async function mediaEngine(
         let response = await cache?.match(url);
         if (!response) {
           report("首次下载音视频引擎（约 31 MB） / Downloading media engine");
-          response = await fetch(url, { signal, credentials: "omit" });
+          response = await fetch(url, {
+            signal: AbortSignal.any([signal, AbortSignal.timeout(180000)]),
+            credentials: "omit",
+          });
           if (!response.ok)
             throw Error(
               "音视频引擎下载失败，请检查网络 / Engine download failed",

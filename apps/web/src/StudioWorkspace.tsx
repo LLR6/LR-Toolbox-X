@@ -27,10 +27,14 @@ function ResultFile({ result }: { result: Result }) {
   return (
     <article className="studio-file-result">
       {result.blob.type.startsWith("image/") && (
-        <img src={url} alt={result.name} />
+        <img src={url || undefined} alt={result.name} />
       )}{" "}
-      {result.blob.type.startsWith("audio/") && <audio controls src={url} />}{" "}
-      {result.blob.type === "video/mp4" && <video controls src={url} />}
+      {result.blob.type.startsWith("audio/") && (
+        <audio controls src={url || undefined} />
+      )}{" "}
+      {result.blob.type === "video/mp4" && (
+        <video controls src={url || undefined} />
+      )}
       <div>
         <strong>{result.name}</strong>
         <p>
@@ -288,7 +292,7 @@ export function StudioWorkspace({
       if (id === "word") {
         const bytes = new Uint8Array(await files[0].arrayBuffer());
         await checkDocx(bytes);
-        const {default:mammoth} = await import("mammoth/mammoth.browser.js");
+        const { default: mammoth } = await import("mammoth/mammoth.browser.js");
         const { default: DOMPurify } = await import("dompurify");
         let imageBytes = 0;
         const images: Result[] = [];
@@ -753,8 +757,8 @@ export function StudioWorkspace({
               </label>
               <p>
                 {t(
-                  "首次使用联网下载约 31 MB 引擎，之后缓存复用。处理在本机进行；最长等待 90 秒，可取消。",
-                  "First use downloads a ~31 MB engine, then reuses its cache. Files are processed locally. 90-second processing limit; cancellation available.",
+                  "首次使用联网下载约 31 MB 引擎，之后缓存复用。处理在本机进行；下载受网络速度影响，转换限时 90 秒，可取消。",
+                  "First use downloads a ~31 MB engine, then reuses its cache. Files are processed locally. Download time depends on your network; conversion has a 90-second limit.",
                 )}
               </p>
             </div>
@@ -767,6 +771,11 @@ export function StudioWorkspace({
           <div className="studio-run">
             <button
               className="studio-primary"
+              aria-label={
+                busy
+                  ? t("处理中…", "Working…")
+                  : t("开始处理", "Start processing")
+              }
               disabled={!files.length || busy || (id === "crop" && !cropReady)}
               onClick={() => void run()}
             >
