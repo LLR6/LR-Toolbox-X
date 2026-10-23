@@ -45,7 +45,7 @@ try {
     console.log(JSON.stringify(await execute(id, input, "cli"), null, 2));
   } else {
     console.log(
-      'LR Toolbox X 0.5.0\n  lrtool list\n  lrtool search json\n  lrtool run json.format --text \'{"hello":"LR"}\'\n  lrtool run ACTION --json JSON\n  lrtool run ACTION --input-file input.json',
+      'LR Toolbox X 0.6.0\n  lrtool list\n  lrtool search json\n  lrtool run json.format --text \'{"hello":"LR"}\'\n  lrtool run ACTION --json JSON\n  lrtool run ACTION --input-file input.json',
     );
     if (command) process.exitCode = 2;
   }

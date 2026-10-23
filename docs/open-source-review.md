@@ -20,3 +20,21 @@ Integrated [101arrowz/fflate](https://github.com/101arrowz/fflate), pinned npm 0
 - Files are downloaded individually as browser blobs, never extracted to local directories or executed. No archive content is uploaded.
 - GZIP text decompression supports a single member. Zlib dictionary streams are unsupported. Text decoding uses fatal UTF-8 validation; ZIP entry extraction preserves arbitrary binary bytes.
 - Interoperability tests use Node's native zlib implementation and Python zipfile. Large valid binary ZIPs, corrupted CRC/checksums, unsafe paths and decompression expansion are covered.
+
+## Text/document milestone — 2026-10-23
+
+GitHub API snapshot (stars change over time):
+
+| Project                                               |  Stars | Locked npm version | License                             | Integration                                                  |
+| ----------------------------------------------------- | -----: | ------------------ | ----------------------------------- | ------------------------------------------------------------ |
+| [markedjs/marked](https://github.com/markedjs/marked) | 37,258 | marked 18.1.1      | MIT + original Markdown BSD notices | Markdown to isolated document preview/export                 |
+| [kpdecker/jsdiff](https://github.com/kpdecker/jsdiff) |  9,213 | diff 9.0.0         | BSD-3-Clause                        | Line/word/character diff; unified patch creation/application |
+| [nodeca/js-yaml](https://github.com/nodeca/js-yaml)   |  6,636 | js-yaml 5.5.0      | MIT                                 | JSON-compatible YAML conversion/validation                   |
+
+All three repositories were unarchived at review. Complete npm license texts are bundled, including Marked's original Markdown notices (GitHub SPDX detection returns NOASSERTION for its combined license file; npm declares MIT). Versions and integrity are pinned.
+
+- Each dependency is imported on demand; the generated service worker caches all built chunks for offline reuse.
+- Diff inputs: 20,000 characters / 2,000 lines each; 500 ms algorithm timeout and 2,048 maximum edit length. Patch application accepts one file, at most 1,000 hunks, matching context and 60,000 output characters. It never writes to paths named in a patch.
+- YAML uses JSON_SCHEMA, duplicate-key rejection, zero aliases, at most 60 levels / 20,000 nodes, and bounded expanded keys/strings. Custom tags and multiple documents are rejected. Dates remain strings.
+- Markdown raw HTML is escaped; links have an explicit protocol allowlist; images become text placeholders. The exported document has a restrictive CSP and no remote resources. Preview is an empty-sandbox srcdoc iframe, without scripts, same-origin permission or popups. Tauri frame-src permits self for this owned document; no arbitrary URL frame is exposed.
+- Unit coverage checks diff reconstruction, Unicode, CRLF/no-final-newline patch interoperability, malformed/context-mismatched patches, YAML round trips/prototype-looking keys, duplicate keys, aliases/depth/tags and hostile Markdown.

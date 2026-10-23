@@ -40,6 +40,8 @@ const groups = [
   "Crypto",
   "QR",
   "Archive",
+  "Diff",
+  "YAML",
 ];
 const categoryLabels: Record<string, string> = {
   JSON: "JSON 与数据",
@@ -55,6 +57,8 @@ const categoryLabels: Record<string, string> = {
   CSV: "表格处理",
   QR: "二维码工具",
   Archive: "压缩与归档",
+  Diff: "差异与补丁",
+  YAML: "YAML 配置",
   Network: "网络工具",
   Markdown: "Markdown",
   Crypto: "安全与加密",
@@ -360,7 +364,7 @@ function App() {
             <div className="avatar">LR</div>
             <div>
               Personal workspace
-              <small>v0.5.0 · {desktop ? "Desktop" : "Web"}</small>
+              <small>v0.6.0 · {desktop ? "Desktop" : "Web"}</small>
             </div>
           </div>
         </div>
@@ -443,6 +447,23 @@ function App() {
                 downloadBlob(
                   file.filename,
                   new Blob([binaryBytes(file)], { type: file.mime }),
+                );
+                return;
+              }
+              const extensions: Record<string, [string, string]> = {
+                "markdown.render": [".html", "text/html;charset=utf-8"],
+                "patch.create": [".patch", "text/x-diff;charset=utf-8"],
+                "yaml.from.json": [".yaml", "application/yaml;charset=utf-8"],
+                "yaml.to.json": [".json", "application/json;charset=utf-8"],
+              };
+              const format = extensions[active.id];
+              if (format) {
+                download(
+                  active.id + format[0],
+                  typeof output === "string"
+                    ? output
+                    : JSON.stringify(output, null, 2),
+                  format[1],
                 );
                 return;
               }
@@ -816,7 +837,7 @@ function App() {
                   </button>
                 </div>
                 <div className="settings-card">
-                  <h2>LR Toolbox X · 0.5.0</h2>
+                  <h2>LR Toolbox X · 0.6.0</h2>
                   <p>
                     {all.length} {t("已实现 Action", "implemented actions")} ·{" "}
                     {desktop ? "Tauri / Rust" : "React / Web"} · Apache-2.0

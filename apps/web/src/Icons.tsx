@@ -13,6 +13,8 @@ const palettes: Record<string, [string, string, string]> = {
   Numbers: ["#a7ece4", "#44b1ba", "#286777"],
   Units: ["#ffdda1", "#df9a53", "#936235"],
   Colors: ["#ffd0ed", "#d179c0", "#774b96"],
+  Diff: ["#bbf1e6", "#4db6bc", "#27677c"],
+  YAML: ["#ffdfad", "#e8b06f", "#9e6242"],
   Archive: ["#ffdbb2", "#cc935d", "#825038"],
   QR: ["#c9e8ff", "#788aef", "#414aa8"],
   CSV: ["#a5f4c0", "#48be87", "#207459"],
@@ -461,6 +463,51 @@ function Artwork({
               <circle cx="39" cy="48" r="2" fill="#334257" />
             </g>
           ))}
+        </>
+      );
+    case "Diff":
+      return (
+        <>
+          <rect x="13" y="12" width="33" height="43" rx="5" fill={deep} />
+          <rect
+            x="11"
+            y="9"
+            width="33"
+            height="43"
+            rx="5"
+            fill={face}
+            stroke={light}
+          />
+          <path d="M18 21h18m-18 8h13m-13 8h18" {...line} stroke="#f8ced7" />
+          <rect
+            x="31"
+            y="20"
+            width="33"
+            height="43"
+            rx="5"
+            fill={face}
+            stroke={light}
+          />
+          <path
+            d="M38 32h18m-18 8h18m-9-5v10m-9 7h13"
+            {...line}
+            stroke="#d4fff0"
+          />
+        </>
+      );
+    case "YAML":
+      return (
+        <>
+          <path d="M19 8h28l13 13v38H19Z" fill={deep} />
+          <path d="M16 5h28l13 13v38H16Z" fill={face} stroke={light} />
+          <path d="M44 5v14h13" fill={light} />
+          <path
+            d="M24 25h5m5 0h15M24 34h5m5 0h15M24 43h5m5 0h10"
+            {...line}
+            stroke="#fff0d8"
+          />
+          <circle cx="29" cy="25" r="1" fill="#744c32" />
+          <circle cx="29" cy="34" r="1" fill="#744c32" />
         </>
       );
     case "Archive":

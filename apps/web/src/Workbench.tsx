@@ -416,6 +416,9 @@ export function Workbench(p: Props) {
                                     desc: "降序",
                                     text: "文本",
                                     number: "数值",
+                                    lines: "按行",
+                                    words: "按单词",
+                                    characters: "按字符",
                                     equals: "等于",
                                     not_equals: "不等于",
                                     contains: "包含",
@@ -443,7 +446,9 @@ export function Workbench(p: Props) {
                       <textarea
                         aria-label={key}
                         value={String(input[key] ?? "")}
-                        rows={key === "text" ? 9 : 3}
+                        rows={
+                          key === "text" || action.category === "Diff" ? 9 : 3
+                        }
                         spellCheck={false}
                         onChange={(e) =>
                           p.setInput({ ...input, [key]: e.target.value })

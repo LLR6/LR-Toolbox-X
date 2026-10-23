@@ -86,6 +86,13 @@ Generated from executable registry. Native actions are listed separately.
 | archive.zip.create | 文本文件打包 ZIP | Archive | web, windows, linux, macos, cli | safe |
 | archive.zip.list | ZIP 文件目录 | Archive | web, windows, linux, macos, cli | safe |
 | archive.zip.extract | ZIP 提取单个文件 | Archive | web, windows, linux, macos, cli | safe |
+| text.diff | 文本差异对比 | Diff | web, windows, linux, macos, cli | safe |
+| patch.create | 生成统一补丁 | Diff | web, windows, linux, macos, cli | safe |
+| patch.apply | 应用文本补丁 | Diff | web, windows, linux, macos, cli | safe |
+| yaml.to.json | YAML 转 JSON | YAML | web, windows, linux, macos, cli | safe |
+| yaml.from.json | JSON 转 YAML | YAML | web, windows, linux, macos, cli | safe |
+| yaml.validate | YAML 校验与概览 | YAML | web, windows, linux, macos, cli | safe |
+| markdown.render | Markdown 排版预览 | Markdown | web, windows, linux, macos, cli | safe |
 | network.ipv4.inspect | IPv4 子网计算 | Network | web, windows, linux, macos, cli | safe |
 | network.ipv4.to_integer | IPv4 转整数 | Network | web, windows, linux, macos, cli | safe |
 | network.ipv4.from_integer | 整数转 IPv4 | Network | web, windows, linux, macos, cli | safe |

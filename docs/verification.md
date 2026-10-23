@@ -63,3 +63,9 @@ Seven new portable actions: GZIP compress/decompress, Zlib compress/decompress, 
 Binary file import uses ArrayBuffer→Base64 internally; download restores original bytes rather than saving the JSON/Base64 descriptor. ZIP directory results show a file table with direct handoff to selected-entry extraction. In-progress input/results are not persisted in history.
 
 Interoperability and bounds are tested independently against Node zlib and Python zipfile. Actual expanded-byte bounds are enforced even with false ZIP size declarations. Signing and physical installation remain unverified as previously documented.
+
+## v0.6.0 text and document studio
+
+Seven new portable actions integrate pinned jsdiff 9.0.0, js-yaml 5.5.0 and Marked 18.1.1. Generated catalog: 115 portable / 121 distinct desktop IDs including six Rust actions; Android remains 12 shared IDs. Existing modal-free workspace is preserved, with original Diff/YAML illustrations, colored differences, sandboxed Markdown document preview and real HTML/patch/YAML/JSON exports.
+
+Local validation: lint, TypeScript, 310 unit/conformance tests and production build passed. Portable CLI bundled and ran the new YAML conversion and existing SHA-256. Managed-browser QA verified actual line differences and Markdown headings, table and code block. New dependencies load on demand; build generated 12 offline files including all lazy chunks. Three additional production E2E cases cover mobile differences, YAML export/duplicate-key errors, and isolated Markdown preview/export without remote images. Full upstream license texts are bundled. Native installer/device runtime checks remain pending; new tools target Web/portable CLI and desktop builds, not Android.
