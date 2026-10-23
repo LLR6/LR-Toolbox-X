@@ -63,4 +63,14 @@ Complete installed license texts, including Marked's original Markdown notices, 
 - `@zxcvbn-ts/core` 4.2.0 and `@zxcvbn-ts/language-common` 4.1.3 — MIT; local password-strength estimation and common pattern data. https://github.com/zxcvbn-ts/zxcvbn
 - `dayjs` 1.11.23 — MIT; local date parsing, Unix conversion and date-difference calculations. https://github.com/iamkun/dayjs
 
+## v0.11 power studios
+
+- `quicktype-core` 26.0.0 — Apache-2.0; local JSON/schema-to-code model generation. https://github.com/glideapps/quicktype
+- `echarts` 6.1.0 — Apache-2.0; interactive local chart rendering and PNG export. https://github.com/apache/echarts
+- `mathjs` 15.2.0 — Apache-2.0; expression evaluation and matrix operations. https://github.com/josdejong/mathjs
+- `katex` 0.19.0 — MIT; local LaTeX math typesetting with HTML/MathML output. https://github.com/KaTeX/KaTeX
+- `lottie-web` 5.13.0 — MIT; local Lottie JSON animation rendering. https://github.com/airbnb/lottie-web
+- `bwip-js` 4.11.4 — MIT; local one- and two-dimensional barcode generation. https://github.com/metafloor/bwip-js
+- `@zxing/browser` 0.2.1 — MIT; local barcode image decoding. https://github.com/zxing-js/browser
+
 Resolved full license texts for installed packages are collected into `THIRD_PARTY_LICENSES.txt` by the production build.
