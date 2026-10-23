@@ -37,6 +37,25 @@ function bytes(size: number) {
   return `${(size / 1024 / 1024).toFixed(1)} MB`;
 }
 
+function crackTime(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds >= 60 * 60 * 24 * 365 * 100) return "centuries";
+  if (seconds < 1) return "less than a second";
+  const units: [number, string][] = [
+    [60 * 60 * 24 * 365, "year"],
+    [60 * 60 * 24, "day"],
+    [60 * 60, "hour"],
+    [60, "minute"],
+    [1, "second"],
+  ];
+  for (const [size, name] of units) {
+    if (seconds >= size) {
+      const value = Math.max(1, Math.round(seconds / size));
+      return `${value.toLocaleString()} ${name}${value === 1 ? "" : "s"}`;
+    }
+  }
+  return "less than a second";
+}
+
 function blobUrl(blob: Blob | null) {
   const [url, setUrl] = useState("");
   useEffect(() => {
@@ -146,7 +165,6 @@ function MermaidStudio({ en, busy, begin, done, fail }: ToolProps) {
   useEffect(() => {
     void render();
     // Initial render only; explicit button keeps large diagram rendering predictable.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="visual-grid diagram-grid">
@@ -243,7 +261,7 @@ function SvgStudio({ en, busy, begin, done, fail }: ToolProps) {
       done();
     } catch (e) { fail(e); }
   }
-  useEffect(() => { void optimizeSvg(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
+  useEffect(() => { void optimizeSvg(); }, []);
   const before = new Blob([source]).size, after = optimized ? new Blob([optimized]).size : before;
   const safe = DOMPurify.sanitize(optimized || source, { USE_PROFILES: { svg: true, svgFilters: true } });
   return (
@@ -318,6 +336,7 @@ function PaletteStudio({ en, busy, begin, done, fail }: ToolProps) {
         await image.decode();
         const mod = await import("colorthief");
         const palette = mod.getPaletteSync(image, { colorCount: 8 });
+        if (!palette) throw Error(t("无法从图片提取配色", "Could not extract a palette from this image"));
         setColors(palette.map((color) => ({ hex: color.hex(), rgb: color.css(), text: color.textColor })));
         setFile(next); done();
       } finally { URL.revokeObjectURL(temp); }
@@ -370,7 +389,7 @@ function PasswordStudio({ en, busy, begin, done, fail }: ToolProps) {
       const [{ ZxcvbnFactory }, common, language] = await Promise.all([import("@zxcvbn-ts/core"), import("@zxcvbn-ts/language-common"), import("@zxcvbn-ts/language-en")]);
       const engine = new ZxcvbnFactory({ dictionary: { ...common.dictionary, ...language.dictionary }, graphs: common.adjacencyGraphs, translations: language.translations, useLevenshteinDistance: true });
       const data = engine.check(value);
-      setResult({ score: data.score, crack: data.crackTimesDisplay.offlineSlowHashing1e4PerSecond, warning: data.feedback.warning || "", suggestions: data.feedback.suggestions, guesses: data.guesses });
+      setResult({ score: data.score, crack: crackTime(data.guesses / 10_000), warning: data.feedback.warning || "", suggestions: data.feedback.suggestions, guesses: data.guesses });
       done();
     } catch (e) { fail(e); }
   }
