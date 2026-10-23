@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import type Cropper from "cropperjs";
-import { studios, type StudioId } from "./studios.ts";
+import { studios, type LegacyStudioId } from "./studios.ts";
 import { ToolIcon, UiIcon } from "./Icons.tsx";
 import { download, downloadBlob } from "./storage.ts";
 import {
@@ -53,7 +53,7 @@ export function StudioWorkspace({
   onClose,
   onRecord,
 }: {
-  id: Exclude<StudioId, "sql">;
+  id: LegacyStudioId;
   en: boolean;
   onClose: () => void;
   onRecord: (id: string, status: "success" | "error", ms: number) => void;
@@ -858,15 +858,6 @@ export function StudioWorkspace({
           ))}
         </div>
       </div>
-      <footer className="studio-footnote">
-        {t(
-          "本地计算 · 内容不上传 · 不保存文件到历史",
-          "Local processing · No file uploads · History contains metadata only",
-        )}{" "}
-        <a href={meta.repo} target="_blank" rel="noreferrer">
-          {meta.engine} / {t("开源项目", "Open source")} ↗
-        </a>
-      </footer>
     </section>
   );
 }
