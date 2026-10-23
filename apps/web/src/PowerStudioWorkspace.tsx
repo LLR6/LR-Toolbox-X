@@ -182,7 +182,8 @@ export function PowerStudioWorkspace({ id, en, onClose, onRecord }: Props) {
   async function generateTypes() {
     await perform(async () => {
       JSON.parse(jsonSource);
-      const { quicktype, InputData, jsonInputForTargetLanguage } = await import("quicktype-core");
+      const { quicktype, InputData, jsonInputForTargetLanguage, isLanguageName } = await import("quicktype-core");
+      if (!isLanguageName(targetLanguage)) throw Error(t("不支持这个目标语言。", "Unsupported target language."));
       const jsonInput = jsonInputForTargetLanguage(targetLanguage);
       await jsonInput.addSource({ name: "LRModel", samples: [jsonSource] });
       const inputData = new InputData();
