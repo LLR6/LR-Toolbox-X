@@ -22,7 +22,7 @@ jobs:
           cache: npm
       - name: Resolve pinned dependencies
         run: npm install --ignore-scripts
-      - name: Apply strict vendor typing and sync discovery count
+      - name: Apply browser-safe compatibility fixes
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -31,6 +31,10 @@ jobs:
           text = text.replace(
               'const { quicktype, InputData, jsonInputForTargetLanguage } = await import("quicktype-core");\n      const jsonInput = jsonInputForTargetLanguage(targetLanguage);',
               'const { quicktype, InputData, jsonInputForTargetLanguage, isLanguageName } = await import("quicktype-core");\n      if (!isLanguageName(targetLanguage)) throw Error(t("不支持这个目标语言。", "Unsupported target language."));\n      const jsonInput = jsonInputForTargetLanguage(targetLanguage);',
+          )
+          text = text.replace(
+              'const module = await import("lottie-web");',
+              'const module = await import("lottie-web/build/player/lottie_light.js");',
           )
           path.write_text(text)
 
