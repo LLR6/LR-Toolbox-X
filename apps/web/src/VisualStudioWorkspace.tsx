@@ -65,14 +65,6 @@ function bytes(value: string) {
   return new TextEncoder().encode(value).byteLength;
 }
 
-function htmlEscape(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
 function imageFromFile(file: Blob) {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const url = URL.createObjectURL(file);
