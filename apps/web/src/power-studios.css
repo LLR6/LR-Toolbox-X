@@ -1,0 +1,204 @@
+.power-studio {
+  --power-glow: color-mix(in srgb, var(--accent, #7187ff) 26%, transparent);
+}
+.power-hero {
+  position: relative;
+  overflow: hidden;
+}
+.power-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -12% -70% 38%;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--power-glow), transparent 68%);
+  pointer-events: none;
+}
+.power-studio .visual-panel {
+  min-height: 0;
+}
+.power-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.power-toolbar label {
+  min-width: 180px;
+  flex: 1;
+}
+.power-studio label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .02em;
+}
+.power-studio input,
+.power-studio select,
+.power-studio textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--panel) 92%, #000 8%);
+  color: var(--text);
+  padding: 11px 12px;
+  font: inherit;
+}
+.power-studio textarea,
+.power-code-output pre,
+.matrix-result {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.power-code-output pre {
+  margin: 0;
+  padding: 18px;
+  min-height: 420px;
+  max-height: 62vh;
+  overflow: auto;
+  border-radius: 14px;
+  background: #0c1220;
+  color: #dfe8ff;
+  white-space: pre;
+}
+.chart-host {
+  min-height: 470px;
+  width: 100%;
+  border-radius: 16px;
+  background: #fff;
+}
+.power-chart-stage .visual-actions {
+  margin-top: 12px;
+}
+.math-console,
+.matrix-console {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+.math-result {
+  display: grid;
+  min-height: 128px;
+  place-items: center;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 58%), #0d1424;
+  color: #f5f8ff;
+  font: 700 clamp(24px, 4vw, 44px)/1.1 ui-monospace, monospace;
+  padding: 24px;
+  overflow-wrap: anywhere;
+}
+.matrix-result {
+  min-height: 110px;
+  padding: 18px;
+  border-radius: 14px;
+  background: #0c1220;
+  color: #dfe8ff;
+  white-space: pre-wrap;
+  overflow: auto;
+}
+.toggle-row {
+  display: flex !important;
+  grid-template-columns: none !important;
+  align-items: center;
+  gap: 9px !important;
+  margin-top: 12px;
+}
+.toggle-row input {
+  width: auto;
+}
+.formula-stage {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+.formula-host {
+  display: grid;
+  place-items: center;
+  min-height: 360px;
+  padding: 42px;
+  border-radius: 18px;
+  background: #fff;
+  color: #10131a;
+  overflow: auto;
+  font-size: 1.4rem;
+}
+.lottie-stage-panel {
+  display: grid;
+  grid-template-rows: auto minmax(360px, 1fr) auto;
+}
+.lottie-stage {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    linear-gradient(45deg, #121a2c 25%, transparent 25%),
+    linear-gradient(-45deg, #121a2c 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #121a2c 75%),
+    linear-gradient(-45deg, transparent 75%, #121a2c 75%),
+    #0c1322;
+  background-size: 24px 24px;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+}
+.lottie-stage svg {
+  width: min(92%, 660px) !important;
+  height: auto !important;
+  max-height: 520px;
+}
+.barcode-maker,
+.barcode-reader {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+.barcode-canvas-shell {
+  min-height: 260px;
+  border-radius: 18px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: auto;
+}
+.barcode-canvas-shell canvas {
+  max-width: 100%;
+  height: auto;
+}
+.scan-result {
+  min-height: 220px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: radial-gradient(circle at 0 0, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%), #0d1424;
+}
+.scan-result small {
+  color: var(--muted);
+  letter-spacing: .12em;
+  font-weight: 700;
+}
+.scan-result strong {
+  font-size: clamp(20px, 3vw, 32px);
+  overflow-wrap: anywhere;
+}
+@media (max-width: 840px) {
+  .power-studio .visual-split {
+    grid-template-columns: 1fr;
+  }
+  .chart-host,
+  .lottie-stage,
+  .formula-host {
+    min-height: 320px;
+  }
+  .power-code-output pre {
+    min-height: 300px;
+  }
+}
