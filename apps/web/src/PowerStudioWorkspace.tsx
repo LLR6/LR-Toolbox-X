@@ -3,6 +3,7 @@ import DOMPurify from "dompurify";
 import { studios, type PowerStudioId } from "./studios.ts";
 import { ToolIcon } from "./Icons.tsx";
 import { download, downloadBlob } from "./storage.ts";
+import "reveal.js/reveal.css";
 import "./power-studios.css";
 
 type Status = "success" | "error";
@@ -312,7 +313,8 @@ export function PowerStudioWorkspace({
   function exportSqlite() {
     if (!sqlDb.current) return;
     const bytes = sqlDb.current.export();
-    downloadBlob("lr-toolbox.sqlite", new Blob([bytes], { type: "application/vnd.sqlite3" }));
+    const copy = new Uint8Array(bytes);
+    downloadBlob("lr-toolbox.sqlite", new Blob([copy.buffer], { type: "application/vnd.sqlite3" }));
   }
 
   const commonHeader = (

@@ -64,3 +64,15 @@ Complete installed license texts, including Marked's original Markdown notices, 
 - `dayjs` 1.11.23 — MIT; local date parsing, Unix conversion and date-difference calculations. https://github.com/iamkun/dayjs
 
 Resolved full license texts for installed packages are collected into `THIRD_PARTY_LICENSES.txt` by the production build.
+
+
+## v0.11 data and developer studios
+
+- `echarts` 6.1.0 — Apache-2.0; local interactive chart rendering. https://github.com/apache/echarts
+- `mathjs` 15.2.0 — Apache-2.0; expression, unit, matrix and symbolic math engine. https://github.com/josdejong/mathjs
+- `jsbarcode` 3.12.3 — MIT; local SVG barcode generation. https://github.com/lindell/JsBarcode
+- `jose` 6.2.13 — MIT; local JWT/JWS decoding and cryptographic verification. https://github.com/panva/jose
+- `jsonata` 2.2.2 — MIT; JSON query and transformation language. https://github.com/jsonata-js/jsonata
+- `handlebars` 4.7.10 — MIT; local structured template rendering. https://github.com/handlebars-lang/handlebars.js
+- `reveal.js` 6.0.2 — MIT; embedded browser presentation engine. https://github.com/hakimel/reveal.js
+- `sql.js` 1.15.1 — MIT; SQLite compiled to WebAssembly/JavaScript for local in-memory databases. https://github.com/sql-js/sql.js
