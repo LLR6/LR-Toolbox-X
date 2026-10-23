@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import Fuse from "fuse.js";
 import { studioMatches, type StudioId } from "./studios.ts";
 import { ToolIcon, UiIcon } from "./Icons.tsx";
 import type { Action } from "../../../packages/registry/src/types.ts";
 import type { Run } from "./storage.ts";
 import "./discovery.css";
+
 export function StudioCards({
   en,
   open,
@@ -39,6 +41,11 @@ export function StudioCards({
     </div>
   );
 }
+
+function ToolBadge({ category }: { category: string }) {
+  return <ToolIcon category={category} className="app-badge" />;
+}
+
 export function Discovery({
   actions,
   history,
@@ -64,13 +71,92 @@ export function Discovery({
 }) {
   const t = (zh: string, english: string) => (en ? english : zh);
   const [scene, setScene] = useState("everyday");
-  const first = actions.find((a) =>
-    [a.id, a.name, a.nameEn, ...a.tags]
-      .join(" ")
-      .toLowerCase()
-      .includes(query.trim().toLowerCase()),
+  const pick = (id: string) => {
+    const action = actions.find((a) => a.id === id);
+    if (action) choose(action);
+  };
+  const fuse = useMemo(
+    () =>
+      new Fuse(actions, {
+        threshold: 0.3,
+        ignoreLocation: true,
+        useExtendedSearch: false,
+        keys: [
+          { name: "name", weight: 2.4 },
+          { name: "nameEn", weight: 2.1 },
+          { name: "id", weight: 1.8 },
+          { name: "tags", weight: 1.4 },
+          { name: "description", weight: 1 },
+          { name: "category", weight: 0.8 },
+        ],
+      }),
+    [actions],
   );
-  const candidates = studioMatches(query);
+  const firstMatch = query.trim()
+    ? (fuse.search(query.trim(), { limit: 1 })[0]?.item ??
+      actions.find((a) =>
+        [a.id, a.name, a.nameEn, a.description, a.category, ...a.tags]
+          .join(" ")
+          .toLowerCase()
+          .includes(query.trim().toLowerCase()),
+      ))
+    : undefined;
+  const openSearch = () => {
+    if (firstMatch) choose(firstMatch);
+    else navigate("tools");
+  };
+  const popular = [
+    "json.format",
+    "json.repair",
+    "html.to.markdown",
+    "encoding.base64.encode",
+    "hash.sha256",
+    "time.timestamp.iso",
+    "text.stats",
+    "developer.uuid.v4",
+    "csv.to.json",
+    "network.ipv4.inspect",
+    "code.format.javascript",
+    "xml.inspect",
+    "text.diff",
+    "markdown.render",
+    "yaml.to.json",
+    "qr.generate",
+    "archive.zip.create",
+    "csv.sort",
+    "csv.aggregate",
+    "markdown.toc",
+  ]
+    .map((id) => actions.find((a) => a.id === id))
+    .filter((a): a is Action => !!a);
+  const recent = [...new Set(history.map((h) => h.id))]
+    .slice(0, 4)
+    .map((id) => actions.find((a) => a.id === id))
+    .filter((a): a is Action => !!a);
+  const lastAction = history.length
+    ? actions.find((a) => a.id === history[0].id)
+    : undefined;
+  const smartPicks = [
+    ...(lastAction
+      ? actions.filter(
+          (a) => a.category === lastAction.category && a.id !== lastAction.id,
+        )
+      : []),
+    ...popular,
+  ]
+    .filter(
+      (action, index, list) =>
+        list.findIndex((candidate) => candidate.id === action.id) === index,
+    )
+    .slice(0, 3);
+  const categories = [
+    { id: "Text", name: "文本处理", en: "Text tools", desc: "整理文字，释放表达" },
+    { id: "JSON", name: "数据与 JSON", en: "Data & JSON", desc: "结构清晰，转换自如" },
+    { id: "Encoding", name: "编码与解码", en: "Encoding", desc: "让信息自由转换" },
+    { id: "Developer", name: "开发者工具", en: "Developer", desc: "专注创造，高效开发" },
+    { id: "Math", name: "计算与换算", en: "Math & numbers", desc: "从日常到精确计算" },
+    { id: "workflow", name: "自动化工作流", en: "Workflows", desc: "串联操作，一次完成" },
+  ];
   const suggestions =
     scene === "study"
       ? ["markdown.render", "csv.aggregate", "text.stats"]
@@ -78,220 +164,382 @@ export function Discovery({
         ? ["json.format", "code.format.javascript", "text.diff"]
         : ["qr.generate", "archive.zip.create", "csv.sort"];
   const selected = actions.filter((a) => suggestions.includes(a.id));
-  const recent = [...new Set(history.map((h) => h.id))]
-    .map((id) => actions.find((a) => a.id === id))
-    .filter((a): a is Action => !!a)
-    .slice(0, 3);
+  const success = history.filter((h) => h.status === "success").length;
+
   return (
-    <div className="discovery">
-      <section className="discovery-hero">
-        <div className="discovery-hero-text">
-          <span className="studio-kicker">
-            LR TOOLBOX X / MAKE ROOM TO CREATE
-          </span>
-          <h1>
-            {t("让一切更高效", "Make every day flow.")}
-            <span> ✦</span>
-          </h1>
-          <p>
-            {t(
-              "不必认识每一个工具。先说说，你今天想完成什么？",
-              "You don’t need to know every tool. Start with what you want to do.",
-            )}
-          </p>
-          <div className="discovery-search">
+    <div className={"dashboard-layout" + (query ? " searching" : "")}>
+      <div className="dashboard-main">
+        <section className="scenic-hero">
+          <div className="hero-caption">
+            <span className="hero-overline">YOUR PERSONAL PRODUCTIVITY SPACE</span>
+            <h1>
+              {t("让一切更高效", "Make every day flow.")}
+              <span> ✦</span>
+            </h1>
+            <p>
+              {t(
+                "一个工具箱，连接每一次灵感与行动。推荐只是捷径，所有工具始终在手边。",
+                "One toolbox. Recommendations are shortcuts; the full toolkit stays close.",
+              )}
+            </p>
+          </div>
+          <blockquote className="hero-quote">
+            {t("常用工具，", "Your tools,")}
+            <br />
+            {t("不该被藏起来。", "never buried.")}
+            <br />
+            {t("搜索、分类、推荐都只是入口。", "Search, browse, or take a shortcut.")}
+          </blockquote>
+          <div className="hero-search">
             <UiIcon name="search" />
             <input
               aria-label={t("搜索工具", "Search tools")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && query.trim()) {
+                if (e.key === "Enter") {
                   e.preventDefault();
-                  if (candidates[0]) openStudio(candidates[0].id);
-                  else if (first) choose(first);
+                  openSearch();
                 }
               }}
               placeholder={t(
-                "试试：压缩图片、PDF、截图转文字…",
-                "Try: PDF, compress images, OCR…",
+                `搜索 ${actions.length} 个工具，支持错别字和近似关键词…`,
+                `Search ${actions.length} tools with typo-tolerant matching…`,
               )}
             />
-            <button
-              aria-label={t("浏览工具", "Browse tools")}
-              onClick={() => {
-                if (query.trim() && candidates[0]) openStudio(candidates[0].id);
-                else if (query.trim() && first) choose(first);
-                else navigate("tools");
-              }}
-            >
-              →
+            <kbd>CTRL K</kbd>
+            <button aria-label={t("浏览工具", "Browse tools")} onClick={openSearch}>
+              <UiIcon name="arrow" />
             </button>
           </div>
-          <div className="discovery-chips">
-            <span>{t("从这里开始", "Start here")}</span>
-            <button onClick={() => openStudio("pdf")}>
-              {t("整理一份 PDF", "Organize a PDF")}
-            </button>
-            <button onClick={() => openStudio("compress")}>
-              {t("让图片小一点", "Shrink an image")}
-            </button>
-            <button onClick={() => openStudio("ocr")}>
-              {t("提取截图文字", "Read a screenshot")}
-            </button>
+          <div className="hero-chips">
+            <span>{t("快速开始", "Quick start")}</span>
+            {["json.format", "encoding.base64.encode", "hash.sha256"].map((id) => {
+              const action = actions.find((a) => a.id === id);
+              return (
+                action && (
+                  <button key={id} onClick={() => choose(action)}>
+                    {en ? action.nameEn : action.name} ↗
+                  </button>
+                )
+              );
+            })}
+            <button onClick={() => openStudio("pdf")}>PDF ↗</button>
+            <button onClick={() => openStudio("ocr")}>OCR ↗</button>
           </div>
-        </div>
-        <div className="hero-art-stack" aria-hidden="true">
-          <div className="hero-art-sheet sheet-back">
-            PDF <span>01 — 08</span>
-          </div>
-          <div className="hero-art-sheet sheet-front">
-            <ToolIcon category="Files" />
-            <span>
-              YOUR NEXT
-              <br />
-              GREAT IDEA.
-            </span>
-            <div className="hero-art-wave" />
-          </div>
-          <div className="hero-art-seal">
-            LOCAL
-            <br />
-            FIRST ✦
-          </div>
-        </div>
-      </section>
-      {query ? (
-        <section className="discovery-section">
-          <h2>{t("匹配的创作工作台", "Matching studios")}</h2>
-          <StudioCards en={en} open={openStudio} query={query} />
         </section>
-      ) : (
-        <>
-          <section className="discovery-section">
-            <div className="discovery-section-head">
-              <div>
-                <span className="studio-kicker">CURATED FOR YOUR EVERYDAY</span>
-                <h2>
-                  {t(
-                    "七个工作台，解决七类日常事",
-                    "Seven studios. Everyday possibilities.",
-                  )}
-                </h2>
-                <p>
-                  {t(
-                    "每个入口都告诉你能做什么。选择素材，调整选项，再带走结果。",
-                    "Know what each tool does. Bring your files, make an adjustment, take the result.",
-                  )}
-                </p>
-              </div>
-              <button onClick={() => navigate("tools")}>
-                {t("完整工具库", "Full tool library")} →
-              </button>
-            </div>
-            <StudioCards en={en} open={openStudio} />
-          </section>
-          <section className="scenario-section">
-            <div>
-              <span className="studio-kicker">A LITTLE DIRECTION</span>
-              <h2>{t("还不知道选哪个？", "Not sure where to start?")}</h2>
-              <p>
-                {t(
-                  "按你正在做的事情，推荐三个顺手工具。",
-                  "Three useful tools for what you are doing.",
-                )}
-              </p>
-            </div>
-            <div
-              className="scenario-tabs"
-              role="group"
-              aria-label={t("使用场景", "Use case")}
+
+        <div className="dashboard-section-head">
+          <h2>
+            <UiIcon name="tools" />
+            {t("探索工具分类", "Explore collections")}
+          </h2>
+          <button onClick={() => navigate("tools")}>
+            {t(`直接看全部 ${actions.length} 个工具`, `Browse all ${actions.length} tools`)} →
+          </button>
+        </div>
+        <div className="collection-grid">
+          {categories.map((c) => (
+            <button
+              className={"collection tone-" + c.id}
+              key={c.id}
+              onClick={() =>
+                navigate(
+                  c.id === "workflow" ? "workflow" : "tools",
+                  c.id === "workflow" ? "All" : c.id,
+                )
+              }
             >
-              {[
-                ["everyday", "日常整理", "Everyday"],
-                ["study", "学习与报告", "Study & reports"],
-                ["developer", "编程与开发", "Development"],
-              ].map(([id, zh, english]) => (
-                <button
-                  aria-pressed={scene === id}
-                  key={id}
-                  onClick={() => setScene(id)}
-                >
-                  {t(zh, english)}
-                </button>
-              ))}
+              <ToolIcon category={c.id} className="collection-icon" />
+              <strong>{en ? c.en : c.name}</strong>
+              <small>
+                {en
+                  ? c.id === "workflow"
+                    ? "Connect your actions"
+                    : `${actions.filter((a) => a.category === c.id).length} local tools`
+                  : c.desc}
+              </small>
+              <span className="collection-count">
+                {c.id === "workflow"
+                  ? "↗"
+                  : `${actions.filter((a) => a.category === c.id).length} ${t("个工具", "tools")}`}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <section className="smart-picks glass-panel">
+          <div className="dashboard-section-head">
+            <h2>
+              <UiIcon name="command" />
+              {t("为你推荐", "Suggested for you")}
+              <span className="section-hint">
+                {lastAction
+                  ? t("根据你刚用过的工具继续推荐", "Based on what you used recently")
+                  : t("先给你几项高频入口", "A few useful shortcuts to begin")}
+              </span>
+            </h2>
+            <button onClick={() => navigate("tools")}>
+              {t("自己找", "Browse instead")} →
+            </button>
+          </div>
+          <div className="smart-pick-grid">
+            {smartPicks.map((a) => (
+              <button key={a.id} onClick={() => choose(a)}>
+                <ToolBadge category={a.category} />
+                <span>
+                  <strong>{en ? a.nameEn : a.name}</strong>
+                  <small>{en ? a.id : a.description}</small>
+                </span>
+                <UiIcon name="external" />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <div className="activity-grid">
+          <section className="glass-panel">
+            <div className="dashboard-section-head">
+              <h2>
+                <UiIcon name="history" />
+                {t("最近使用", "Recently used")}
+              </h2>
+              <button onClick={() => navigate("history")}>{t("查看全部", "View all")} →</button>
             </div>
-            <div className="recommended-tools">
-              {selected.map((a) => (
-                <article key={a.id}>
-                  <button
-                    data-testid={"dashboard-" + a.id}
-                    onClick={() => choose(a)}
-                  >
-                    <ToolIcon category={a.category} />
-                    <h3>{en ? a.nameEn : a.name}</h3>
-                    <p>{a.description}</p>
-                    <b>{t("使用工具", "Open tool")} →</b>
-                  </button>
-                  <button
-                    className="recommend-favorite"
-                    aria-label={
-                      (favorites.includes(a.id) ? "Unfavorite " : "Favorite ") +
-                      a.id
-                    }
-                    aria-pressed={favorites.includes(a.id)}
-                    onClick={() => toggle(a.id)}
-                  >
-                    ☆
-                  </button>
-                </article>
-              ))}
-            </div>
-          </section>
-          {!!recent.length && (
-            <section className="discovery-section">
-              <div className="discovery-section-head">
-                <h2>{t("接着上次继续", "Pick up where you left off")}</h2>
-                <button onClick={() => navigate("history")}>
-                  {t("执行历史", "History")} →
-                </button>
-              </div>
-              <div className="discovery-recent">
+            {recent.length ? (
+              <div className="recent-grid">
                 {recent.map((a) => (
-                  <button key={a.id} onClick={() => choose(a)}>
-                    <ToolIcon category={a.category} />
-                    {en ? a.nameEn : a.name} ↗
+                  <button key={a.id} className="compact-tool" onClick={() => choose(a)}>
+                    <ToolBadge category={a.category} />
+                    <span>
+                      <strong>{en ? a.nameEn : a.name}</strong>
+                      <small>{a.category}</small>
+                    </span>
+                    <UiIcon name="external" className="subtle-arrow" />
                   </button>
                 ))}
               </div>
-            </section>
-          )}
-          <section className="discovery-about">
-            <div>
-              <span className="studio-kicker">YOUR FILES. YOUR SPACE.</span>
-              <h2>
-                {t(
-                  "小事交给工具，创意留给自己。",
-                  "Less friction. More room for you.",
-                )}
-              </h2>
-              <p>
-                {t(
-                  "文件在本机处理，历史只记名称和耗时。需要更多专业工具时，再打开完整工具库。",
-                  "Files are processed locally. History keeps tool names and timing, not file contents. The full library is here when you need it.",
-                )}
-              </p>
-            </div>
-            <button onClick={() => navigate("tools")}>
-              {t(
-                `浏览 ${actions.length} 个基础工具`,
-                `Explore ${actions.length} core tools`,
-              )}{" "}
-              →
-            </button>
+            ) : (
+              <div className="welcome-state">
+                <ToolIcon category="Time" className="welcome-orbit" />
+                <div>
+                  <strong>{t("从一次小小的尝试开始", "Your next great shortcut starts here")}</strong>
+                  <p>{t("运行工具后，这里会保留快捷入口。", "Recently used tools will appear here.")}</p>
+                </div>
+                <button onClick={() => pick("json.format")}>{t("试试 JSON 格式化", "Try JSON format")} →</button>
+              </div>
+            )}
           </section>
-        </>
-      )}
+          <section className="glass-panel task-panel">
+            <div className="dashboard-section-head">
+              <h2>
+                <UiIcon name="workflow" />
+                {t("执行记录", "Activity")}
+              </h2>
+              <span className="live-tag">LOCAL</span>
+            </div>
+            {history.length ? (
+              history.slice(0, 3).map((h, i) => (
+                <div className="activity-row" key={i}>
+                  <span className={h.status === "success" ? "status-good" : "status-error"}>
+                    {h.status === "success" ? "✓" : "!"}
+                  </span>
+                  <span>
+                    <strong>
+                      {actions.find((a) => a.id === h.id)?.[en ? "nameEn" : "name"] ?? h.id}
+                    </strong>
+                    <small>
+                      {h.elapsedMs} ms · {new Date(h.time).toLocaleTimeString(en ? "en-US" : "zh-CN", { hour: "2-digit", minute: "2-digit" })}
+                    </small>
+                  </span>
+                  <small>{h.status === "success" ? t("已完成", "Done") : t("失败", "Failed")}</small>
+                </div>
+              ))
+            ) : (
+              <div className="quiet-state">
+                {t("准备就绪，等待你的下一项任务。", "Ready for your next task.")}
+                <small>{t("执行记录只留在当前设备", "Activity stays on this device")}</small>
+              </div>
+            )}
+          </section>
+        </div>
+
+        <section className="scenario-section dashboard-scenario">
+          <div className="dashboard-section-head scenario-heading">
+            <div>
+              <span className="studio-kicker">A LITTLE DIRECTION</span>
+              <h2>{t("按场景给你三项建议", "Three suggestions for the task at hand")}</h2>
+              <p>{t("推荐不会替代工具库，只是少走两步。", "Recommendations never replace the library; they just save a couple of clicks.")}</p>
+            </div>
+          </div>
+          <div className="scenario-tabs" role="group" aria-label={t("使用场景", "Use case")}>
+            {[
+              ["everyday", "日常整理", "Everyday"],
+              ["study", "学习与报告", "Study & reports"],
+              ["developer", "编程与开发", "Development"],
+            ].map(([id, zh, english]) => (
+              <button aria-pressed={scene === id} key={id} onClick={() => setScene(id)}>
+                {t(zh, english)}
+              </button>
+            ))}
+          </div>
+          <div className="recommended-tools">
+            {selected.map((a) => (
+              <article key={a.id}>
+                <button data-testid={"dashboard-" + a.id} onClick={() => choose(a)}>
+                  <ToolIcon category={a.category} />
+                  <h3>{en ? a.nameEn : a.name}</h3>
+                  <p>{a.description}</p>
+                  <b>{t("使用工具", "Open tool")} →</b>
+                </button>
+                <button
+                  className="recommend-favorite"
+                  aria-label={(favorites.includes(a.id) ? "Unfavorite " : "Favorite ") + a.id}
+                  aria-pressed={favorites.includes(a.id)}
+                  onClick={() => toggle(a.id)}
+                >
+                  ☆
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <div className="dashboard-section-head">
+          <h2>
+            <UiIcon name="tools" />
+            {t("精选实用工具", "Everyday essentials")}
+            <span className="section-hint">{t("常用入口直接铺开", "Common tools, one click away")}</span>
+          </h2>
+          <button onClick={() => navigate("favorites")}>
+            <UiIcon name="favorites" /> {t("我的收藏", "Favorites")} {favorites.length}
+          </button>
+        </div>
+        <div className="essentials-grid">
+          {popular.map((a) => (
+            <article className="essential-card" key={a.id}>
+              <button className="essential-tool" data-testid={"dashboard-" + a.id} onClick={() => choose(a)}>
+                <ToolBadge category={a.category} />
+                <span>
+                  <strong>{en ? a.nameEn : a.name}</strong>
+                  <small>{en ? a.id : a.description}</small>
+                </span>
+                <UiIcon name="external" className="subtle-arrow" />
+              </button>
+              <button
+                className={"pin-tool" + (favorites.includes(a.id) ? " pinned" : "")}
+                aria-label={`${favorites.includes(a.id) ? "Unfavorite" : "Favorite"} ${a.id}`}
+                title={t("收藏工具", "Favorite tool")}
+                aria-pressed={favorites.includes(a.id)}
+                onClick={() => toggle(a.id)}
+              >
+                <UiIcon name="favorites" />
+              </button>
+            </article>
+          ))}
+        </div>
+
+        <section className="studio-shelf glass-panel">
+          <div className="dashboard-section-head">
+            <div>
+              <span className="studio-kicker">SPECIALIZED WORKSPACES</span>
+              <h2>{t("需要文件处理时，再进入特色工作台", "Specialized workspaces when a simple tool is not enough")}</h2>
+            </div>
+            <button onClick={() => navigate("studios")}>{t("单独浏览工作台", "Browse studios")} →</button>
+          </div>
+          <StudioCards en={en} open={openStudio} />
+        </section>
+
+        <section className="discover-banner">
+          <ToolIcon category="workflow" className="banner-symbol" />
+          <div>
+            <strong>{t("所有工具都应该容易找到", "Every tool should stay easy to reach")}</strong>
+            <p>
+              {t(
+                `${actions.length} 个本地工具 · 左侧分类常驻 · 推荐只是辅助`,
+                `${actions.length} local tools · categories stay visible · recommendations are optional`,
+              )}
+            </p>
+          </div>
+          <button onClick={() => navigate("tools")}>{t("探索全部工具", "Explore all tools")} →</button>
+        </section>
+        <div className="dashboard-footer">
+          <span><i className="dot" /> {t("本地计算，安心创造", "Local computation. Room to create.")}</span>
+          <span>LR TOOLBOX X</span>
+        </div>
+      </div>
+
+      <aside className="insight-rail">
+        <section className="glass-panel day-panel">
+          <span className="rail-label">TODAY / {new Date().getFullYear()}</span>
+          <h2>{new Date().toLocaleDateString(en ? "en-US" : "zh-CN", { month: "long", day: "numeric" })}</h2>
+          <span>{new Date().toLocaleDateString(en ? "en-US" : "zh-CN", { weekday: "long" })}</span>
+          <div className="day-divider" />
+          <p>{t("少一些繁琐，", "Less friction.")}<br />{t("多一些创造。", "More possibilities.")}</p>
+          <small>MAKE SOMETHING GREAT.</small>
+        </section>
+        <section className="glass-panel">
+          <div className="dashboard-section-head">
+            <h2><UiIcon name="tools" />{t("快捷工具", "Quick access")}</h2>
+            <UiIcon name="command" />
+          </div>
+          <div className="quick-grid">
+            {popular.slice(0, 9).map((a) => (
+              <button key={a.id} onClick={() => choose(a)}>
+                <ToolBadge category={a.category} />
+                <span>{en ? a.nameEn : a.name}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+        <section className="glass-panel studio-mini-panel">
+          <div className="dashboard-section-head">
+            <h2><UiIcon name="tools" />{t("文件工作台", "File studios")}</h2>
+            <button onClick={() => navigate("studios")}>{t("全部", "All")} →</button>
+          </div>
+          <div className="studio-mini-list">
+            {(["pdf", "compress", "ocr", "media"] as StudioId[]).map((id) => {
+              const studio = studioMatches("").find((s) => s.id === id)!;
+              return (
+                <button key={id} onClick={() => openStudio(id)}>
+                  <ToolIcon category={studio.category} />
+                  <span>
+                    <strong>{en ? studio.en : studio.name}</strong>
+                    <small>{studio.engine}</small>
+                  </span>
+                  <UiIcon name="external" />
+                </button>
+              );
+            })}
+          </div>
+        </section>
+        <section className="glass-panel usage-panel">
+          <div className="dashboard-section-head">
+            <h2><UiIcon name="shield" />{t("我的工作空间", "Your workspace")}</h2>
+            <span className="dot" />
+          </div>
+          <div className="usage-rings">
+            <div className="usage-ring">
+              <strong>{history.length}</strong>
+              <small>{t("次本地执行", "local runs")}</small>
+            </div>
+            <div className="usage-summary">
+              <strong>{favorites.length}<small>{t(" 个收藏", " favorites")}</small></strong>
+              <span>{t("执行成功率", "Success rate")}</span>
+              <b>{history.length ? `${Math.round((success / history.length) * 100)}%` : "—"}</b>
+            </div>
+          </div>
+          <div className="workspace-stat"><span>{t("可用工具", "Available tools")}</span><strong>{actions.length}</strong></div>
+          <div className="workspace-stat"><span>{t("计算方式", "Processing")}</span><strong>{t("本地运行", "On device")}</strong></div>
+          <div className="workspace-stat"><span>{t("内容上传", "Content uploads")}</span><strong>{t("无", "None")}</strong></div>
+        </section>
+        <section className="glass-panel workflow-promo">
+          <ToolIcon category="workflow" className="promo-icon" />
+          <h3>{t("一个流程，完成更多", "A little flow goes a long way")}</h3>
+          <p>{t("将多个工具串联，让重复操作更轻松。", "Connect tools and simplify repeated work.")}</p>
+          <button onClick={() => navigate("workflow")}>{t("创建工作流", "Open workflows")} →</button>
+        </section>
+      </aside>
     </div>
   );
 }
