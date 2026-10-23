@@ -5,6 +5,7 @@ export default ts.config(
   {
     ignores: [
       "dist/**",
+      "apps/web/public/engines/**",
       "dist-cli/**",
       "node_modules/**",
       "target/**",

@@ -4,7 +4,10 @@ test("CSV workspace previews bounded rows and exports the entire sorted result",
   page,
 }) => {
   await page.goto("/");
-  await page.getByTestId("dashboard-csv.sort").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("csv.sort");
+  await page.getByTestId("action-csv.sort").click();
   await page
     .getByRole("textbox", { name: "text", exact: true })
     .fill(
@@ -30,7 +33,10 @@ test("mobile QR workspace renders Unicode and exports SVG and PNG", async ({
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByTestId("dashboard-qr.generate").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("qr.generate");
+  await page.getByTestId("action-qr.generate").click();
   await page
     .getByRole("textbox", { name: "text", exact: true })
     .fill("你好🧪 https://example.com");

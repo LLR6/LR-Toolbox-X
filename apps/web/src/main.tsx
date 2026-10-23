@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import {
   actions,
@@ -18,9 +18,14 @@ import "./style.css";
 import "./dashboard.css";
 import { UpdateNotice } from "./UpdateNotice.tsx";
 import { Workbench } from "./Workbench.tsx";
-import { Dashboard } from "./Dashboard.tsx";
+import { Discovery, StudioCards } from "./Discovery.tsx";
+import { studios, studioMatches, type StudioId } from "./studios.ts";
+const StudioWorkspace = lazy(() =>
+  import("./StudioWorkspace.tsx").then((m) => ({ default: m.StudioWorkspace })),
+);
 import { ToolIcon, UiIcon } from "./Icons.tsx";
 import "./polish.css";
+import "./readability.css";
 const desktop = "__TAURI_INTERNALS__" in window;
 const groups = [
   "All",
@@ -87,6 +92,7 @@ function App() {
   const [theme, setTheme] = useState(
     load<"dark" | "light" | "system">("theme", "dark"),
   );
+  const [studio, setStudio] = useState<Exclude<StudioId, "sql"> | null>(null);
   const [page, setPage] = useState("home"),
     [category, setCategory] = useState("All"),
     [query, setQuery] = useState("");
@@ -196,7 +202,17 @@ function App() {
       (category === "All" || a.category === category) &&
       (page !== "favorites" || favorite.includes(a.id)),
   );
+  function openStudio(id: StudioId) {
+    if (id === "sql") {
+      choose(actions.find((a) => a.id === "sql.format")!);
+      return;
+    }
+    setActive(null);
+    setStudio(id);
+    setPalette(false);
+  }
   function choose(a: Action) {
+    setStudio(null);
     setActive(a);
     setInput({ ...a.example });
     setOutput(null);
@@ -282,6 +298,7 @@ function App() {
     <button
       className={page === id ? "nav selected" : "nav"}
       onClick={() => {
+        setStudio(null);
         setActive(null);
         setPage(id);
         setQuery("");
@@ -294,6 +311,7 @@ function App() {
     </button>
   );
   const navigate = (destination: string, group = "All") => {
+    setStudio(null);
     setActive(null);
     setPage(destination);
     setCategory(group);
@@ -316,48 +334,53 @@ function App() {
         </button>
         <div className="nav-label">WORKSPACE</div>
         {nav("home", t("工作台", "Workbench"))}
+        {nav("studios", t("创作工作台", "Creative studios"))}
         {nav("tools", t("全部工具", "All tools"))}
         {nav("favorites", t("我的收藏", "Favorites"))}
         {nav("history", t("执行历史", "History"))}
         {nav("workflow", t("工作流", "Workflows"))}
-        <div className="nav-label categories-label">
-          {t("工具分类", "COLLECTIONS")}
-        </div>
-        <div className="collection-nav">
-          {groups.slice(1).map((g) => (
-            <button
-              key={g}
-              className={
-                category === g && page === "tools" ? "nav selected" : "nav"
-              }
-              onClick={() => {
-                setActive(null);
-                setPage("tools");
-                setCategory(g);
-                setQuery("");
-              }}
-            >
-              <ToolIcon category={g} className="nav-icon" flat />
-              {en ? g : (categoryLabels[g] ?? g)}
-              <small>{actions.filter((a) => a.category === g).length}</small>
-            </button>
-          ))}
-          {desktop &&
-            ["Files", "System"].map((g) => (
+        <details>
+          <summary>{t("按专业分类浏览", "Browse by category")}</summary>
+          <div className="nav-label categories-label">
+            {t("工具分类", "COLLECTIONS")}
+          </div>
+          <div className="collection-nav">
+            {groups.slice(1).map((g) => (
               <button
                 key={g}
-                className="nav"
+                className={
+                  category === g && page === "tools" ? "nav selected" : "nav"
+                }
                 onClick={() => {
+                  setStudio(null);
                   setActive(null);
                   setPage("tools");
                   setCategory(g);
+                  setQuery("");
                 }}
               >
                 <ToolIcon category={g} className="nav-icon" flat />
                 {en ? g : (categoryLabels[g] ?? g)}
+                <small>{actions.filter((a) => a.category === g).length}</small>
               </button>
             ))}
-        </div>
+            {desktop &&
+              ["Files", "System"].map((g) => (
+                <button
+                  key={g}
+                  className="nav"
+                  onClick={() => {
+                    setActive(null);
+                    setPage("tools");
+                    setCategory(g);
+                  }}
+                >
+                  <ToolIcon category={g} className="nav-icon" flat />
+                  {en ? g : (categoryLabels[g] ?? g)}
+                </button>
+              ))}
+          </div>
+        </details>
         <div className="sidebar-bottom">
           <div className="local">
             <span className="dot" />
@@ -368,7 +391,7 @@ function App() {
             <div className="avatar">LR</div>
             <div>
               Personal workspace
-              <small>v0.7.0 · {desktop ? "Desktop" : "Web"}</small>
+              <small>v0.8.0 · {desktop ? "Desktop" : "Web"}</small>
             </div>
           </div>
         </div>
@@ -376,22 +399,27 @@ function App() {
       <main>
         <header>
           <div className="breadcrumb">
-            {active ? "Tool workspace" : "Workspace"} <span>/</span>{" "}
-            {active
+            {active || studio ? "Tool workspace" : "Workspace"} <span>/</span>{" "}
+            {studio
               ? en
-                ? active.nameEn
-                : active.name
-              : t(
-                  {
-                    home: "工作台",
-                    tools: "工具库",
-                    favorites: "收藏",
-                    history: "执行历史",
-                    workflow: "工作流",
-                    settings: "设置",
-                  }[page] ?? "工作台",
-                  page,
-                )}
+                ? studios.find((s) => s.id === studio)!.en
+                : studios.find((s) => s.id === studio)!.name
+              : active
+                ? en
+                  ? active.nameEn
+                  : active.name
+                : t(
+                    {
+                      home: "工作台",
+                      tools: "工具库",
+                      studios: "创作工作台",
+                      favorites: "收藏",
+                      history: "执行历史",
+                      workflow: "工作流",
+                      settings: "设置",
+                    }[page] ?? "工作台",
+                    page,
+                  )}
           </div>
           <div className="top-actions">
             <button className="header-search" onClick={() => setPalette(true)}>
@@ -417,7 +445,30 @@ function App() {
             </button>
           </div>
         </header>
-        {active ? (
+        {studio ? (
+          <Suspense
+            fallback={
+              <div className="content" role="status">
+                {t("正在打开工作台…", "Opening studio…")}
+              </div>
+            }
+          >
+            <StudioWorkspace
+              key={studio}
+              id={studio}
+              en={en}
+              onClose={() => setStudio(null)}
+              onRecord={(id, status, elapsedMs) => {
+                const next = [
+                  { id, status, elapsedMs, time: new Date().toISOString() },
+                  ...history,
+                ].slice(0, 100);
+                setHistory(next);
+                save("history", next);
+              }}
+            />
+          </Suspense>
+        ) : active ? (
           <Workbench
             key={active.id}
             action={active}
@@ -510,7 +561,8 @@ function App() {
         ) : (
           <>
             {page === "home" && (
-              <Dashboard
+              <Discovery
+                openStudio={openStudio}
                 actions={all}
                 history={history}
                 favorites={favorite}
@@ -521,6 +573,19 @@ function App() {
                 setQuery={setQuery}
                 toggle={toggle}
               />
+            )}
+            {page === "studios" && (
+              <div className="studio-library">
+                <span className="studio-kicker">CREATE SOMETHING USEFUL</span>
+                <h1>{t("从一个小任务开始。", "Start with one small task.")}</h1>
+                <p>
+                  {t(
+                    "七个有介绍、有预览的完整工作台。",
+                    "Seven guided workspaces with real previews.",
+                  )}
+                </p>
+                <StudioCards en={en} open={openStudio} />
+              </div>
             )}
             {(["tools", "favorites"].includes(page) ||
               (page === "home" && !!query)) && (
@@ -598,6 +663,9 @@ function App() {
                       </div>
                     </div>
                   </>
+                )}
+                {page === "tools" && category === "All" && (
+                  <StudioCards en={en} open={openStudio} query={query} />
                 )}
                 <div className="section-title">
                   <h2>
@@ -850,7 +918,7 @@ function App() {
                   </button>
                 </div>
                 <div className="settings-card">
-                  <h2>LR Toolbox X · 0.7.0</h2>
+                  <h2>LR Toolbox X · 0.8.0</h2>
                   <p>
                     {all.length} {t("已实现 Action", "implemented actions")} ·{" "}
                     {desktop ? "Tauri / Rust" : "React / Web"} · Apache-2.0
@@ -905,6 +973,15 @@ function App() {
                 }
               }}
             />
+            {studioMatches(query)
+              .slice(0, 4)
+              .map((s) => (
+                <button key={s.id} onClick={() => openStudio(s.id)}>
+                  <ToolIcon category={s.category} />
+                  <span>{en ? s.en : s.name}</span>
+                  <code>STUDIO</code>
+                </button>
+              ))}
             {paletteMatches.map((a) => (
               <button key={a.id} onClick={() => choose(a)}>
                 <ToolIcon category={a.category} />

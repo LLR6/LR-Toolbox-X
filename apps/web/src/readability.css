@@ -1,0 +1,91 @@
+/* Text contrast and comfortable reading sizes across both themes. */
+:root {
+  --text: #f4f7ff;
+  --muted: #c0cde0;
+  --line: #354965;
+  font-size: 15px;
+}
+[data-theme="light"] {
+  --text: #142640;
+  --muted: #425672;
+  --line: #becce0;
+}
+body {
+  font-weight: 450;
+  line-height: 1.6;
+}
+button {
+  font-weight: 550;
+}
+.nav {
+  font-size: 14px;
+}
+.sidebar small,
+.sidebar .nav-label,
+.brand small,
+.profile small {
+  font-size: 12px;
+  opacity: 1;
+}
+.sidebar .nav,
+.quick-search {
+  color: var(--text);
+}
+.sidebar .nav-label,
+.breadcrumb,
+.local,
+.field-label,
+.workbench .workbench-description {
+  color: var(--muted);
+}
+.workbench p,
+.workbench small,
+.workbench label,
+.workbench footer,
+.workbench dd,
+.workbench dt {
+  opacity: 1;
+}
+.workbench p,
+.workbench label {
+  font-size: 14px;
+}
+.workbench small,
+.workbench footer,
+.workbench dt,
+.workbench dd {
+  font-size: 12px;
+}
+.workbench textarea,
+.workbench pre,
+.workbench input,
+.workbench select {
+  font-size: 14px;
+  line-height: 1.75;
+}
+.entry p,
+.tool-card p,
+.heading-row p,
+.collection small,
+.hero-caption p {
+  color: var(--muted);
+  opacity: 1;
+  font-size: 14px;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+[data-theme="light"] .xml-summary strong,
+[data-theme="light"] .xml-tree-scroll td:first-child {
+  color: #176655;
+}
+
+.brand small {
+  white-space: normal;
+  line-height: 1.5;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  overflow-wrap: anywhere;
+}

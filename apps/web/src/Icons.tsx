@@ -2,6 +2,12 @@ import { useId, type ReactNode } from "react";
 
 /** Local SVG artwork. Gradients are unique per instance, including in dialogs. */
 const palettes: Record<string, [string, string, string]> = {
+  PDF: ["#ffc5cb", "#dc7888", "#873c58"],
+  Images: ["#d5c1ff", "#9a75df", "#5c3c99"],
+  Crop: ["#b9f0db", "#5ebf9e", "#2c786d"],
+  OCR: ["#b5ddff", "#649ee6", "#345f9c"],
+  Word: ["#bbd7ff", "#6e9fe5", "#365e9c"],
+  Media: ["#d5c6ff", "#a288e4", "#604d9d"],
   Text: ["#c5b4ff", "#8664e9", "#49359b"],
   JSON: ["#8dd8ff", "#3b8df1", "#234dba"],
   Encoding: ["#92eaf1", "#26b8c5", "#146c8b"],
@@ -47,6 +53,114 @@ function Artwork({
     strokeLinejoin: "round" as const,
   };
   switch (kind) {
+    case "PDF":
+    case "Word":
+      return (
+        <>
+          <path
+            d="M20 15h29l12 12v34H20Z"
+            fill={deep}
+            transform="translate(-3 3)"
+          />
+          <path d="M23 12h26l12 12v34H23Z" fill={face} stroke={light} />
+          <path d="M49 12v13h12" fill={light} />
+          <rect x="17" y="31" width="39" height="18" rx="5" fill={deep} />
+          <text
+            x="36"
+            y="44"
+            textAnchor="middle"
+            fontFamily="system-ui"
+            fontWeight="800"
+            fontSize="11"
+            fill={ink}
+          >
+            {kind === "PDF" ? "PDF" : "DOCX"}
+          </text>
+          <path d="M30 54h22" {...line} />
+        </>
+      );
+    case "Images":
+      return (
+        <>
+          <rect
+            x="14"
+            y="23"
+            width="46"
+            height="34"
+            rx="6"
+            fill={deep}
+            transform="rotate(-9 38 40)"
+          />
+          <rect
+            x="21"
+            y="15"
+            width="44"
+            height="35"
+            rx="6"
+            fill={face}
+            stroke={light}
+          />
+          <circle cx="52" cy="25" r="4" fill={light} />
+          <path d="m25 43 11-13 9 9 6-6 10 10Z" fill={deep} />
+          <path d="m37 51 0 12m-5-5 5 5 5-5" {...line} />
+        </>
+      );
+    case "Crop":
+      return (
+        <>
+          <rect x="21" y="18" width="39" height="38" rx="6" fill={deep} />
+          <path
+            d="M27 12v38a5 5 0 0 0 5 5h36M13 25h38a5 5 0 0 1 5 5v38"
+            stroke={light}
+            strokeWidth="6"
+            strokeLinecap="round"
+            fill="none"
+          />
+          <path d="m34 44 8-10 8 10Z" fill={ink} opacity=".7" />
+        </>
+      );
+    case "OCR":
+      return (
+        <>
+          <rect x="21" y="15" width="40" height="47" rx="7" fill={face} />
+          <path
+            d="M16 28v-9a8 8 0 0 1 8-8h8m17 0h8a8 8 0 0 1 8 8v9M16 49v9a8 8 0 0 0 8 8h8m17 0h8a8 8 0 0 0 8-8v-9"
+            {...line}
+          />
+          <path
+            d="M29 31h24M29 39h16M29 47h22"
+            stroke={deep}
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+          <path d="M13 40h55" stroke={ink} strokeWidth="2" />
+        </>
+      );
+    case "Media":
+      return (
+        <>
+          <rect
+            x="16"
+            y="17"
+            width="48"
+            height="37"
+            rx="8"
+            fill={deep}
+            transform="translate(-3 3)"
+          />
+          <rect
+            x="19"
+            y="14"
+            width="45"
+            height="37"
+            rx="7"
+            fill={face}
+            stroke={light}
+          />
+          <path d="m37 24 13 9-13 9Z" fill={ink} />
+          <path d="M23 59v-6m7 11V53m7 15V56m7 7v-8m7 11V53m7 6v-6" {...line} />
+        </>
+      );
     case "Text":
       return (
         <>
