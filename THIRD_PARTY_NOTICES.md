@@ -50,4 +50,17 @@ Complete installed license texts, including Marked's original Markdown notices, 
 - `turndown` 7.2.4 — MIT; used for local HTML-to-Markdown conversion. https://github.com/mixmark-io/turndown
 - `@types/turndown` is a development-only TypeScript declaration package under the DefinitelyTyped MIT license.
 
+## v0.10 visual studios
+
+- Mermaid — MIT; diagram rendering. https://github.com/mermaid-js/mermaid
+- SheetJS Community Edition (`xlsx`) — Apache-2.0; spreadsheet parsing and export. https://github.com/SheetJS/sheetjs
+- SVGO — MIT; SVG optimization. https://github.com/svg/svgo
+- ExifReader — MPL-2.0; local image metadata parsing. https://github.com/mattiasw/ExifReader
+- heic2any — MIT; browser HEIC/HEIF conversion. https://github.com/alexcorvi/heic2any
+- Color Thief — MIT; local palette extraction. https://github.com/lokesh/color-thief
+- cron-parser — MIT; Cron parsing and next-run calculation. https://github.com/harrisiirak/cron-parser
+- zxcvbn-ts core/language packages — MIT; local password strength estimation. English dictionary data includes upstream attribution requirements described by the package. https://github.com/zxcvbn-ts/zxcvbn
+- html2canvas — MIT; client-side DOM snapshot rendering. https://github.com/niklasvh/html2canvas
+- Day.js — MIT; date/time parsing and timezone presentation. https://github.com/iamkun/dayjs
+
 Resolved full license texts for installed packages are collected into `THIRD_PARTY_LICENSES.txt` by the production build.
