@@ -287,8 +287,8 @@ export function PowerStudioWorkspace({ id, en, onClose, onRecord }: Props) {
       bwip.toCanvas(canvas, {
         bcid: barcodeType,
         text: barcodeText,
-        scale: 3,
-        height: barcodeType === "qrcode" || barcodeType === "datamatrix" ? 28 : 14,
+        scale: 4,
+        height: barcodeType === "qrcode" || barcodeType === "datamatrix" ? 28 : 16,
         includetext: barcodeType !== "qrcode" && barcodeType !== "datamatrix",
         textxalign: "center",
         backgroundcolor: "FFFFFF",
@@ -315,8 +315,29 @@ export function PowerStudioWorkspace({ id, en, onClose, onRecord }: Props) {
       const reader = new BrowserMultiFormatReader();
       const url = URL.createObjectURL(file);
       try {
-        const result = await reader.decodeFromImageUrl(url);
-        setScanResult(result.getText());
+        try {
+          const result = await reader.decodeFromImageUrl(url);
+          setScanResult(result.getText());
+        } catch (firstError) {
+          const bitmap = await createImageBitmap(file);
+          try {
+            const scale = Math.max(2, Math.min(4, Math.ceil(1200 / Math.max(bitmap.width, bitmap.height))));
+            const quiet = 48;
+            const canvas = document.createElement("canvas");
+            canvas.width = bitmap.width * scale + quiet * 2;
+            canvas.height = bitmap.height * scale + quiet * 2;
+            const context = canvas.getContext("2d", { willReadFrequently: true });
+            if (!context) throw firstError;
+            context.imageSmoothingEnabled = false;
+            context.fillStyle = "#ffffff";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(bitmap, quiet, quiet, bitmap.width * scale, bitmap.height * scale);
+            const result = reader.decodeFromCanvas(canvas);
+            setScanResult(result.getText());
+          } finally {
+            bitmap.close();
+          }
+        }
         setNotice(t("识别完成。", "Barcode decoded."));
       } finally {
         URL.revokeObjectURL(url);
