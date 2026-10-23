@@ -1,4 +1,4 @@
-name: Sync v0.11 data utility studios
+name: Validate v0.11 data utility studios
 
 on:
   push:
@@ -9,7 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  sync:
+  validate:
+    if: ${{ !contains(github.event.head_commit.message, '[v11-data-sync]') }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -19,11 +20,11 @@ jobs:
         with:
           node-version: "24"
           cache: npm
-      - name: Install pinned engines
+      - name: Resolve pinned dependencies
         run: |
-          npm install --save-exact sql.js@1.15.1 jsondiffpatch@0.7.6 libphonenumber-js@1.13.15 chrono-node@2.10.1
-          npm install --save-dev --save-exact @types/sql.js@1.4.11
-      - name: Register four data utility studios
+          npm install --ignore-scripts --save-exact sql.js@1.15.1 jsondiffpatch@0.7.6 libphonenumber-js@1.13.15 chrono-node@2.10.1
+          npm install --ignore-scripts --save-dev --save-exact @types/sql.js@1.4.11
+      - name: Register data utility studios
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -44,92 +45,99 @@ jobs:
           predicate = predicate_anchor + 'export const isDataUtilityStudio = (id: StudioId): id is DataUtilityStudioId =>\n  dataUtilityStudioIds.includes(id as DataUtilityStudioId);\n'
           if 'isDataUtilityStudio' not in text:
               text = text.replace(predicate_anchor, predicate)
-          entries = '''  {
-    id: "sqlite",
-    name: "SQLite 数据库工作台",
-    en: "SQLite Database Studio",
-    category: "Code",
-    intro: "直接在浏览器里建库、跑 SQL、查看结果并导出真实数据库。",
-    introEn: "Build, query and export a real SQLite database entirely in your browser.",
-    use: "建表 · 查询 · 聚合 · SQLite 文件导出",
-    useEn: "DDL · Queries · Aggregates · SQLite export",
-    engine: "sql.js",
-    repo: "https://github.com/sql-js/sql.js",
-    accent: "mint",
-  },
-  {
-    id: "jsondiff",
-    name: "JSON 差异与补丁",
-    en: "JSON Diff & Patch",
-    category: "Code",
-    intro: "不只看哪里变了，还能生成补丁并验证应用后的对象。",
-    introEn: "See structural changes, generate a delta and verify the patched object.",
-    use: "深层 Diff · 数组变更 · Delta · Patch 验证",
-    useEn: "Deep diff · Arrays · Delta · Patch verification",
-    engine: "jsondiffpatch",
-    repo: "https://github.com/benjamine/jsondiffpatch",
-    accent: "coral",
-  },
-  {
-    id: "phone",
-    name: "国际手机号解析台",
-    en: "International Phone Inspector",
-    category: "Text",
-    intro: "把各种写法的号码标准化，并检查国家、类型与有效性。",
-    introEn: "Normalize phone numbers and inspect country, type and validity.",
-    use: "E.164 · 国际格式 · 国家识别 · 类型 · 有效性",
-    useEn: "E.164 · International format · Country · Type · Validity",
-    engine: "libphonenumber-js",
-    repo: "https://github.com/catamphetamine/libphonenumber-js",
-    accent: "blue",
-  },
-  {
-    id: "chrono",
-    name: "自然语言时间解析",
-    en: "Natural Language Date Parser",
-    category: "Time",
-    intro: "把“下周五下午三点”这类文字直接识别成真实时间。",
-    introEn: "Turn phrases like “next Friday at 3pm” into actual timestamps.",
-    use: "中文 / English · 相对日期 · 时间范围 · ISO 时间线",
-    useEn: "Chinese / English · Relative dates · Ranges · ISO timeline",
-    engine: "chrono-node",
-    repo: "https://github.com/wanasit/chrono",
-    accent: "violet",
-  },
-'''
+          lines = [
+              '  {',
+              '    id: "sqlite",',
+              '    name: "SQLite 数据库工作台",',
+              '    en: "SQLite Database Studio",',
+              '    category: "Code",',
+              '    intro: "直接在浏览器里建库、跑 SQL、查看结果并导出真实数据库。",',
+              '    introEn: "Build, query and export a real SQLite database entirely in your browser.",',
+              '    use: "建表 · 查询 · 聚合 · SQLite 文件导出",',
+              '    useEn: "DDL · Queries · Aggregates · SQLite export",',
+              '    engine: "sql.js",',
+              '    repo: "https://github.com/sql-js/sql.js",',
+              '    accent: "mint",',
+              '  },',
+              '  {',
+              '    id: "jsondiff",',
+              '    name: "JSON 差异与补丁",',
+              '    en: "JSON Diff & Patch",',
+              '    category: "Code",',
+              '    intro: "不只看哪里变了，还能生成补丁并验证应用后的对象。",',
+              '    introEn: "See structural changes, generate a delta and verify the patched object.",',
+              '    use: "深层 Diff · 数组变更 · Delta · Patch 验证",',
+              '    useEn: "Deep diff · Arrays · Delta · Patch verification",',
+              '    engine: "jsondiffpatch",',
+              '    repo: "https://github.com/benjamine/jsondiffpatch",',
+              '    accent: "coral",',
+              '  },',
+              '  {',
+              '    id: "phone",',
+              '    name: "国际手机号解析台",',
+              '    en: "International Phone Inspector",',
+              '    category: "Text",',
+              '    intro: "把各种写法的号码标准化，并检查国家、类型与有效性。",',
+              '    introEn: "Normalize phone numbers and inspect country, type and validity.",',
+              '    use: "E.164 · 国际格式 · 国家识别 · 类型 · 有效性",',
+              '    useEn: "E.164 · International format · Country · Type · Validity",',
+              '    engine: "libphonenumber-js",',
+              '    repo: "https://github.com/catamphetamine/libphonenumber-js",',
+              '    accent: "blue",',
+              '  },',
+              '  {',
+              '    id: "chrono",',
+              '    name: "自然语言时间解析",',
+              '    en: "Natural Language Date Parser",',
+              '    category: "Time",',
+              '    intro: "把下周五下午三点这类文字直接识别成真实时间。",',
+              '    introEn: "Turn phrases like next Friday at 3pm into actual timestamps.",',
+              '    use: "中文 / English · 相对日期 · 时间范围 · ISO 时间线",',
+              '    useEn: "Chinese / English · Relative dates · Ranges · ISO timeline",',
+              '    engine: "chrono-node",',
+              '    repo: "https://github.com/wanasit/chrono",',
+              '    accent: "violet",',
+              '  },',
+          ]
+          entries = '\n'.join(lines) + '\n'
           if 'id: "sqlite"' not in text:
               text = text.replace('];\n\nexport const studioMatches', entries + '];\n\nexport const studioMatches')
           path.write_text(text)
           PY
-      - name: Keep license notices current
+      - name: Keep notices current
         run: |
           python - <<'PY'
           from pathlib import Path
           path = Path("THIRD_PARTY_NOTICES.md")
           text = path.read_text()
-          block = '''
-## v0.11 data utility studios
-
-- `sql.js` 1.15.1 — MIT; SQLite compiled to WebAssembly for local in-browser databases. https://github.com/sql-js/sql.js
-- `jsondiffpatch` 0.7.6 — MIT; structural JSON diff and patch engine. https://github.com/benjamine/jsondiffpatch
-- `libphonenumber-js` 1.13.15 — MIT; international phone-number parsing and validation. https://github.com/catamphetamine/libphonenumber-js
-- `chrono-node` 2.10.1 — MIT; natural-language date and time parsing. https://github.com/wanasit/chrono
-- `@types/sql.js` 1.4.11 — MIT; development-only TypeScript declarations from DefinitelyTyped.
-'''
+          lines = [
+              '',
+              '## v0.11 data utility studios',
+              '',
+              '- `sql.js` 1.15.1 — MIT; SQLite compiled to WebAssembly for local in-browser databases. https://github.com/sql-js/sql.js',
+              '- `jsondiffpatch` 0.7.6 — MIT; structural JSON diff and patch engine. https://github.com/benjamine/jsondiffpatch',
+              '- `libphonenumber-js` 1.13.15 — MIT; international phone-number parsing and validation. https://github.com/catamphetamine/libphonenumber-js',
+              '- `chrono-node` 2.10.1 — MIT; natural-language date and time parsing. https://github.com/wanasit/chrono',
+              '- `@types/sql.js` 1.4.11 — MIT; development-only TypeScript declarations from DefinitelyTyped.',
+          ]
           if '## v0.11 data utility studios' not in text:
-              path.write_text(text.rstrip() + '\n' + block)
+              path.write_text(text.rstrip() + '\n' + '\n'.join(lines) + '\n')
           PY
-      - name: Validate implementation
+      - name: Static and security checks
         run: |
           npm run lint
           npm run typecheck
           npm run build
           npm audit --omit=dev --audit-level=moderate
-      - name: Commit deterministic dependency and registry changes
+      - name: Browser integration suite
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e
+      - name: Commit lockfile and registry sync
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json apps/web/src/studios.ts THIRD_PARTY_NOTICES.md
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "build: sync v0.11 data utility engines"
+          git commit -m "build: lock v0.11 data utility studios [v11-data-sync]"
           git push origin HEAD:feature/v0.11-data-utility-studios
