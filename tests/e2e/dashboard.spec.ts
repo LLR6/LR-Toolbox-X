@@ -88,11 +88,15 @@ test("home favorites persist and open the matching real tool", async ({
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "编程与开发", exact: true }).click();
-  await page
+  const recommendations = page.locator(".recommended-tools");
+  await recommendations
     .getByRole("button", { name: "Favorite json.format", exact: true })
     .click();
   await expect(
-    page.getByRole("button", { name: "Unfavorite json.format", exact: true }),
+    recommendations.getByRole("button", {
+      name: "Unfavorite json.format",
+      exact: true,
+    }),
   ).toHaveAttribute("aria-pressed", "true");
   await page.reload();
   await page
