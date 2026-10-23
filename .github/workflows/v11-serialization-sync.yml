@@ -1,0 +1,144 @@
+name: Validate v0.11 serialization studios
+
+on:
+  push:
+    branches:
+      - feature/v0.11-serialization-studios
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    if: ${{ !contains(github.event.head_commit.message, '[v11-serialization-sync]') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/v0.11-serialization-studios
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Resolve pinned serialization engines
+        run: |
+          npm install --ignore-scripts --save-exact jsonata@2.2.2 protobufjs@8.8.1 @msgpack/msgpack@3.1.3 cbor-x@1.6.8
+      - name: Register serialization studios
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("apps/web/src/studios.ts")
+          text = path.read_text()
+          text = text.replace('  | "chrono";', '  | "chrono"\n  | "jsonata"\n  | "protobuf"\n  | "msgpack"\n  | "cbor";')
+          marker = 'export type DataUtilityStudioId = Extract<\n'
+          block = 'export type SerializationStudioId = Extract<\n  StudioId,\n  "jsonata" | "protobuf" | "msgpack" | "cbor"\n>;\n\n'
+          if block not in text:
+              text = text.replace(marker, block + marker)
+          text = text.replace('  | DataUtilityStudioId\n>;', '  | DataUtilityStudioId\n  | SerializationStudioId\n>;')
+          text = text.replace('  VisualStudioId | PowerStudioId | DataUtilityStudioId | "sql"\n>;', '  VisualStudioId | PowerStudioId | DataUtilityStudioId | SerializationStudioId | "sql"\n>;')
+          anchor = 'export const dataUtilityStudioIds: DataUtilityStudioId[] = ['
+          ids = 'export const serializationStudioIds: SerializationStudioId[] = [\n  "jsonata",\n  "protobuf",\n  "msgpack",\n  "cbor",\n];\n\n'
+          if ids not in text:
+              text = text.replace(anchor, ids + anchor)
+          predicate_anchor = 'export const isDataUtilityStudio = (id: StudioId): id is DataUtilityStudioId =>\n  dataUtilityStudioIds.includes(id as DataUtilityStudioId);\n'
+          predicate = predicate_anchor + 'export const isSerializationStudio = (id: StudioId): id is SerializationStudioId =>\n  serializationStudioIds.includes(id as SerializationStudioId);\n'
+          if 'isSerializationStudio' not in text:
+              text = text.replace(predicate_anchor, predicate)
+          lines = [
+              '  {',
+              '    id: "jsonata",',
+              '    name: "JSONata 查询转换台",',
+              '    en: "JSONata Query Lab",',
+              '    category: "Code",',
+              '    intro: "像查询数据库一样筛选、聚合和重塑复杂 JSON。",',
+              '    introEn: "Query, aggregate and reshape complex JSON with expressive local formulas.",',
+              '    use: "查询 · 筛选 · 聚合 · 对象重塑 · JSON 导出",',
+              '    useEn: "Query · Filter · Aggregate · Reshape · JSON export",',
+              '    engine: "JSONata 2.2.2",',
+              '    repo: "https://github.com/jsonata-js/jsonata",',
+              '    accent: "violet",',
+              '  },',
+              '  {',
+              '    id: "protobuf",',
+              '    name: "Protocol Buffers 编解码台",',
+              '    en: "Protocol Buffers Workbench",',
+              '    category: "Code",',
+              '    intro: "从 .proto schema 到真实 wire bytes，再完整解码回 JSON。",',
+              '    introEn: "Compile a .proto schema into real wire bytes and decode them back to JSON.",',
+              '    use: ".proto · 类型校验 · Encode · Decode · 二进制导出",',
+              '    useEn: ".proto · Verify · Encode · Decode · Binary export",',
+              '    engine: "protobuf.js",',
+              '    repo: "https://github.com/protobufjs/protobuf.js",',
+              '    accent: "blue",',
+              '  },',
+              '  {',
+              '    id: "msgpack",',
+              '    name: "MessagePack 二进制实验室",',
+              '    en: "MessagePack Binary Lab",',
+              '    category: "Code",',
+              '    intro: "把 JSON 压成紧凑二进制，查看字节、比例并随时回读。",',
+              '    introEn: "Turn JSON into compact MessagePack bytes, inspect them and round-trip locally.",',
+              '    use: "JSON ↔ MessagePack · Hex · Base64 · 大小对比 · 下载",',
+              '    useEn: "JSON ↔ MessagePack · Hex · Base64 · Size ratio · Download",',
+              '    engine: "@msgpack/msgpack",',
+              '    repo: "https://github.com/msgpack/msgpack-javascript",',
+              '    accent: "mint",',
+              '  },',
+              '  {',
+              '    id: "cbor",',
+              '    name: "CBOR 编解码实验室",',
+              '    en: "CBOR Codec Lab",',
+              '    category: "Code",',
+              '    intro: "把结构化数据编码成 CBOR，观察真实字节并验证回读结果。",',
+              '    introEn: "Encode structured data as CBOR, inspect real bytes and verify the round trip.",',
+              '    use: "JSON ↔ CBOR · Hex · Base64 · 二进制下载",',
+              '    useEn: "JSON ↔ CBOR · Hex · Base64 · Binary download",',
+              '    engine: "cbor-x",',
+              '    repo: "https://github.com/kriszyp/cbor-x",',
+              '    accent: "coral",',
+              '  },',
+          ]
+          entries = '\n'.join(lines) + '\n'
+          if 'id: "jsonata"' not in text:
+              text = text.replace('];\n\nexport const studioMatches', entries + '];\n\nexport const studioMatches')
+          path.write_text(text)
+          test_path = Path("tests/e2e/creative.spec.ts")
+          tests = test_path.read_text().replace('twenty-seven studios', 'thirty-one studios').replace('toHaveCount(27)', 'toHaveCount(31)')
+          test_path.write_text(tests)
+          PY
+      - name: Keep third-party notices current
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("THIRD_PARTY_NOTICES.md")
+          text = path.read_text()
+          lines = [
+              '',
+              '## v0.11 serialization studios',
+              '',
+              '- `jsonata` 2.2.2 — MIT; local JSON query and transformation engine. https://github.com/jsonata-js/jsonata',
+              '- `protobufjs` 8.8.1 — BSD-3-Clause; Protocol Buffers schema parsing and binary encode/decode. https://github.com/protobufjs/protobuf.js',
+              '- `@msgpack/msgpack` 3.1.3 — ISC; MessagePack encode/decode for browsers. https://github.com/msgpack/msgpack-javascript',
+              '- `cbor-x` 1.6.8 — MIT; CBOR encode/decode for browsers. https://github.com/kriszyp/cbor-x',
+          ]
+          if '## v0.11 serialization studios' not in text:
+              path.write_text(text.rstrip() + '\n' + '\n'.join(lines) + '\n')
+          PY
+      - name: Static and security checks
+        run: |
+          npm run lint
+          npm run typecheck
+          npm run build
+          npm audit --omit=dev --audit-level=moderate
+      - name: Browser integration suite
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e
+      - name: Commit deterministic dependency and registry changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json apps/web/src/studios.ts tests/e2e/creative.spec.ts THIRD_PARTY_NOTICES.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "build: lock v0.11 serialization studios [v11-serialization-sync]"
+          git push origin HEAD:feature/v0.11-serialization-studios
