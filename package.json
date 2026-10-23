@@ -1,6 +1,6 @@
 {
   "name": "lr-toolbox-x",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -24,9 +24,11 @@
     "@tauri-apps/api": "2.12.4",
     "ajv": "8.20.0",
     "diff": "9.0.0",
+    "fast-xml-parser": "5.11.2",
     "fflate": "0.8.3",
     "js-yaml": "5.5.0",
     "marked": "18.1.1",
+    "prettier": "3.9.10",
     "qrcode-generator": "2.0.4",
     "react": "19.2.0",
     "react-dom": "19.2.0"
@@ -43,7 +45,6 @@
     "eslint-plugin-react-hooks": "7.0.1",
     "globals": "16.4.0",
     "jsqr": "1.4.0",
-    "prettier": "3.6.2",
     "typescript": "5.9.3",
     "typescript-eslint": "8.72.0",
     "vite": "7.3.7"

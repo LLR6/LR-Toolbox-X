@@ -30,3 +30,8 @@ Run scripts/sbom.py after installing locked dependencies for the resolved portab
 - `marked` 18.1.1 — Copyright Christopher Jeffrey and contributors; MIT, with original Markdown BSD notices retained. https://github.com/markedjs/marked
 
 Complete installed license texts, including Marked's original Markdown notices, are bundled in `THIRD_PARTY_LICENSES.txt` by the build.
+
+## Code and XML studio
+
+- `prettier` 3.9.10 — Copyright James Long and contributors; MIT. https://github.com/prettier/prettier. Its complete LICENSE includes embedded component notices and is bundled during build.
+- `fast-xml-parser` 5.11.2 — Copyright Amit Gupta and contributors; MIT. https://github.com/NaturalIntelligence/fast-xml-parser. Runtime dependency notices are collected from locked installed packages by scripts/licenses.mjs.

@@ -93,6 +93,13 @@ Generated from executable registry. Native actions are listed separately.
 | yaml.from.json | JSON 转 YAML | YAML | web, windows, linux, macos, cli | safe |
 | yaml.validate | YAML 校验与概览 | YAML | web, windows, linux, macos, cli | safe |
 | markdown.render | Markdown 排版预览 | Markdown | web, windows, linux, macos, cli | safe |
+| code.format.javascript | JavaScript 格式化 | Code | web, windows, linux, macos, cli | safe |
+| code.format.typescript | TypeScript 格式化 | Code | web, windows, linux, macos, cli | safe |
+| code.format.css | CSS 格式化 | Code | web, windows, linux, macos, cli | safe |
+| code.format.html | HTML 格式化 | Code | web, windows, linux, macos, cli | safe |
+| xml.to.json | XML 转有序 JSON | XML | web, windows, linux, macos, cli | safe |
+| xml.validate | XML 语法校验 | XML | web, windows, linux, macos, cli | safe |
+| xml.inspect | XML 结构浏览 | XML | web, windows, linux, macos, cli | safe |
 | network.ipv4.inspect | IPv4 子网计算 | Network | web, windows, linux, macos, cli | safe |
 | network.ipv4.to_integer | IPv4 转整数 | Network | web, windows, linux, macos, cli | safe |
 | network.ipv4.from_integer | 整数转 IPv4 | Network | web, windows, linux, macos, cli | safe |

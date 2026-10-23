@@ -1,3 +1,4 @@
+import { XmlResult } from "./XmlResult.tsx";
 import { StudioResult } from "./StudioResult.tsx";
 import type { Json } from "../../../packages/registry/src/types.ts";
 import { binaryResult } from "./binary.ts";
@@ -72,6 +73,8 @@ export function ResultVisual({
     }
   }
   const csv = category === "CSV" && rows.length > 0;
+  if (id === "xml.inspect")
+    return <XmlResult data={data} en={en} source={source} />;
   if (id === "text.diff" || id === "markdown.render")
     return (
       <StudioResult id={id} data={data} value={value} en={en} source={source} />

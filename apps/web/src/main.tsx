@@ -42,6 +42,8 @@ const groups = [
   "Archive",
   "Diff",
   "YAML",
+  "Code",
+  "XML",
 ];
 const categoryLabels: Record<string, string> = {
   JSON: "JSON 与数据",
@@ -59,6 +61,8 @@ const categoryLabels: Record<string, string> = {
   Archive: "压缩与归档",
   Diff: "差异与补丁",
   YAML: "YAML 配置",
+  Code: "代码排版",
+  XML: "XML 文档",
   Network: "网络工具",
   Markdown: "Markdown",
   Crypto: "安全与加密",
@@ -364,7 +368,7 @@ function App() {
             <div className="avatar">LR</div>
             <div>
               Personal workspace
-              <small>v0.6.0 · {desktop ? "Desktop" : "Web"}</small>
+              <small>v0.7.0 · {desktop ? "Desktop" : "Web"}</small>
             </div>
           </div>
         </div>
@@ -451,6 +455,15 @@ function App() {
                 return;
               }
               const extensions: Record<string, [string, string]> = {
+                "code.format.javascript": [
+                  ".js",
+                  "text/javascript;charset=utf-8",
+                ],
+                "code.format.typescript": [".ts", "text/plain;charset=utf-8"],
+                "code.format.css": [".css", "text/css;charset=utf-8"],
+                "code.format.html": [".html", "text/html;charset=utf-8"],
+                "xml.to.json": [".json", "application/json;charset=utf-8"],
+                "xml.inspect": [".json", "application/json;charset=utf-8"],
                 "markdown.render": [".html", "text/html;charset=utf-8"],
                 "patch.create": [".patch", "text/x-diff;charset=utf-8"],
                 "yaml.from.json": [".yaml", "application/yaml;charset=utf-8"],
@@ -837,7 +850,7 @@ function App() {
                   </button>
                 </div>
                 <div className="settings-card">
-                  <h2>LR Toolbox X · 0.6.0</h2>
+                  <h2>LR Toolbox X · 0.7.0</h2>
                   <p>
                     {all.length} {t("已实现 Action", "implemented actions")} ·{" "}
                     {desktop ? "Tauri / Rust" : "React / Web"} · Apache-2.0
