@@ -1,4 +1,5 @@
 import {
+  isDataUtilityStudio,
   isPowerStudio,
   isVisualStudio,
   type LegacyStudioId,
@@ -7,6 +8,7 @@ import {
 import { StudioWorkspace as LegacyStudioWorkspace } from "./LegacyStudioWorkspace.tsx";
 import { VisualStudioWorkspace } from "./VisualStudioWorkspace.tsx";
 import { PowerStudioWorkspace } from "./PowerStudioEntry.tsx";
+import { DataUtilityStudioWorkspace } from "./DataUtilityStudioWorkspace.tsx";
 
 type Props = {
   id: Exclude<StudioId, "sql">;
@@ -16,6 +18,9 @@ type Props = {
 };
 
 export function StudioWorkspace(props: Props) {
+  if (isDataUtilityStudio(props.id)) {
+    return <DataUtilityStudioWorkspace {...props} id={props.id} />;
+  }
   if (isPowerStudio(props.id)) {
     return <PowerStudioWorkspace {...props} id={props.id} />;
   }

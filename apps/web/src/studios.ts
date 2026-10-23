@@ -21,7 +21,16 @@ export type StudioId =
   | "math"
   | "latex"
   | "lottie"
-  | "barcode";
+  | "barcode"
+  | "sqlite"
+  | "jsondiff"
+  | "phone"
+  | "chrono";
+
+export type DataUtilityStudioId = Extract<
+  StudioId,
+  "sqlite" | "jsondiff" | "phone" | "chrono"
+>;
 
 export type PowerStudioId = Extract<
   StudioId,
@@ -37,10 +46,11 @@ export type VisualStudioId = Exclude<
   | "media"
   | "sql"
   | PowerStudioId
+  | DataUtilityStudioId
 >;
 export type LegacyStudioId = Exclude<
   StudioId,
-  VisualStudioId | PowerStudioId | "sql"
+  VisualStudioId | PowerStudioId | DataUtilityStudioId | "sql"
 >;
 
 export const visualStudioIds: VisualStudioId[] = [
@@ -56,6 +66,13 @@ export const visualStudioIds: VisualStudioId[] = [
   "time",
 ];
 
+export const dataUtilityStudioIds: DataUtilityStudioId[] = [
+  "sqlite",
+  "jsondiff",
+  "phone",
+  "chrono",
+];
+
 export const powerStudioIds: PowerStudioId[] = [
   "quicktype",
   "charts",
@@ -69,6 +86,8 @@ export const isVisualStudio = (id: StudioId): id is VisualStudioId =>
   visualStudioIds.includes(id as VisualStudioId);
 export const isPowerStudio = (id: StudioId): id is PowerStudioId =>
   powerStudioIds.includes(id as PowerStudioId);
+export const isDataUtilityStudio = (id: StudioId): id is DataUtilityStudioId =>
+  dataUtilityStudioIds.includes(id as DataUtilityStudioId);
 
 export const studios: {
   id: StudioId;
@@ -381,6 +400,58 @@ export const studios: {
     engine: "BWIP-JS + ZXing",
     repo: "https://github.com/metafloor/bwip-js",
     accent: "blue",
+  },
+  {
+    id: "sqlite",
+    name: "SQLite 数据库工作台",
+    en: "SQLite Database Studio",
+    category: "Code",
+    intro: "直接在浏览器里建库、跑 SQL、查看结果并导出真实数据库。",
+    introEn: "Build, query and export a real SQLite database entirely in your browser.",
+    use: "建表 · 查询 · 聚合 · SQLite 文件导出",
+    useEn: "DDL · Queries · Aggregates · SQLite export",
+    engine: "sql.js",
+    repo: "https://github.com/sql-js/sql.js",
+    accent: "mint",
+  },
+  {
+    id: "jsondiff",
+    name: "JSON 差异与补丁",
+    en: "JSON Diff & Patch",
+    category: "Code",
+    intro: "不只看哪里变了，还能生成补丁并验证应用后的对象。",
+    introEn: "See structural changes, generate a delta and verify the patched object.",
+    use: "深层 Diff · 数组变更 · Delta · Patch 验证",
+    useEn: "Deep diff · Arrays · Delta · Patch verification",
+    engine: "jsondiffpatch",
+    repo: "https://github.com/benjamine/jsondiffpatch",
+    accent: "coral",
+  },
+  {
+    id: "phone",
+    name: "国际手机号解析台",
+    en: "International Phone Inspector",
+    category: "Text",
+    intro: "把各种写法的号码标准化，并检查国家、类型与有效性。",
+    introEn: "Normalize phone numbers and inspect country, type and validity.",
+    use: "E.164 · 国际格式 · 国家识别 · 类型 · 有效性",
+    useEn: "E.164 · International format · Country · Type · Validity",
+    engine: "libphonenumber-js",
+    repo: "https://github.com/catamphetamine/libphonenumber-js",
+    accent: "blue",
+  },
+  {
+    id: "chrono",
+    name: "自然语言时间解析",
+    en: "Natural Language Date Parser",
+    category: "Time",
+    intro: "把下周五下午三点这类文字直接识别成真实时间。",
+    introEn: "Turn phrases like next Friday at 3pm into actual timestamps.",
+    use: "中文 / English · 相对日期 · 时间范围 · ISO 时间线",
+    useEn: "Chinese / English · Relative dates · Ranges · ISO timeline",
+    engine: "chrono-node",
+    repo: "https://github.com/wanasit/chrono",
+    accent: "violet",
   },
 ];
 
