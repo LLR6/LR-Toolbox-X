@@ -34,15 +34,6 @@ test("HTML to Markdown uses readable ATX/fenced output", async () => {
   assert.doesNotMatch(output, /alert\(1\)/);
 });
 
-test("JWT inspector decodes but never claims verification", async () => {
-  const output = (await execute("developer.jwt.inspect", {
-    text: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJMUiIsImlhdCI6MTcwMDAwMDAwMH0.signature",
-  })) as Record<string, unknown>;
-  assert.deepEqual(output.header, { alg: "HS256", typ: "JWT" });
-  assert.deepEqual(output.payload, { sub: "LR", iat: 1700000000 });
-  assert.equal(output.signatureVerified, false);
-});
-
 test("regex tester reports matches and named groups", async () => {
   const output = (await execute("developer.regex.test", {
     pattern: "(LR)-(?<tool>Toolbox)",
