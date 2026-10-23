@@ -1,5 +1,40 @@
 export type StudioId =
-  "pdf" | "compress" | "crop" | "ocr" | "word" | "media" | "sql";
+  | "pdf"
+  | "compress"
+  | "crop"
+  | "ocr"
+  | "word"
+  | "media"
+  | "sql"
+  | "mermaid"
+  | "excel"
+  | "svg"
+  | "exif"
+  | "heic"
+  | "palette"
+  | "screenshot"
+  | "cron"
+  | "password"
+  | "time";
+
+export type VisualStudioId = Exclude<
+  StudioId,
+  "pdf" | "compress" | "crop" | "ocr" | "word" | "media" | "sql"
+>;
+
+export const visualStudioIds: VisualStudioId[] = [
+  "mermaid",
+  "excel",
+  "svg",
+  "exif",
+  "heic",
+  "palette",
+  "screenshot",
+  "cron",
+  "password",
+  "time",
+];
+
 export const studios: {
   id: StudioId;
   name: string;
@@ -104,7 +139,138 @@ export const studios: {
     repo: "https://github.com/sql-formatter-org/sql-formatter",
     accent: "mint",
   },
+  {
+    id: "mermaid",
+    name: "Mermaid 图表画布",
+    en: "Mermaid Diagram Studio",
+    category: "Code",
+    intro: "把几行文本，变成可以展示的流程与关系。",
+    introEn: "Turn compact text into diagrams you can present.",
+    use: "流程图 · 时序图 · ER · 甘特图 · SVG 导出",
+    useEn: "Flowchart · Sequence · ER · Gantt · SVG export",
+    engine: "Mermaid",
+    repo: "https://github.com/mermaid-js/mermaid",
+    accent: "violet",
+  },
+  {
+    id: "excel",
+    name: "Excel 数据台",
+    en: "Excel Data Studio",
+    category: "CSV",
+    intro: "不用打开 Office，也能快速看懂一张表。",
+    introEn: "Inspect a workbook without opening Office.",
+    use: "XLS / XLSX / CSV · Sheet 预览 · CSV / JSON / XLSX 导出",
+    useEn: "XLS / XLSX / CSV · Sheet preview · CSV / JSON / XLSX export",
+    engine: "@stackline/xlsx",
+    repo: "https://github.com/stackline/xlsx",
+    accent: "mint",
+  },
+  {
+    id: "svg",
+    name: "SVG 实验室",
+    en: "SVG Lab",
+    category: "Colors",
+    intro: "让矢量图更干净、更轻，也更容易检查。",
+    introEn: "Make vector artwork lighter and easier to inspect.",
+    use: "安全预览 · SVGO 优化 · 体积对比 · SVG 导出",
+    useEn: "Safe preview · SVGO optimize · Size diff · SVG export",
+    engine: "SVGO",
+    repo: "https://github.com/svg/svgo",
+    accent: "coral",
+  },
+  {
+    id: "exif",
+    name: "照片信息台",
+    en: "Photo Metadata Studio",
+    category: "Images",
+    intro: "一眼看懂照片背后的相机、镜头和隐私信息。",
+    introEn: "Read the camera, lens, capture and privacy data behind a photo.",
+    use: "EXIF · 相机参数 · GPS 隐私提示 · JSON 导出",
+    useEn: "EXIF · Camera settings · GPS privacy alert · JSON export",
+    engine: "ExifReader",
+    repo: "https://github.com/mattiasw/ExifReader",
+    accent: "blue",
+  },
+  {
+    id: "heic",
+    name: "HEIC 图片转换",
+    en: "HEIC Converter",
+    category: "Images",
+    intro: "把 iPhone 照片，变成到处都能打开的图片。",
+    introEn: "Turn iPhone photos into widely compatible images.",
+    use: "HEIC / HEIF · JPEG / PNG · 质量控制 · 本地下载",
+    useEn: "HEIC / HEIF · JPEG / PNG · Quality · Local download",
+    engine: "heic2any",
+    repo: "https://github.com/alexcorvi/heic2any",
+    accent: "blue",
+  },
+  {
+    id: "palette",
+    name: "图片配色工作室",
+    en: "Palette Studio",
+    category: "Colors",
+    intro: "从一张图里，抽出一套真正能用的颜色。",
+    introEn: "Pull a usable visual system out of a single image.",
+    use: "主色 · 8 色色板 · 语义色 · CSS Variables",
+    useEn: "Dominant color · Palette · Semantic swatches · CSS variables",
+    engine: "Color Thief",
+    repo: "https://github.com/lokesh/color-thief",
+    accent: "violet",
+  },
+  {
+    id: "screenshot",
+    name: "HTML 卡片截图",
+    en: "HTML Card Capture",
+    category: "Markdown",
+    intro: "把一段本地 HTML，做成可以分享的图片卡片。",
+    introEn: "Turn local HTML into a shareable image card.",
+    use: "安全 HTML · 卡片尺寸 · 背景 · PNG 导出",
+    useEn: "Safe HTML · Card sizes · Background · PNG export",
+    engine: "html2canvas",
+    repo: "https://github.com/niklasvh/html2canvas",
+    accent: "coral",
+  },
+  {
+    id: "cron",
+    name: "Cron 时间轴",
+    en: "Cron Timeline",
+    category: "Time",
+    intro: "别再猜表达式下一次到底什么时候运行。",
+    introEn: "See exactly when a cron expression will fire next.",
+    use: "快捷模板 · 表达式校验 · 时区 · 后续 10 次运行",
+    useEn: "Presets · Validation · Time zones · Next 10 runs",
+    engine: "cron-parser",
+    repo: "https://github.com/harrisiirak/cron-parser",
+    accent: "mint",
+  },
+  {
+    id: "password",
+    name: "密码强度实验室",
+    en: "Password Strength Lab",
+    category: "Crypto",
+    intro: "不是只看长度，而是识别真实世界里的弱模式。",
+    introEn: "Go beyond length and detect real-world weak patterns.",
+    use: "强度仪表 · 模式分析 · 破解时间估算 · 不保存密码",
+    useEn: "Strength meter · Pattern analysis · Crack-time estimate · No saving",
+    engine: "zxcvbn-ts",
+    repo: "https://github.com/zxcvbn-ts/zxcvbn",
+    accent: "mint",
+  },
+  {
+    id: "time",
+    name: "世界时间控制台",
+    en: "World Time Console",
+    category: "Time",
+    intro: "把时区、时间戳和日期差放在同一块时间面板。",
+    introEn: "Put zones, timestamps and date differences on one console.",
+    use: "时区转换 · Unix / ISO · 日期差 · 世界时间",
+    useEn: "Time-zone conversion · Unix / ISO · Date diff · World clocks",
+    engine: "Day.js",
+    repo: "https://github.com/iamkun/dayjs",
+    accent: "violet",
+  },
 ];
+
 export const studioMatches = (query: string) =>
   studios.filter((s) =>
     [s.id, s.name, s.en, s.intro, s.use, s.engine]
