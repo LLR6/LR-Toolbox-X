@@ -15,11 +15,38 @@ export type StudioId =
   | "screenshot"
   | "cron"
   | "password"
-  | "time";
+  | "time"
+  | "charts"
+  | "math"
+  | "barcode"
+  | "jwt"
+  | "jsonata"
+  | "template"
+  | "slides"
+  | "sqlite";
+
+export type PowerStudioId = Extract<
+  StudioId,
+  "charts" | "math" | "barcode" | "jwt" | "jsonata" | "template" | "slides" | "sqlite"
+>;
+
+export const powerStudioIds: PowerStudioId[] = [
+  "charts",
+  "math",
+  "barcode",
+  "jwt",
+  "jsonata",
+  "template",
+  "slides",
+  "sqlite",
+];
+
+export const isPowerStudio = (id: StudioId): id is PowerStudioId =>
+  powerStudioIds.includes(id as PowerStudioId);
 
 export type VisualStudioId = Exclude<
   StudioId,
-  "pdf" | "compress" | "crop" | "ocr" | "word" | "media" | "sql"
+  "pdf" | "compress" | "crop" | "ocr" | "word" | "media" | "sql" | PowerStudioId
 >;
 export type LegacyStudioId = Exclude<StudioId, VisualStudioId | "sql">;
 
@@ -273,6 +300,111 @@ export const studios: {
     repo: "https://github.com/iamkun/dayjs",
     accent: "violet",
   },
+  {
+    id: "charts",
+    name: "数据可视化中心",
+    en: "Data Visualization Studio",
+    category: "CSV",
+    intro: "把一组数据，立即变成可交互、可导出的图表。",
+    introEn: "Turn structured data into interactive, exportable charts.",
+    use: "柱状图 · 折线图 · 饼图 · PNG 导出",
+    useEn: "Bar · Line · Pie · PNG export",
+    engine: "Apache ECharts",
+    repo: "https://github.com/apache/echarts",
+    accent: "blue",
+  },
+  {
+    id: "math",
+    name: "数学计算实验室",
+    en: "Math Lab",
+    category: "Math",
+    intro: "从单位换算到矩阵和符号计算，都放进一个计算台。",
+    introEn: "Evaluate units, matrices and symbolic expressions in one console.",
+    use: "表达式 · 单位 · 矩阵 · 符号求导",
+    useEn: "Expressions · Units · Matrices · Symbolic derivatives",
+    engine: "Math.js",
+    repo: "https://github.com/josdejong/mathjs",
+    accent: "violet",
+  },
+  {
+    id: "barcode",
+    name: "条形码工作室",
+    en: "Barcode Studio",
+    category: "Encoding",
+    intro: "把编号、商品码和内部标签做成标准条形码。",
+    introEn: "Turn identifiers and labels into standard barcodes.",
+    use: "CODE128 · EAN · UPC · ITF · SVG 导出",
+    useEn: "CODE128 · EAN · UPC · ITF · SVG export",
+    engine: "JsBarcode",
+    repo: "https://github.com/lindell/JsBarcode",
+    accent: "coral",
+  },
+  {
+    id: "jwt",
+    name: "JWT / JWK 检查台",
+    en: "JWT / JWK Inspector",
+    category: "Crypto",
+    intro: "看清 Token 的 Header、Payload，并在有密钥时做本地验签。",
+    introEn: "Inspect token headers and payloads, and verify locally when a key is supplied.",
+    use: "JWT 解码 · HMAC 验签 · 不上传 Token",
+    useEn: "JWT decode · HMAC verify · No token upload",
+    engine: "panva/jose",
+    repo: "https://github.com/panva/jose",
+    accent: "mint",
+  },
+  {
+    id: "jsonata",
+    name: "JSON 查询转换台",
+    en: "JSONata Transform Studio",
+    category: "JSON",
+    intro: "不是只格式化 JSON，而是直接查询、聚合和重塑数据。",
+    introEn: "Query, aggregate and reshape JSON instead of only formatting it.",
+    use: "查询 · 过滤 · 聚合 · 数据重塑",
+    useEn: "Query · Filter · Aggregate · Reshape",
+    engine: "JSONata",
+    repo: "https://github.com/jsonata-js/jsonata",
+    accent: "blue",
+  },
+  {
+    id: "template",
+    name: "模板生成工作台",
+    en: "Template Studio",
+    category: "Developer",
+    intro: "一份模板加一份 JSON，批量生成结构化文本或 HTML。",
+    introEn: "Combine a template with JSON to generate structured text or HTML.",
+    use: "Handlebars · JSON 数据 · 安全预览 · HTML 导出",
+    useEn: "Handlebars · JSON data · Safe preview · HTML export",
+    engine: "Handlebars",
+    repo: "https://github.com/handlebars-lang/handlebars.js",
+    accent: "violet",
+  },
+  {
+    id: "slides",
+    name: "浏览器演示工坊",
+    en: "Browser Slides Studio",
+    category: "Markdown",
+    intro: "用 Markdown 快速搭一份真正可播放的网页演示稿。",
+    introEn: "Build a real browser presentation from compact Markdown.",
+    use: "Markdown 分页 · Reveal 播放 · 进度与控制 · 源码导出",
+    useEn: "Markdown slides · Reveal playback · Controls · Source export",
+    engine: "Reveal.js",
+    repo: "https://github.com/hakimel/reveal.js",
+    accent: "coral",
+  },
+  {
+    id: "sqlite",
+    name: "SQLite 本地数据库",
+    en: "SQLite Browser Lab",
+    category: "Developer",
+    intro: "直接在浏览器内存里打开、查询和导出 SQLite 数据库。",
+    introEn: "Open, query and export SQLite databases entirely in browser memory.",
+    use: "打开 DB · 执行 SQL · 表格预览 · 数据库导出",
+    useEn: "Open DB · Run SQL · Table preview · Database export",
+    engine: "sql.js",
+    repo: "https://github.com/sql-js/sql.js",
+    accent: "mint",
+  },
+
 ];
 
 export const studioMatches = (query: string) =>
