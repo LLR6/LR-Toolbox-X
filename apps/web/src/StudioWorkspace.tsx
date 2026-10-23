@@ -1,4 +1,4 @@
-import { LegacyStudioWorkspace } from "./LegacyStudioWorkspace.tsx";
+import { StudioWorkspace as LegacyStudioWorkspace } from "./LegacyStudioWorkspace.tsx";
 import { VisualStudioWorkspace } from "./VisualStudioWorkspace.tsx";
 import {
   legacyStudioIds,
