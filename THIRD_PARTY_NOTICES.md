@@ -50,4 +50,17 @@ Complete installed license texts, including Marked's original Markdown notices, 
 - `turndown` 7.2.4 — MIT; used for local HTML-to-Markdown conversion. https://github.com/mixmark-io/turndown
 - `@types/turndown` is a development-only TypeScript declaration package under the DefinitelyTyped MIT license.
 
+## v0.10 specialist visual studios
+
+- `mermaid` 12.2.0 — MIT; strict-mode local diagram rendering. https://github.com/mermaid-js/mermaid
+- `@stackline/xlsx` 1.0.9 — Apache-2.0; SheetJS-compatible local XLS/XLSX/CSV parsing and export. https://www.npmjs.com/package/@stackline/xlsx
+- `svgo` 4.1.0 — MIT; SVG optimization after application-side sanitization. https://github.com/svg/svgo
+- `exifreader` 4.51.0 — MPL-2.0; local image metadata inspection. https://github.com/mattiasw/ExifReader
+- `heic2any` 0.0.4 — MIT; in-browser HEIC/HEIF conversion. https://github.com/alexcorvi/heic2any
+- `colorthief` 3.5.0 — MIT; local image palette extraction. https://github.com/lokesh/color-thief
+- `html2canvas` 1.4.1 — MIT; browser-side rendering of the application's sanitized local HTML card surface. https://github.com/niklasvh/html2canvas
+- `cron-parser` 5.10.2 — MIT; cron validation and future-run calculation. https://github.com/harrisiirak/cron-parser
+- `@zxcvbn-ts/core` 4.2.0 and `@zxcvbn-ts/language-common` 4.1.3 — MIT; local password-strength estimation and common pattern data. https://github.com/zxcvbn-ts/zxcvbn
+- `dayjs` 1.11.23 — MIT; local date parsing, Unix conversion and date-difference calculations. https://github.com/iamkun/dayjs
+
 Resolved full license texts for installed packages are collected into `THIRD_PARTY_LICENSES.txt` by the production build.
