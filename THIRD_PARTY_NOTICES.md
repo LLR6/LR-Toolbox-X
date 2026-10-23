@@ -18,3 +18,7 @@ Run scripts/sbom.py after installing locked dependencies for the resolved portab
 - `qrcode-generator` 2.0.4 by Kazuhiko Arase, MIT: https://github.com/kazuhikoarase/qrcode-generator. Full license included in built THIRD_PARTY_LICENSES.txt.
 - `jsqr` 1.4.0, Apache-2.0, used only for independent test verification: https://github.com/cozmo/jsQR.
 - QR Code is a registered trademark of DENSO WAVE INCORPORATED.
+
+## Compression milestone
+
+`fflate` 0.8.3 by Arjun Barrett, MIT: https://github.com/101arrowz/fflate. The npm distribution's full LICENSE is included in THIRD_PARTY_LICENSES.txt during builds.

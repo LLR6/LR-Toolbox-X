@@ -12,7 +12,8 @@ import {
   runWorkflow,
   type Step,
 } from "../../../packages/registry/src/workflow.ts";
-import { load, save, download, type Run } from "./storage.ts";
+import { binaryResult, binaryBytes } from "./binary.ts";
+import { load, save, download, downloadBlob, type Run } from "./storage.ts";
 import "./style.css";
 import "./dashboard.css";
 import { UpdateNotice } from "./UpdateNotice.tsx";
@@ -38,6 +39,7 @@ const groups = [
   "Markdown",
   "Crypto",
   "QR",
+  "Archive",
 ];
 const categoryLabels: Record<string, string> = {
   JSON: "JSON 与数据",
@@ -52,6 +54,7 @@ const categoryLabels: Record<string, string> = {
   Colors: "色彩工具",
   CSV: "表格处理",
   QR: "二维码工具",
+  Archive: "压缩与归档",
   Network: "网络工具",
   Markdown: "Markdown",
   Crypto: "安全与加密",
@@ -357,7 +360,7 @@ function App() {
             <div className="avatar">LR</div>
             <div>
               Personal workspace
-              <small>v0.4.0 · {desktop ? "Desktop" : "Web"}</small>
+              <small>v0.5.0 · {desktop ? "Desktop" : "Web"}</small>
             </div>
           </div>
         </div>
@@ -434,7 +437,15 @@ function App() {
               setHasResult(false);
             }}
             onCopy={copy}
-            onDownload={() =>
+            onDownload={() => {
+              const file = binaryResult(output);
+              if (file) {
+                downloadBlob(
+                  file.filename,
+                  new Blob([binaryBytes(file)], { type: file.mime }),
+                );
+                return;
+              }
               download(
                 active.id +
                   (active.id === "qr.generate"
@@ -450,10 +461,17 @@ function App() {
                   : active.category === "CSV" && typeof output === "string"
                     ? "text/csv;charset=utf-8"
                     : "text/plain",
-              )
-            }
+              );
+            }}
             onFavorite={() => toggle(active.id)}
             onChoose={choose}
+            onExtract={(path) => {
+              const tool = actions.find((a) => a.id === "archive.zip.extract");
+              if (tool) {
+                choose(tool);
+                setInput({ text: input.text, path });
+              }
+            }}
           />
         ) : (
           <>
@@ -798,7 +816,7 @@ function App() {
                   </button>
                 </div>
                 <div className="settings-card">
-                  <h2>LR Toolbox X · 0.4.0</h2>
+                  <h2>LR Toolbox X · 0.5.0</h2>
                   <p>
                     {all.length} {t("已实现 Action", "implemented actions")} ·{" "}
                     {desktop ? "Tauri / Rust" : "React / Web"} · Apache-2.0

@@ -79,6 +79,13 @@ Generated from executable registry. Native actions are listed separately.
 | csv.rename | CSV 重命名列 | CSV | web, windows, linux, macos, cli | safe |
 | csv.aggregate | CSV 分组数值汇总 | CSV | web, windows, linux, macos, cli | safe |
 | qr.generate | 二维码生成 | QR | web, windows, linux, macos, cli | safe |
+| archive.gzip.compress | 文本压缩为 GZIP | Archive | web, windows, linux, macos, cli | safe |
+| archive.gzip.decompress | GZIP 解压文本 | Archive | web, windows, linux, macos, cli | safe |
+| archive.zlib.compress | 文本压缩为 Zlib | Archive | web, windows, linux, macos, cli | safe |
+| archive.zlib.decompress | Zlib 解压文本 | Archive | web, windows, linux, macos, cli | safe |
+| archive.zip.create | 文本文件打包 ZIP | Archive | web, windows, linux, macos, cli | safe |
+| archive.zip.list | ZIP 文件目录 | Archive | web, windows, linux, macos, cli | safe |
+| archive.zip.extract | ZIP 提取单个文件 | Archive | web, windows, linux, macos, cli | safe |
 | network.ipv4.inspect | IPv4 子网计算 | Network | web, windows, linux, macos, cli | safe |
 | network.ipv4.to_integer | IPv4 转整数 | Network | web, windows, linux, macos, cli | safe |
 | network.ipv4.from_integer | 整数转 IPv4 | Network | web, windows, linux, macos, cli | safe |

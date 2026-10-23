@@ -13,6 +13,7 @@ const palettes: Record<string, [string, string, string]> = {
   Numbers: ["#a7ece4", "#44b1ba", "#286777"],
   Units: ["#ffdda1", "#df9a53", "#936235"],
   Colors: ["#ffd0ed", "#d179c0", "#774b96"],
+  Archive: ["#ffdbb2", "#cc935d", "#825038"],
   QR: ["#c9e8ff", "#788aef", "#414aa8"],
   CSV: ["#a5f4c0", "#48be87", "#207459"],
   Network: ["#9be7ff", "#45b3e6", "#235eab"],
@@ -460,6 +461,20 @@ function Artwork({
               <circle cx="39" cy="48" r="2" fill="#334257" />
             </g>
           ))}
+        </>
+      );
+    case "Archive":
+      return (
+        <>
+          <path d="M17 17 39 7l23 10v38L39 65 17 55Z" fill={deep} />
+          <path d="M17 14 39 4l23 10-23 12Z" fill={light} />
+          <path d="M17 14 39 26v34L17 49Z" fill={face} />
+          <path d="M39 26 62 14v35L39 60Z" fill={deep} stroke={light} />
+          <path d="m29 9 22 11v33l-8 4V24L22 13Z" fill="#d7a26f" />
+          {[25, 31, 37, 43].map((y) => (
+            <path key={y} d={`M44 ${y}h6v3h-6Z`} fill="#664a37" />
+          ))}
+          <rect x="43" y="48" width="8" height="8" rx="2" fill="#ffe5bc" />
         </>
       );
     case "QR":
