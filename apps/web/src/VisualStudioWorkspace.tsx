@@ -47,18 +47,42 @@ const CARD_EXAMPLE = `<div style="padding:42px;border-radius:28px;background:lin
   <p style="font-size:18px;line-height:1.7;color:#c2cce1;margin:0">Local tools, visual workspaces, and fewer repetitive steps.</p>
 </div>`;
 
-function useBlobUrl(blob: Blob | undefined) {
-  const [url, setUrl] = useState("");
+function RasterPreview({ blob, label }: { blob: Blob; label: string }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const [failed, setFailed] = useState(false);
   useEffect(() => {
-    if (!blob) {
-      setUrl("");
-      return;
-    }
-    const next = URL.createObjectURL(blob);
-    setUrl(next);
-    return () => URL.revokeObjectURL(next);
+    let active = true;
+    let bitmap: ImageBitmap | undefined;
+    setFailed(false);
+    void createImageBitmap(blob)
+      .then((next) => {
+        if (!active) {
+          next.close();
+          return;
+        }
+        bitmap = next;
+        const canvas = ref.current;
+        if (!canvas) return;
+        const scale = Math.min(1, 1200 / next.width, 900 / next.height);
+        canvas.width = Math.max(1, Math.round(next.width * scale));
+        canvas.height = Math.max(1, Math.round(next.height * scale));
+        const context = canvas.getContext("2d");
+        if (!context) throw Error("Canvas unavailable");
+        context.drawImage(next, 0, 0, canvas.width, canvas.height);
+      })
+      .catch(() => {
+        if (active) setFailed(true);
+      });
+    return () => {
+      active = false;
+      bitmap?.close();
+    };
   }, [blob]);
-  return url;
+  return failed ? (
+    <div className="raster-preview-fallback">{label}</div>
+  ) : (
+    <canvas ref={ref} role="img" aria-label={label} />
+  );
 }
 
 function bytes(value: string) {
@@ -162,7 +186,6 @@ export function VisualStudioWorkspace({
   const [svgStats, setSvgStats] = useState({ before: 0, after: 0 });
 
   const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const photoUrl = useBlobUrl(photoFile ?? undefined);
   const [exif, setExif] = useState<ExifSummary>({});
   const [hasGps, setHasGps] = useState(false);
 
@@ -170,10 +193,8 @@ export function VisualStudioWorkspace({
   const [heicFormat, setHeicFormat] = useState("image/jpeg");
   const [heicQuality, setHeicQuality] = useState(0.88);
   const [heicOutputs, setHeicOutputs] = useState<Blob[]>([]);
-  const heicUrl = useBlobUrl(heicOutputs[0]);
 
   const [paletteFile, setPaletteFile] = useState<File | null>(null);
-  const paletteUrl = useBlobUrl(paletteFile ?? undefined);
   const [palette, setPalette] = useState<string[]>([]);
 
   const [cardSource, setCardSource] = useState(CARD_EXAMPLE);
@@ -350,6 +371,10 @@ export function VisualStudioWorkspace({
     if (!file) return;
     await perform(async () => {
       if (file.size > 15000000) throw Error(t("照片最大 15 MB", "Photo limit is 15 MB"));
+      const allowed = new Set(["image/jpeg", "image/png", "image/webp", "image/avif", "image/heic", "image/heif"]);
+      const extensionAllowed = /\.(jpe?g|png|webp|avif|heic|heif)$/i.test(file.name);
+      if (!allowed.has(file.type.toLowerCase()) && !extensionAllowed)
+        throw Error(t("请选择 JPEG、PNG、WebP、AVIF、HEIC 或 HEIF 照片", "Choose JPEG, PNG, WebP, AVIF, HEIC or HEIF"));
       const { default: ExifReader } = await import("exifreader");
       const tags = ExifReader.load(await file.arrayBuffer()) as Record<string, unknown>;
       const summary: ExifSummary = {
@@ -492,7 +517,7 @@ export function VisualStudioWorkspace({
     ? `<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'"><style>html,body{margin:0;min-height:100%;display:grid;place-items:center;background:#121a2c;color:#fff}svg{max-width:96%;height:auto}</style>${mermaidSvg}`
     : "";
   const safeSvgDoc = svgOutput
-    ? `<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'"><style>html,body{margin:0;min-height:100%;display:grid;place-items:center;background:#121a2c}svg{max-width:94%;max-height:94vh}</style>${svgOutput}`
+    ? `<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'"><style>html,body{margin:0;min-height:100%;display:grid;place-items:center;background:#121a2c}svg{display:block;width:min(94%,960px);height:auto;max-height:94vh}</style>${svgOutput}`
     : "";
   const cssPalette = palette
     .map((color, index) => `--lr-${["primary", "accent", "surface", "highlight", "muted", "support", "detail", "ink"][index]}: ${color};`)
@@ -573,7 +598,7 @@ export function VisualStudioWorkspace({
 
       {id === "exif" && (
         <div className="visual-split exif-layout">
-          <section className="visual-panel photo-stage"><label className="visual-file-picker"><UiIcon name="upload" /><span><strong>{t("选择照片", "Choose a photo")}</strong><small>JPEG · PNG · WebP · HEIC · AVIF</small></span><input aria-label="Photo metadata file" type="file" accept="image/*,.heic,.heif,.avif" onChange={(event) => void selectExif(event.target.files?.[0])} /></label>{photoUrl && <img src={photoUrl} alt={t("照片预览", "Photo preview")} />}{hasGps && <div className="privacy-alert">⌖ {t("这张照片包含 GPS 位置信息；公开分享前请留意隐私。", "This photo contains GPS location data. Review it before sharing publicly.")}</div>}</section>
+          <section className="visual-panel photo-stage"><label className="visual-file-picker"><UiIcon name="upload" /><span><strong>{t("选择照片", "Choose a photo")}</strong><small>JPEG · PNG · WebP · HEIC · AVIF</small></span><input aria-label="Photo metadata file" type="file" accept="image/*,.heic,.heif,.avif" onChange={(event) => void selectExif(event.target.files?.[0])} /></label>{photoFile && <RasterPreview blob={photoFile} label={t("照片预览", "Photo preview")} />}{hasGps && <div className="privacy-alert">⌖ {t("这张照片包含 GPS 位置信息；公开分享前请留意隐私。", "This photo contains GPS location data. Review it before sharing publicly.")}</div>}</section>
           <section className="visual-panel exif-cards"><div className="visual-panel-head"><strong>PHOTO DATA</strong><span>LOCAL READ</span></div>{Object.keys(exif).length ? <><div className="metadata-grid">{Object.entries(exif).map(([key, value]) => <article key={key}><small>{key}</small><strong>{value}</strong></article>)}</div><div className="visual-actions"><button onClick={() => download("LR-photo-metadata.json", JSON.stringify(exif, null, 2), "application/json;charset=utf-8")}>JSON ↓</button></div></> : <div className="visual-empty"><ToolIcon category="Images" /><strong>{t("相机与拍摄参数会整理成卡片。", "Camera and capture details will become readable cards.")}</strong></div>}</section>
         </div>
       )}
@@ -581,13 +606,13 @@ export function VisualStudioWorkspace({
       {id === "heic" && (
         <div className="visual-split heic-layout">
           <section className="visual-panel"><label className="visual-file-picker"><UiIcon name="upload" /><span><strong>{t("选择 HEIC / HEIF", "Choose HEIC / HEIF")}</strong><small>{t("最大 20 MB，本地转换", "20 MB max, local conversion")}</small></span><input aria-label="HEIC file" type="file" accept=".heic,.heif,image/heic,image/heif" onChange={(event) => { setHeicFile(event.target.files?.[0] ?? null); setHeicOutputs([]); }} /></label><div className="control-grid"><label>{t("输出格式", "Format")}<select value={heicFormat} onChange={(event) => setHeicFormat(event.target.value)}><option value="image/jpeg">JPEG</option><option value="image/png">PNG</option></select></label><label>{t("JPEG 质量", "JPEG quality")} {Math.round(heicQuality * 100)}%<input type="range" min="0.4" max="1" step="0.02" value={heicQuality} onChange={(event) => setHeicQuality(Number(event.target.value))} disabled={heicFormat !== "image/jpeg"} /></label></div><button className="studio-primary" disabled={!heicFile || busy} onClick={() => void convertHeic()}>{busy ? t("转换中…", "Converting…") : t("转换图片", "Convert image")} →</button><p className="visual-tip">{t("注意：heic2any 不会把原始 EXIF / GPS 元数据复制到输出图片。", "Note: heic2any does not copy original EXIF/GPS metadata into converted files.")}</p></section>
-          <section className="visual-panel heic-preview">{heicUrl ? <><img src={heicUrl} alt="HEIC converted preview" /><div className="visual-actions">{heicOutputs.map((blob, index) => <button key={index} onClick={() => downloadBlob(`LR-HEIC-${index + 1}.${heicFormat === "image/png" ? "png" : "jpg"}`, blob)}>{t("下载", "Download")} {index + 1} ↓</button>)}</div></> : <div className="visual-empty"><ToolIcon category="Images" /><strong>{t("兼容格式的预览会出现在这里。", "The compatible image preview will appear here.")}</strong></div>}</section>
+          <section className="visual-panel heic-preview">{heicOutputs[0] ? <><RasterPreview blob={heicOutputs[0]} label="HEIC converted preview" /><div className="visual-actions">{heicOutputs.map((blob, index) => <button key={index} onClick={() => downloadBlob(`LR-HEIC-${index + 1}.${heicFormat === "image/png" ? "png" : "jpg"}`, blob)}>{t("下载", "Download")} {index + 1} ↓</button>)}</div></> : <div className="visual-empty"><ToolIcon category="Images" /><strong>{t("兼容格式的预览会出现在这里。", "The compatible image preview will appear here.")}</strong></div>}</section>
         </div>
       )}
 
       {id === "palette" && (
         <div className="visual-split palette-layout">
-          <section className="visual-panel photo-stage"><label className="visual-file-picker"><UiIcon name="upload" /><span><strong>{t("选择参考图片", "Choose a reference image")}</strong><small>JPEG · PNG · WebP</small></span><input aria-label="Palette image" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => { setPaletteFile(event.target.files?.[0] ?? null); setPalette([]); }} /></label>{paletteUrl && <img src={paletteUrl} alt={t("配色参考图", "Palette source")} />}<button className="studio-primary" disabled={!paletteFile || busy} onClick={() => void extractPalette()}>{t("提取配色", "Extract palette")} →</button></section>
+          <section className="visual-panel photo-stage"><label className="visual-file-picker"><UiIcon name="upload" /><span><strong>{t("选择参考图片", "Choose a reference image")}</strong><small>JPEG · PNG · WebP</small></span><input aria-label="Palette image" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => { setPaletteFile(event.target.files?.[0] ?? null); setPalette([]); }} /></label>{paletteFile && <RasterPreview blob={paletteFile} label={t("配色参考图", "Palette source")} />}<button className="studio-primary" disabled={!paletteFile || busy} onClick={() => void extractPalette()}>{t("提取配色", "Extract palette")} →</button></section>
           <section className="visual-panel palette-wall">{palette.length ? <><div className="swatch-grid">{palette.map((color, index) => <button key={color + index} style={{ background: color }} onClick={() => void navigator.clipboard.writeText(color)}><span>{["PRIMARY", "ACCENT", "SURFACE", "HIGHLIGHT", "MUTED", "SUPPORT", "DETAIL", "INK"][index]}</span><strong>{color}</strong></button>)}</div><pre>{cssPalette}</pre><div className="visual-actions"><button onClick={() => download("LR-palette.css", `:root {\n${cssPalette.split("\n").map((line) => `  ${line}`).join("\n")}\n}`, "text/css;charset=utf-8")}>CSS ↓</button><button onClick={() => download("LR-palette.json", JSON.stringify(palette, null, 2), "application/json;charset=utf-8")}>JSON ↓</button></div></> : <div className="visual-empty"><ToolIcon category="Colors" /><strong>{t("8 个颜色会铺成一面可以点击复制的色板墙。", "Eight colors will become a clickable palette wall.")}</strong></div>}</section>
         </div>
       )}
@@ -615,7 +640,7 @@ export function VisualStudioWorkspace({
 
       {id === "time" && (
         <div className="visual-stack time-layout">
-          <section className="visual-panel time-controls"><div className="control-grid three"><label>{t("起始 ISO 时间", "Start ISO time")}<input aria-label="Start ISO time" value={timeStart} onChange={(event) => setTimeStart(event.target.value)} /></label><label>{t("比较 ISO 时间", "Compare ISO time")}<input aria-label="Compare ISO time" value={timeEnd} onChange={(event) => setTimeEnd(event.target.value)} /></label><label>{t("目标时区", "Target zone")}<select value={targetZone} onChange={(event) => setTargetZone(event.target.value)}>{zones.map((zone) => <option key={zone}>{zone}</option>)}</select></label></div><div className="visual-actions"><button onClick={() => { const now = new Date(); setTimeStart(now.toISOString()); setTimeEnd(new Date(now.getTime() + 86400000).toISOString()); }}>{t("使用现在", "Use now")}</button><button className="studio-primary" disabled={busy} onClick={() => void calculateTime()}>{t("计算", "Calculate")} →</button></div></section>
+          <section className="visual-panel time-controls"><div className="control-grid three"><label>{t("起始 ISO 时间", "Start ISO time")}<input aria-label="Start ISO time" value={timeStart} onChange={(event) => setTimeStart(event.target.value)} /></label><label>{t("比较 ISO 时间", "Compare ISO time")}<input aria-label="Compare ISO time" value={timeEnd} onChange={(event) => setTimeEnd(event.target.value)} /></label><label>{t("目标时区", "Target zone")}<select value={targetZone} onChange={(event) => setTargetZone(event.target.value)}>{zones.map((zone) => <option key={zone}>{zone}</option>)}</select></label></div><div className="visual-actions"><button onClick={() => { const now = new Date(); setTimeStart(now.toISOString()); setTimeEnd(new Date(now.getTime() + 86400000).toISOString()); }}>{t("使用现在", "Use now")}</button><button className="studio-primary" aria-label={t("计算", "Calculate")} disabled={busy} onClick={() => void calculateTime()}>{t("计算", "Calculate")} →</button></div></section>
           <section className="world-clocks">{worldZones.map((zone) => <article key={zone}><small>{zone}</small><strong>{new Intl.DateTimeFormat(en ? "en-US" : "zh-CN", { timeZone: zone, hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date())}</strong><span>{new Intl.DateTimeFormat(en ? "en-US" : "zh-CN", { timeZone: zone, month: "short", day: "numeric", weekday: "short" }).format(new Date())}</span></article>)}</section>
           {timeReport && <section className="visual-panel time-results"><article><small>ISO 8601</small><strong>{timeReport.iso}</strong></article><article><small>UNIX</small><strong>{timeReport.unix}</strong><span>{timeReport.millis} ms</span></article><article><small>{targetZone}</small><strong>{timeReport.target}</strong></article><article><small>{t("时间差", "Difference")}</small><strong>{timeReport.diffDays.toFixed(3)} {t("天", "days")}</strong><span>{timeReport.diffHours.toFixed(2)} h · {timeReport.diffMinutes.toFixed(0)} min</span></article></section>}
         </div>
