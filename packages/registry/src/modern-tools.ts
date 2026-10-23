@@ -3,23 +3,19 @@ import TurndownService from "turndown";
 import { define as d, s, text, num } from "./define.ts";
 import type { Input, Json } from "./types.ts";
 
-function decodeBase64Url(value: string) {
-  if (!/^[A-Za-z0-9_-]*$/.test(value)) throw Error("Invalid Base64URL segment");
-  const padded = value.replaceAll("-", "+").replaceAll("_", "/").padEnd(Math.ceil(value.length / 4) * 4, "=");
-  const bytes = Uint8Array.from(atob(padded), (char) => char.charCodeAt(0));
-  return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-}
-
 function flatten(value: Json, prefix = "", out: Record<string, Json> = {}) {
   if (Array.isArray(value)) {
     if (!value.length && prefix) out[prefix] = [];
-    value.forEach((item, index) => flatten(item, prefix ? `${prefix}[${index}]` : `[${index}]`, out));
+    value.forEach((item, index) =>
+      flatten(item, prefix ? `${prefix}[${index}]` : `[${index}]`, out),
+    );
     return out;
   }
   if (value && typeof value === "object") {
     const entries = Object.entries(value);
     if (!entries.length && prefix) out[prefix] = {};
-    for (const [key, item] of entries) flatten(item, prefix ? `${prefix}.${key}` : key, out);
+    for (const [key, item] of entries)
+      flatten(item, prefix ? `${prefix}.${key}` : key, out);
     return out;
   }
   out[prefix || "value"] = value;
@@ -79,47 +75,23 @@ export const modernTools = [
     },
   ),
   d(
-    "developer.jwt.inspect",
-    "JWT 结构查看",
-    "Inspect JWT",
-    "仅解码 JWT Header 与 Payload 供调试，不验证签名，也不会把令牌上传。",
-    "Developer",
-    { text: s },
-    "object",
-    {
-      text: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJMUiIsImlhdCI6MTcwMDAwMDAwMH0.signature",
-    },
-    (i) => {
-      const parts = text(i).trim().split(".");
-      if (parts.length !== 3 || !parts[0] || !parts[1]) throw Error("Expected a three-part JWT");
-      const header = JSON.parse(decodeBase64Url(parts[0])) as Json;
-      const payload = JSON.parse(decodeBase64Url(parts[1])) as Json;
-      return {
-        header,
-        payload,
-        signaturePresent: parts[2].length > 0,
-        signatureVerified: false,
-        warning: "Decoded only — signature not verified",
-      };
-    },
-  ),
-  d(
     "developer.regex.test",
     "正则表达式测试器",
     "Regex tester",
     "在本地测试 JavaScript 正则，返回匹配文本、索引和捕获组；默认最多返回 200 个匹配。",
     "Developer",
-    {
-      pattern: s,
-      flags: s,
-      text: s,
-    },
+    { pattern: s, flags: s, text: s },
     "object",
-    { pattern: "(LR)-(?<tool>Toolbox)", flags: "gi", text: "LR-Toolbox / lr-toolbox" },
+    {
+      pattern: "(LR)-(?<tool>Toolbox)",
+      flags: "gi",
+      text: "LR-Toolbox / lr-toolbox",
+    },
     (i) => {
       const pattern = text(i, "pattern");
       const flags = text(i, "flags");
-      if (!/^[dgimsuvy]*$/.test(flags) || new Set(flags).size !== flags.length) throw Error("Invalid or duplicate RegExp flags");
+      if (!/^[dgimsuvy]*$/.test(flags) || new Set(flags).size !== flags.length)
+        throw Error("Invalid or duplicate RegExp flags");
       const source = text(i);
       const re = new RegExp(pattern, flags);
       const matches: Json[] = [];
@@ -144,7 +116,11 @@ export const modernTools = [
             named: match.groups ?? {},
           });
       }
-      return { count: matches.length, matches, truncated: matches.length >= 200 };
+      return {
+        count: matches.length,
+        matches,
+        truncated: matches.length >= 200,
+      };
     },
   ),
   d(
@@ -160,7 +136,8 @@ export const modernTools = [
     },
     "string",
     { start: "#596FE8", end: "#A06DE4", angle: 135 },
-    (i: Input) => `linear-gradient(${num(i, "angle")}deg, ${hex(text(i, "start"))}, ${hex(text(i, "end"))})`,
+    (i: Input) =>
+      `linear-gradient(${num(i, "angle")}deg, ${hex(text(i, "start"))}, ${hex(text(i, "end"))})`,
     "linear-gradient(135deg, #596FE8, #A06DE4)",
   ),
 ];
