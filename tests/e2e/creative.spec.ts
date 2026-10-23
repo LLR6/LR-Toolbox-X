@@ -37,7 +37,9 @@ test("discovery introduces seven studios and recommends only three tools at a ti
     "",
   );
   await page.getByRole("button", { name: "编程与开发", exact: true }).click();
-  await expect(page.getByTestId("dashboard-json.format")).toBeVisible();
+  await expect(
+    page.locator(".recommended-tools").getByTestId("dashboard-json.format"),
+  ).toBeVisible();
   await page.getByTestId("studio-sql").click();
   await page.getByRole("button", { name: "运行工具" }).click();
   await expect(page.getByRole("status")).toContainText("SELECT");
