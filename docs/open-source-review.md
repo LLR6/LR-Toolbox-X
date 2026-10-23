@@ -9,3 +9,14 @@
 `npm audit --omit=dev --audit-level=moderate` is part of validation and CI. A clean audit is evidence against currently reported advisories, not a guarantee of absence of vulnerabilities. No community plugin code is loaded at runtime, and no uploaded input is transmitted.
 
 CSV transforms use the existing local parser and serializer. No new CSV dependency, dynamic expression evaluator, shell invocation or network fetch is introduced. Preview is capped at 100 data rows × 20 columns; download retains the entire result. Empty fields and numeric parsing policies are explicit in tool descriptions.
+
+## Compression milestone — 2026-10-23
+
+Integrated [101arrowz/fflate](https://github.com/101arrowz/fflate), pinned npm 0.8.3, MIT, no runtime dependencies. The npm package includes its full license, collected by the existing license bundler.
+
+- Uses synchronous streaming inflate in 128-byte input chunks, with an actual expanded-byte counter capped at 4,000,000 bytes. This is checked even if a ZIP's declared uncompressed sizes lie. Input archives are capped at 512,000 bytes.
+- Adds explicit CRC32/GZIP ISIZE, Adler-32 and ZIP CRC checks; the library's decode success alone is not treated as integrity verification.
+- ZIP32 central-directory and local-header consistency is checked before extraction. Only Store/Deflate, single disk, at most 64 entries and bounded UTF-8/ASCII relative paths are supported. Encrypted, ZIP64, special file types, duplicate paths, traversal and reserved prototype paths are rejected.
+- Files are downloaded individually as browser blobs, never extracted to local directories or executed. No archive content is uploaded.
+- GZIP text decompression supports a single member. Zlib dictionary streams are unsupported. Text decoding uses fatal UTF-8 validation; ZIP entry extraction preserves arbitrary binary bytes.
+- Interoperability tests use Node's native zlib implementation and Python zipfile. Large valid binary ZIPs, corrupted CRC/checksums, unsafe paths and decompression expansion are covered.

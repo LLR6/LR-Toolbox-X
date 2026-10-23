@@ -1,3 +1,6 @@
+import type { Json } from "../../../packages/registry/src/types.ts";
+import { binaryResult } from "./binary.ts";
+import { ToolIcon } from "./Icons.tsx";
 import { useState, type ReactNode } from "react";
 import { parseCsv } from "../../../packages/registry/src/data.ts";
 import { downloadBlob } from "./storage.ts";
@@ -30,17 +33,35 @@ export function ResultVisual({
   value,
   en,
   source,
+  data,
+  onExtract,
 }: {
   id: string;
   category: string;
   value: string;
   en: boolean;
   source: ReactNode;
+  data: Json | null;
+  onExtract: (path: string) => void;
 }) {
   const [preview, setPreview] = useState(true),
     [saving, setSaving] = useState(false),
     [error, setError] = useState("");
   const qr = id === "qr.generate";
+  const file = binaryResult(data);
+  const entries =
+    id === "archive.zip.list" &&
+    data &&
+    typeof data === "object" &&
+    !Array.isArray(data) &&
+    Array.isArray(data.entries)
+      ? (data.entries as {
+          name: string;
+          directory: boolean;
+          bytes: number;
+          compressedBytes: number;
+        }[])
+      : null;
   let rows: string[][] = [];
   if (category === "CSV") {
     try {
@@ -50,7 +71,7 @@ export function ResultVisual({
     }
   }
   const csv = category === "CSV" && rows.length > 0;
-  if (!qr && !csv) return source;
+  if (!qr && !csv && !file && !entries) return source;
   const t = (zh: string, english: string) => (en ? english : zh);
   return (
     <div className="visual-result">
@@ -92,6 +113,62 @@ export function ResultVisual({
       )}
       {!preview ? (
         source
+      ) : file ? (
+        <div className="file-result-preview" role="status">
+          <ToolIcon category="Archive" />
+          <span>FILE READY</span>
+          <strong>{file.filename}</strong>
+          <p>
+            {file.bytes.toLocaleString(en ? "en-US" : "zh-CN")}{" "}
+            {t("字节", "bytes")}
+          </p>
+          <small>{file.mime}</small>
+          <p>
+            {t(
+              "文件已在本地生成，点击顶部「下载」保存。",
+              "Generated locally. Use Download above to save the file.",
+            )}
+          </p>
+        </div>
+      ) : entries ? (
+        <div className="csv-preview" role="status">
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>{t("文件路径", "Path")}</th>
+                  <th>{t("原始大小", "Size")}</th>
+                  <th>{t("操作", "Action")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entries.map((entry) => (
+                  <tr key={entry.name}>
+                    <td>{entry.name}</td>
+                    <td>{entry.bytes.toLocaleString()} B</td>
+                    <td>
+                      {!entry.directory && (
+                        <button
+                          className="zip-extract"
+                          onClick={() => onExtract(entry.name)}
+                        >
+                          {t("提取", "Extract")}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p>
+            {entries.length}{" "}
+            {t(
+              "项 · 仅查看目录，未解压。提取时验证文件 CRC。",
+              "entries · Directory only. Extraction verifies the file CRC.",
+            )}
+          </p>
+        </div>
       ) : qr ? (
         <div className="qr-preview" role="status">
           <img

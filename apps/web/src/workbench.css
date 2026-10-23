@@ -2140,3 +2140,120 @@
   background: #e7eef7;
   color: #285b4c;
 }
+.file-result-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 330px;
+  padding: 35px 24px;
+  background: radial-gradient(circle at 50% 35%, #c58e4f16, transparent 62%);
+}
+.file-result-preview > .tool-icon {
+  width: 90px;
+  height: 90px;
+}
+.file-result-preview > svg {
+  width: 90px;
+  height: 90px;
+}
+.file-result-preview > span {
+  color: #d6b389;
+  letter-spacing: 3px;
+  font-size: 10px;
+  margin: 20px 0 12px;
+}
+.file-result-preview strong {
+  font-size: 18px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.file-result-preview p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.file-result-preview small {
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--muted);
+}
+.zip-extract {
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: #97b0ff15;
+  color: var(--accent);
+  font-size: 11px;
+  cursor: pointer;
+}
+.archive-input {
+  padding: 20px;
+  flex: 1;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.archive-file-picker {
+  padding: 32px 20px;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  border: 1px dashed #b9905966;
+  border-radius: 14px;
+  background: radial-gradient(ellipse at 50% 30%, #b6834318, transparent 80%);
+  color: var(--text);
+  cursor: pointer;
+}
+.archive-file-picker:hover {
+  border-color: #d4ad73;
+  background-color: #ba88490b;
+}
+.archive-file-picker > svg {
+  width: 65px;
+  height: 65px;
+}
+.archive-file-picker strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+.archive-file-picker span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.archive-file-picker small {
+  color: var(--muted);
+  font-size: 10px;
+}
+.archive-loaded {
+  font-size: 11px;
+  color: #9acbbb;
+}
+.archive-input details {
+  margin-top: auto;
+  font-size: 11px;
+  color: var(--muted);
+}
+.archive-input summary {
+  cursor: pointer;
+  padding: 8px 0;
+}
+.archive-input details textarea {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 10px;
+  resize: vertical;
+  font: 11px/1.7 monospace;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}

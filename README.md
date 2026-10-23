@@ -3,13 +3,14 @@
 <p align="center">LR OmniBox · Small tasks, handled.</p>
 <p align="center"><a href="https://github.com/LLR6/LR-Toolbox-X/actions">CI</a> · <a href="docs/actions.md">Actions</a> · <a href="ROADMAP.md">Roadmap</a> · <a href="LICENSE">Apache-2.0</a></p>
 
-本地优先、无账号、无追踪的跨平台个人工具箱。**表格处理与离线二维码里程碑 v0.4.0**，长期目标是 2000+ 个真实工具；当前没有达到这个目标。
+本地优先、无账号、无追踪的跨平台个人工具箱。**离线压缩与归档里程碑 v0.5.0**，长期目标是 2000+ 个真实工具；当前没有达到这个目标。
 
 ## What works now
 
-- **101 portable actions**: JSON, UTF-8/Base64/hex/binary/URI, Unicode, text, SHA-2, timestamps, URL/JWT inspection, colors, math and units; CSV, SemVer, dotenv, HTTP headers/Basic auth, IPv4/IPv6/MAC, HMAC, Markdown, time zones and matrix/integer arithmetic.
+- **108 portable actions**: JSON, UTF-8/Base64/hex/binary/URI, Unicode, text, SHA-2, timestamps, URL/JWT inspection, colors, math and units; CSV, SemVer, dotenv, HTTP headers/Basic auth, IPv4/IPv6/MAC, HMAC, Markdown, time zones and matrix/integer arithmetic.
 - New table tools: column selection, filtering, stable sorting, deduplication, header renaming and grouped numeric summaries. CSV outputs have a bounded table preview with full-file download.
 - Offline UTF-8 QR generation using MIT-licensed `qrcode-generator`: image preview, SVG/PNG export and four correction levels; independently decoded in tests.
+- Offline archives using MIT-licensed `fflate`: GZIP/Zlib text compression and decompression, ZIP text-file creation, directory listing and selected binary-file extraction. Actual archive import/download, CRC/checksum verification, 512 KB compressed-input and 4 MB expanded-output bounds. ZIP supports Store/Deflate, UTF-8 and single-disk ZIP32, up to 64 entries.
 - **6 additional Rust actions**: file info, bounded UTF-8 reads, directory listing, streaming SHA-256, file comparison, OS/architecture information.
 - Illustrated SVG icon system: 17 original category illustrations, matching navigation icons, LR monogram, favorite buttons on the home screen and consistent tool workspace artwork.
 - Alpine dusk dashboard: three-column layout, real activity/favorite statistics, quick access, responsive navigation and blue/violet glass panels.
@@ -20,7 +21,7 @@
 - Rust SQLite history data layer and Tauri bridge. Browser preferences/history use localStorage. Tool input and output are not stored in history.
 - TypeScript CLI shares the portable registry; the Rust CLI shares the native registry. They are separate executables at this milestone.
 
-**Distinct Action IDs: 107. Web/portable CLI: 101. Desktop: 107 when built. Android: 12.** No AI provider, plugin installation, destructive file operations, or invented external-tool results are exposed.
+**Distinct Action IDs: 114. Web/portable CLI: 108. Desktop: 114 when built. Android: 12.** No AI provider, plugin installation, destructive file operations, or invented external-tool results are exposed.
 
 ## Run locally
 

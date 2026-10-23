@@ -55,3 +55,11 @@ Large repeated-heading input is bounded at 10000 headings; anchor counters avoid
 - Portable registry now has 101 IDs; six additional Rust IDs bring distinct desktop capability IDs to 107. Android remains at 12 shared IDs; these new portable tools are not claimed as Android native features.
 - CSV outputs support bounded table preview, source view and CSV export. QR results support image preview and SVG/PNG export, without injecting untrusted SVG text into the DOM.
 - Local registry/edge tests: 252 passing, including independent QR decode with jsQR. See docs/open-source-review.md for dependency choices. Physical installation checks remain pending.
+
+## v0.5.0 compression and archives
+
+Seven new portable actions: GZIP compress/decompress, Zlib compress/decompress, ZIP create/list/extract. Portable count is 108 and desktop distinct IDs are 114 including six Rust actions. Android remains 12 shared IDs.
+
+Binary file import uses ArrayBuffer→Base64 internally; download restores original bytes rather than saving the JSON/Base64 descriptor. ZIP directory results show a file table with direct handoff to selected-entry extraction. In-progress input/results are not persisted in history.
+
+Interoperability and bounds are tested independently against Node zlib and Python zipfile. Actual expanded-byte bounds are enforced even with false ZIP size declarations. Signing and physical installation remain unverified as previously documented.

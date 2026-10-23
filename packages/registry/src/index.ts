@@ -1,3 +1,4 @@
+import { archiveActions } from "./archives.ts";
 import { qrActions } from "./qr.ts";
 import { tableActions } from "./tables.ts";
 import { dataActions } from "./data.ts";
@@ -27,6 +28,7 @@ export const actions: Action[] = [
   ...dataActions,
   ...tableActions,
   ...qrActions,
+  ...archiveActions,
   ...networkActions,
   ...productivityActions,
   ...advancedMathActions,

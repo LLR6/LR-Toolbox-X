@@ -1,3 +1,5 @@
+import { binaryResult } from "./binary.ts";
+import { encode64 } from "../../../packages/registry/src/define.ts";
 import { ResultVisual } from "./ResultVisual.tsx";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type {
@@ -31,6 +33,7 @@ type Props = {
   onDownload: () => void;
   onFavorite: () => void;
   onChoose: (action: Action) => void;
+  onExtract: (path: string) => void;
 };
 function Syntax({ value }: { value: string }) {
   if (value.length > 200000) return <>{value}</>;
@@ -80,7 +83,9 @@ export function Workbench(p: Props) {
       alive.current = false;
     };
   }, []);
+  const [fileName, setFileName] = useState("");
   const applyExample = () => {
+    setFileName("");
     setImportError("");
     p.onExample();
   };
@@ -90,6 +95,12 @@ export function Workbench(p: Props) {
     fields.find(
       ([key, schema]) => schema.type === "string" && key === "text",
     ) ?? fields.find(([, schema]) => schema.type === "string" && !schema.enum);
+  const binaryImport = [
+    "archive.gzip.decompress",
+    "archive.zlib.decompress",
+    "archive.zip.list",
+    "archive.zip.extract",
+  ].includes(action.id);
   const primaryText = primary ? String(input[primary[0]] ?? "") : "";
   const lines = primaryText.split("\n").length,
     chars = Array.from(primaryText).length;
@@ -100,7 +111,8 @@ export function Workbench(p: Props) {
       : JSON.stringify(output, null, 2);
   const resultBytes = !p.hasResult
     ? 0
-    : new TextEncoder().encode(resultText).length;
+    : (binaryResult(output)?.bytes ??
+      new TextEncoder().encode(resultText).length);
   const records = p.history.filter((h) => h.id === action.id).slice(0, 4);
   const state = busy
     ? "running"
@@ -215,19 +227,32 @@ export function Workbench(p: Props) {
                 ref={file}
                 hidden
                 type="file"
-                accept=".txt,.json,.csv,.md,.log,.yaml,.yml,text/*,application/json"
+                accept={
+                  binaryImport
+                    ? ".zip,.gz,.gzip,.zlib,application/zip,application/gzip,application/octet-stream"
+                    : ".txt,.json,.csv,.md,.log,.yaml,.yml,text/*,application/json"
+                }
                 onChange={async (e) => {
                   const f = e.target.files?.[0];
                   if (!f) return;
                   setImportError("");
                   try {
-                    if (f.size > 1000000)
+                    if (f.size > (binaryImport ? 512000 : 1000000))
                       throw Error(
-                        t("文件最大 1 MB。", "Maximum file size is 1 MB."),
+                        binaryImport
+                          ? t(
+                              "压缩文件最大 512 KB。",
+                              "Maximum archive size is 512 KB.",
+                            )
+                          : t("文件最大 1 MB。", "Maximum file size is 1 MB."),
                       );
-                    const value = await f.text();
-                    if (alive.current)
+                    const value = binaryImport
+                      ? encode64(new Uint8Array(await f.arrayBuffer()))
+                      : await f.text();
+                    if (alive.current) {
+                      setFileName(f.name);
                       p.setInput({ ...input, [primary[0]]: value });
+                    }
                   } catch (err) {
                     setImportError((err as Error).message);
                   }
@@ -255,7 +280,71 @@ export function Workbench(p: Props) {
                 </small>
               </div>
             )}
-            {!fields.length ? (
+            {binaryImport ? (
+              <div className="archive-input">
+                <button
+                  className="archive-file-picker"
+                  onClick={() => file.current?.click()}
+                  disabled={busy}
+                >
+                  <ToolIcon category="Archive" />
+                  <strong>
+                    {fileName || t("选择压缩文件", "Choose an archive")}
+                  </strong>
+                  <span>
+                    {t(
+                      "点击导入 ZIP / GZIP / Zlib 文件",
+                      "Import ZIP / GZIP / Zlib",
+                    )}
+                  </span>
+                  <small>
+                    {t(
+                      "文件最大 512 KB · 不上传内容",
+                      "Up to 512 KB · No upload",
+                    )}
+                  </small>
+                </button>
+                <div className="archive-loaded">
+                  {primaryText
+                    ? t("压缩数据已就绪", "Archive data ready")
+                    : t("等待选择文件", "Choose a file to begin")}
+                </div>
+                {fields
+                  .filter(([key]) => key !== primary?.[0])
+                  .map(([key, schema]) => (
+                    <label className="workbench-field" key={key}>
+                      <strong>{en ? key : (schema.title ?? key)}</strong>
+                      <input
+                        type="text"
+                        aria-label={key}
+                        value={String(input[key] ?? "")}
+                        onChange={(event) =>
+                          p.setInput({ ...input, [key]: event.target.value })
+                        }
+                      />
+                    </label>
+                  ))}
+                <details>
+                  <summary>
+                    {t("高级：粘贴 Base64 数据", "Advanced: paste Base64 data")}
+                  </summary>
+                  <textarea
+                    aria-label={primary?.[0] ?? "text"}
+                    value={primaryText}
+                    spellCheck={false}
+                    rows={5}
+                    onChange={(event) => {
+                      setImportError("");
+                      setFileName("");
+                      p.setInput({
+                        ...input,
+                        [primary?.[0] ?? "text"]: event.target.value,
+                      });
+                    }}
+                  />
+                </details>
+              </div>
+            ) : !fields.length ? (
               <div className="no-input">
                 <ToolIcon category={action.category} />
                 <h3>{t("无需输入参数", "No parameters required")}</h3>
@@ -437,6 +526,8 @@ export function Workbench(p: Props) {
             ) : p.hasResult ? (
               <ResultVisual
                 id={action.id}
+                data={output}
+                onExtract={p.onExtract}
                 category={typeof output === "string" ? action.category : ""}
                 value={resultText}
                 en={en}
