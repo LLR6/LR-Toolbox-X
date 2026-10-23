@@ -265,7 +265,7 @@ export function PowerStudioWorkspace({ id, en, onClose, onRecord }: Props) {
       const data = JSON.parse(lottieSource) as { fr?: number; ip?: number; op?: number; layers?: unknown[] };
       const host = lottieHost.current;
       if (!host) return;
-      const module = await import("lottie-web");
+      const module = await import("lottie-web/build/player/lottie_light.js");
       lottieAnimation.current?.destroy();
       host.replaceChildren();
       const animation = module.default.loadAnimation({ container: host, renderer: "svg", loop: true, autoplay: true, animationData: data });
