@@ -1,3 +1,4 @@
+import { ResultVisual } from "./ResultVisual.tsx";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type {
   Action,
@@ -297,7 +298,7 @@ export function Workbench(p: Props) {
                 {fields.map(([key, schema]) => (
                   <label className="workbench-field" key={key}>
                     <span>
-                      <strong>{key}</strong>
+                      <strong>{en ? key : (schema.title ?? key)}</strong>
                       <small>
                         {schema.enum ? t("选项", "Option") : schema.type}
                         {schema.minimum !== undefined
@@ -318,10 +319,37 @@ export function Workbench(p: Props) {
                       >
                         {schema.enum.map((v) => (
                           <option key={String(v)} value={String(v)}>
-                            {String(v)}
+                            {en
+                              ? String(v)
+                              : ((
+                                  {
+                                    asc: "升序",
+                                    desc: "降序",
+                                    text: "文本",
+                                    number: "数值",
+                                    equals: "等于",
+                                    not_equals: "不等于",
+                                    contains: "包含",
+                                    empty: "为空",
+                                    not_empty: "非空",
+                                    greater: "大于",
+                                    less: "小于",
+                                  } as Record<string, string>
+                                )[String(v)] ?? String(v))}
                           </option>
                         ))}
                       </select>
+                    ) : schema.type === "string" &&
+                      key !== "text" &&
+                      ["CSV", "QR"].includes(action.category) ? (
+                      <input
+                        aria-label={key}
+                        type="text"
+                        value={String(input[key] ?? "")}
+                        onChange={(e) =>
+                          p.setInput({ ...input, [key]: e.target.value })
+                        }
+                      />
                     ) : schema.type === "string" ? (
                       <textarea
                         aria-label={key}
@@ -407,17 +435,25 @@ export function Workbench(p: Props) {
                 </p>
               </div>
             ) : p.hasResult ? (
-              <div className="code-output">
-                <pre
-                  role="status"
-                  tabIndex={0}
-                  aria-label={t("执行结果", "Result")}
-                >
-                  <Syntax
-                    value={resultText || t("（空文本）", "(empty text)")}
-                  />
-                </pre>
-              </div>
+              <ResultVisual
+                id={action.id}
+                category={typeof output === "string" ? action.category : ""}
+                value={resultText}
+                en={en}
+                source={
+                  <div className="code-output">
+                    <pre
+                      role="status"
+                      tabIndex={0}
+                      aria-label={t("执行结果", "Result")}
+                    >
+                      <Syntax
+                        value={resultText || t("（空文本）", "(empty text)")}
+                      />
+                    </pre>
+                  </div>
+                }
+              />
             ) : (
               <div className="output-empty">
                 <div className={"output-orbit" + (busy ? " processing" : "")}>

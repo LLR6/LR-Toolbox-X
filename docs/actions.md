@@ -72,6 +72,13 @@ Generated from executable registry. Native actions are listed separately.
 | http.basic.encode | Basic Auth 编码 | Developer | web, windows, linux, macos, cli | safe |
 | http.basic.decode | Basic Auth 解码 | Developer | web, windows, linux, macos, cli | safe |
 | developer.uuid.inspect | UUID 信息查看 | Developer | web, windows, linux, macos, cli | safe |
+| csv.select | CSV 选择列 | CSV | web, windows, linux, macos, cli | safe |
+| csv.filter | CSV 条件筛选 | CSV | web, windows, linux, macos, cli | safe |
+| csv.sort | CSV 稳定排序 | CSV | web, windows, linux, macos, cli | safe |
+| csv.unique | CSV 按列去重 | CSV | web, windows, linux, macos, cli | safe |
+| csv.rename | CSV 重命名列 | CSV | web, windows, linux, macos, cli | safe |
+| csv.aggregate | CSV 分组数值汇总 | CSV | web, windows, linux, macos, cli | safe |
+| qr.generate | 二维码生成 | QR | web, windows, linux, macos, cli | safe |
 | network.ipv4.inspect | IPv4 子网计算 | Network | web, windows, linux, macos, cli | safe |
 | network.ipv4.to_integer | IPv4 转整数 | Network | web, windows, linux, macos, cli | safe |
 | network.ipv4.from_integer | 整数转 IPv4 | Network | web, windows, linux, macos, cli | safe |
