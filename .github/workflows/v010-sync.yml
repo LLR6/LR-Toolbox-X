@@ -1,0 +1,37 @@
+name: Sync v0.10 visual studio dependencies
+
+on:
+  push:
+    branches: [feature/v0.10-visual-tool-studios]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: ${{ !contains(github.event.head_commit.message, '[v010-deps]') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/v0.10-visual-tool-studios
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install pinned visual studio dependencies
+        run: |
+          npm install --save-exact mermaid@12.2.0 @stackline/xlsx@1.0.9 svgo@4.1.0 exifreader@4.51.0 heic2any@0.0.4 colorthief@3.5.0 html2canvas@1.4.1 cron-parser@5.10.2 @zxcvbn-ts/core@4.2.0 @zxcvbn-ts/language-common@4.1.3 dayjs@1.11.23
+          npm version 0.10.0 --no-git-tag-version --allow-same-version
+      - name: Validate install
+        run: |
+          npm audit --omit=dev --audit-level=moderate
+          npm run typecheck
+      - name: Commit lockfile and package metadata
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "build: sync v0.10 visual dependencies [v010-deps]"
+          git push origin HEAD:feature/v0.10-visual-tool-studios
