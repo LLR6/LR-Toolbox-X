@@ -1,0 +1,39 @@
+name: Sync v0.10 visual studio dependencies
+
+on:
+  push:
+    branches: [feature/v0.10-visual-workbenches]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: ${{ !contains(github.event.head_commit.message, '[v10-sync]') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/v0.10-visual-workbenches
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install pinned browser engines
+        run: |
+          npm install --save-exact mermaid@11.17.2 xlsx@0.18.5 svgo@4.1.0 exifreader@4.51.0 heic2any@0.0.4 colorthief@3.5.0 cron-parser@5.10.2 @zxcvbn-ts/core@4.2.0 @zxcvbn-ts/language-common@4.2.0 @zxcvbn-ts/language-en@4.2.0 html2canvas@1.4.1 dayjs@1.11.23
+          npm version 0.10.0 --no-git-tag-version --allow-same-version
+      - name: Validate web implementation
+        run: |
+          npm run lint
+          npm run typecheck
+          npm run build
+          npm audit --omit=dev --audit-level=moderate
+      - name: Commit deterministic lock/version updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "build: sync v0.10 browser engines [v10-sync]"
+          git push origin HEAD:feature/v0.10-visual-workbenches
