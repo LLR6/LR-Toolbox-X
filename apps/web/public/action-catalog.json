@@ -4139,6 +4139,384 @@
     }
   },
   {
+    "id": "code.format.javascript",
+    "name": "JavaScript 格式化",
+    "nameEn": "Format JavaScript",
+    "description": "使用 Prettier 整理 JavaScript；只解析排版、不执行代码；最多 40000 字符，嵌入语言保持原样。",
+    "category": "Code",
+    "tags": [
+      "Code",
+      "code",
+      "format",
+      "javascript"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 40000,
+          "title": "源代码"
+        },
+        "indent": {
+          "type": "integer",
+          "enum": [
+            2,
+            4
+          ],
+          "title": "缩进空格"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 40,
+          "maximum": 160,
+          "title": "建议行宽"
+        }
+      },
+      "required": [
+        "text",
+        "indent",
+        "width"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "const tools=[\"LR\",\"中文\"];tools.map(x=>({name:x}));",
+      "indent": 2,
+      "width": 80
+    }
+  },
+  {
+    "id": "code.format.typescript",
+    "name": "TypeScript 格式化",
+    "nameEn": "Format TypeScript",
+    "description": "使用 Prettier 整理 TypeScript；只解析排版、不执行代码；最多 40000 字符，嵌入语言保持原样。",
+    "category": "Code",
+    "tags": [
+      "Code",
+      "code",
+      "format",
+      "typescript"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 40000,
+          "title": "源代码"
+        },
+        "indent": {
+          "type": "integer",
+          "enum": [
+            2,
+            4
+          ],
+          "title": "缩进空格"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 40,
+          "maximum": 160,
+          "title": "建议行宽"
+        }
+      },
+      "required": [
+        "text",
+        "indent",
+        "width"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "interface Tool{name:string;enabled:boolean} const tool:Tool={name:\"LR\",enabled:true};",
+      "indent": 2,
+      "width": 80
+    }
+  },
+  {
+    "id": "code.format.css",
+    "name": "CSS 格式化",
+    "nameEn": "Format CSS",
+    "description": "使用 Prettier 整理 CSS；只解析排版、不执行代码；最多 40000 字符，嵌入语言保持原样。",
+    "category": "Code",
+    "tags": [
+      "Code",
+      "code",
+      "format",
+      "css"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 40000,
+          "title": "源代码"
+        },
+        "indent": {
+          "type": "integer",
+          "enum": [
+            2,
+            4
+          ],
+          "title": "缩进空格"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 40,
+          "maximum": 160,
+          "title": "建议行宽"
+        }
+      },
+      "required": [
+        "text",
+        "indent",
+        "width"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": ".tool{color:#fff;background:#142038;padding:12px 16px;}@media(max-width:600px){.tool{padding:8px;}}",
+      "indent": 2,
+      "width": 80
+    }
+  },
+  {
+    "id": "code.format.html",
+    "name": "HTML 格式化",
+    "nameEn": "Format HTML",
+    "description": "使用 Prettier 整理 HTML；只解析排版、不执行代码；最多 40000 字符，嵌入语言保持原样。",
+    "category": "Code",
+    "tags": [
+      "Code",
+      "code",
+      "format",
+      "html"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 40000,
+          "title": "源代码"
+        },
+        "indent": {
+          "type": "integer",
+          "enum": [
+            2,
+            4
+          ],
+          "title": "缩进空格"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 40,
+          "maximum": 160,
+          "title": "建议行宽"
+        }
+      },
+      "required": [
+        "text",
+        "indent",
+        "width"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "<main><h1>LR Toolbox</h1><p>本地创造</p></main>",
+      "indent": 2,
+      "width": 80
+    }
+  },
+  {
+    "id": "xml.to.json",
+    "name": "XML 转有序 JSON",
+    "nameEn": "Convert XML to ordered JSON",
+    "description": "保留元素顺序、重复节点、属性、文本、注释和 CDATA；值保持字符串，属性以 @_ 开头；拒绝 DTD，最多 60 层 / 5000 元素。",
+    "category": "XML",
+    "tags": [
+      "XML",
+      "xml",
+      "to",
+      "json"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 40000,
+          "title": "XML 内容"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "<?xml version=\"1.0\"?><tools><tool id=\"001\">中文🧪</tool><tool id=\"002\">Offline</tool></tools>"
+    }
+  },
+  {
+    "id": "xml.validate",
+    "name": "XML 语法校验",
+    "nameEn": "Validate XML document",
+    "description": "校验单根 XML 文档并返回根名称、元素、属性数和深度；最多 40000 字符，不支持 DTD 和自定义实体。",
+    "category": "XML",
+    "tags": [
+      "XML",
+      "xml",
+      "validate"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 40000,
+          "title": "XML 内容"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "<?xml version=\"1.0\"?><tools><tool id=\"001\">中文🧪</tool><tool id=\"002\">Offline</tool></tools>"
+    },
+    "expected": {
+      "valid": true,
+      "root": "tools",
+      "elements": 3,
+      "attributes": 2,
+      "maxDepth": 2
+    }
+  },
+  {
+    "id": "xml.inspect",
+    "name": "XML 结构浏览",
+    "nameEn": "Inspect XML structure",
+    "description": "查看真实元素路径、同名节点序号、属性和直接子元素数；预览最多 200 元素，统计覆盖整份文档。",
+    "category": "XML",
+    "tags": [
+      "XML",
+      "xml",
+      "inspect"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 40000,
+          "title": "XML 内容"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "<?xml version=\"1.0\"?><tools><tool id=\"001\">中文🧪</tool><tool id=\"002\">Offline</tool></tools>"
+    }
+  },
+  {
     "id": "network.ipv4.inspect",
     "name": "IPv4 子网计算",
     "nameEn": "IPv4 subnet calculator",

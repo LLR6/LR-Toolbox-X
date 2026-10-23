@@ -13,6 +13,8 @@ const palettes: Record<string, [string, string, string]> = {
   Numbers: ["#a7ece4", "#44b1ba", "#286777"],
   Units: ["#ffdda1", "#df9a53", "#936235"],
   Colors: ["#ffd0ed", "#d179c0", "#774b96"],
+  Code: ["#bae7ff", "#578fe9", "#304fa1"],
+  XML: ["#b5f1dc", "#50bc9d", "#287969"],
   Diff: ["#bbf1e6", "#4db6bc", "#27677c"],
   YAML: ["#ffdfad", "#e8b06f", "#9e6242"],
   Archive: ["#ffdbb2", "#cc935d", "#825038"],
@@ -463,6 +465,49 @@ function Artwork({
               <circle cx="39" cy="48" r="2" fill="#334257" />
             </g>
           ))}
+        </>
+      );
+    case "Code":
+      return (
+        <>
+          <rect
+            x="15"
+            y="16"
+            width="49"
+            height="40"
+            rx="8"
+            fill={deep}
+            transform="translate(-3 3)"
+          />
+          <rect
+            x="18"
+            y="13"
+            width="46"
+            height="40"
+            rx="7"
+            fill={face}
+            stroke={light}
+          />
+          <path d="M20 24h42" {...line} opacity=".4" />
+          <path d="m32 32-6 6 6 6m18-12 6 6-6 6m-7-15-5 18" {...line} />
+          <circle cx="25" cy="19" r="1.5" fill={ink} />
+          <circle cx="31" cy="19" r="1.5" fill={ink} />
+        </>
+      );
+    case "XML":
+      return (
+        <>
+          <path
+            d="M21 14h28l12 12v35H21Z"
+            fill={deep}
+            transform="translate(-3 3)"
+          />
+          <path d="M24 11h25l12 12v35H24Z" fill={face} stroke={light} />
+          <path d="M49 11v13h12" fill={light} />
+          <path
+            d="m33 30-5 5 5 5m18-10 5 5-5 5M39 28l-2 15M32 48h19"
+            {...line}
+          />
         </>
       );
     case "Diff":

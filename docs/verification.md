@@ -69,3 +69,9 @@ Interoperability and bounds are tested independently against Node zlib and Pytho
 Seven new portable actions integrate pinned jsdiff 9.0.0, js-yaml 5.5.0 and Marked 18.1.1. Generated catalog: 115 portable / 121 distinct desktop IDs including six Rust actions; Android remains 12 shared IDs. Existing modal-free workspace is preserved, with original Diff/YAML illustrations, colored differences, sandboxed Markdown document preview and real HTML/patch/YAML/JSON exports.
 
 Local validation: lint, TypeScript, 310 unit/conformance tests and production build passed. Portable CLI bundled and ran the new YAML conversion and existing SHA-256. Managed-browser QA verified actual line differences and Markdown headings, table and code block. New dependencies load on demand; build generated 12 offline files including all lazy chunks. Three additional production E2E cases cover mobile differences, YAML export/duplicate-key errors, and isolated Markdown preview/export without remote images. Full upstream license texts are bundled. Native installer/device runtime checks remain pending; new tools target Web/portable CLI and desktop builds, not Android.
+
+## v0.7.0 code and XML studio
+
+Seven new portable tools: JavaScript/TypeScript/CSS/HTML formatting, XML ordered JSON conversion, validation and visual structure inspection. Catalog becomes 122 portable / 128 desktop distinct IDs including six native actions; Android remains 12 shared IDs. New Code/XML category artwork and dedicated full-page workspaces follow the existing visual system.
+
+Local tests cover formatting idempotence/options/nonexecution/errors and XML mixed content/order/attributes/entities, preview bounds and DTD/depth/count rejection. Production browser cases exercise offline formatter loading, JavaScript download/error recovery, mobile XML structure and JSON export. Native installer and physical-device runtime verification remain pending.
