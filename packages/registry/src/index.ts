@@ -1,3 +1,4 @@
+import { studioActions } from "./text-studio.ts";
 import { archiveActions } from "./archives.ts";
 import { qrActions } from "./qr.ts";
 import { tableActions } from "./tables.ts";
@@ -29,6 +30,7 @@ export const actions: Action[] = [
   ...tableActions,
   ...qrActions,
   ...archiveActions,
+  ...studioActions,
   ...networkActions,
   ...productivityActions,
   ...advancedMathActions,

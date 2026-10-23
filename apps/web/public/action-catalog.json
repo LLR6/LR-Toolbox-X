@@ -3805,6 +3805,340 @@
     }
   },
   {
+    "id": "text.diff",
+    "name": "文本差异对比",
+    "nameEn": "Compare text differences",
+    "description": "按行、单词或字符显示新增与删除；每段最多 20000 字符 / 2000 行，复杂差异会中止。",
+    "category": "Diff",
+    "tags": [
+      "Diff",
+      "text",
+      "diff"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "before": {
+          "type": "string",
+          "maxLength": 20000,
+          "title": "原始文本"
+        },
+        "after": {
+          "type": "string",
+          "maxLength": 20000,
+          "title": "修改后文本"
+        },
+        "mode": {
+          "type": "string",
+          "title": "对比方式",
+          "enum": [
+            "lines",
+            "words",
+            "characters"
+          ]
+        }
+      },
+      "required": [
+        "before",
+        "after",
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "before": "Hello LR\n旧内容\n",
+      "after": "Hello LR\n新内容\n",
+      "mode": "lines"
+    }
+  },
+  {
+    "id": "patch.create",
+    "name": "生成统一补丁",
+    "nameEn": "Create unified patch",
+    "description": "对比两个文本，生成单文件 unified diff；不访问磁盘，最多 2000 行。",
+    "category": "Diff",
+    "tags": [
+      "Diff",
+      "patch",
+      "create"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "before": {
+          "type": "string",
+          "maxLength": 20000,
+          "title": "原始文本"
+        },
+        "after": {
+          "type": "string",
+          "maxLength": 20000,
+          "title": "修改后文本"
+        }
+      },
+      "required": [
+        "before",
+        "after"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "before": "Hello LR\nold\n",
+      "after": "Hello LR\nnew\n"
+    }
+  },
+  {
+    "id": "patch.apply",
+    "name": "应用文本补丁",
+    "nameEn": "Apply a text patch",
+    "description": "把单文件 unified diff 应用于输入文本，要求上下文匹配；只返回结果，不修改磁盘文件。",
+    "category": "Diff",
+    "tags": [
+      "Diff",
+      "patch",
+      "apply"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 20000,
+          "title": "原始文本"
+        },
+        "patch": {
+          "type": "string",
+          "maxLength": 50000,
+          "title": "Unified diff 补丁"
+        }
+      },
+      "required": [
+        "text",
+        "patch"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "hello\n",
+      "patch": "--- before.txt\n+++ after.txt\n@@ -1,1 +1,1 @@\n-hello\n+world\n"
+    },
+    "expected": "world\n"
+  },
+  {
+    "id": "yaml.to.json",
+    "name": "YAML 转 JSON",
+    "nameEn": "Convert YAML to JSON",
+    "description": "将单文档 YAML 转为 JSON；拒绝重复键、别名、自定义标签及超过 60 层的结构。",
+    "category": "YAML",
+    "tags": [
+      "YAML",
+      "yaml",
+      "to",
+      "json"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 200000,
+          "title": "YAML 内容"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "name: LR Toolbox\nenabled: true\ntags:\n  - offline\n  - 中文\n"
+    }
+  },
+  {
+    "id": "yaml.from.json",
+    "name": "JSON 转 YAML",
+    "nameEn": "Convert JSON to YAML",
+    "description": "将 JSON 转为 YAML，保留字符串类型、中文和键顺序；不展开引用。",
+    "category": "YAML",
+    "tags": [
+      "YAML",
+      "yaml",
+      "from",
+      "json"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 200000,
+          "title": "JSON 内容"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "{\"name\":\"LR\",\"enabled\":true,\"code\":\"001\"}"
+    }
+  },
+  {
+    "id": "yaml.validate",
+    "name": "YAML 校验与概览",
+    "nameEn": "Validate YAML",
+    "description": "检查单文档 YAML 语法、重复键和 JSON 兼容性，返回根类型与节点数量；别名不受支持。",
+    "category": "YAML",
+    "tags": [
+      "YAML",
+      "yaml",
+      "validate"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 200000,
+          "title": "YAML 内容"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "name: LR\nenabled: true"
+    },
+    "expected": {
+      "valid": true,
+      "rootType": "object",
+      "nodes": 3
+    }
+  },
+  {
+    "id": "markdown.render",
+    "name": "Markdown 排版预览",
+    "nameEn": "Render Markdown document",
+    "description": "把 Markdown 渲染为可下载 HTML 文档；原始 HTML 显示为文本，图片只显示替代文字，不加载外部资源。",
+    "category": "Markdown",
+    "tags": [
+      "Markdown",
+      "markdown",
+      "render"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 20000,
+          "title": "Markdown 内容"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "# LR Toolbox\n\n**离线创造**，专注你的工作。\n\n| 工具 | 状态 |\n|---|---|\n| Markdown | 就绪 |\n\n```js\nconsole.log('Hello LR');\n```"
+    }
+  },
+  {
     "id": "network.ipv4.inspect",
     "name": "IPv4 子网计算",
     "nameEn": "IPv4 subnet calculator",

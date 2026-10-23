@@ -1,3 +1,4 @@
+import { StudioResult } from "./StudioResult.tsx";
 import type { Json } from "../../../packages/registry/src/types.ts";
 import { binaryResult } from "./binary.ts";
 import { ToolIcon } from "./Icons.tsx";
@@ -71,6 +72,10 @@ export function ResultVisual({
     }
   }
   const csv = category === "CSV" && rows.length > 0;
+  if (id === "text.diff" || id === "markdown.render")
+    return (
+      <StudioResult id={id} data={data} value={value} en={en} source={source} />
+    );
   if (!qr && !csv && !file && !entries) return source;
   const t = (zh: string, english: string) => (en ? english : zh);
   return (

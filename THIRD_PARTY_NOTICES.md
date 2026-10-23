@@ -22,3 +22,11 @@ Run scripts/sbom.py after installing locked dependencies for the resolved portab
 ## Compression milestone
 
 `fflate` 0.8.3 by Arjun Barrett, MIT: https://github.com/101arrowz/fflate. The npm distribution's full LICENSE is included in THIRD_PARTY_LICENSES.txt during builds.
+
+## Text and document studio
+
+- `diff` (jsdiff) 9.0.0 — Copyright Kevin Decker and contributors; BSD-3-Clause. https://github.com/kpdecker/jsdiff
+- `js-yaml` 5.5.0 — Copyright Vitaly Puzrin, Alex Kocharin and contributors; MIT. https://github.com/nodeca/js-yaml
+- `marked` 18.1.1 — Copyright Christopher Jeffrey and contributors; MIT, with original Markdown BSD notices retained. https://github.com/markedjs/marked
+
+Complete installed license texts, including Marked's original Markdown notices, are bundled in `THIRD_PARTY_LICENSES.txt` by the build.
