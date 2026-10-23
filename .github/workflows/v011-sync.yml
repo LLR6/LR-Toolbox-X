@@ -22,8 +22,22 @@ jobs:
           cache: npm
       - name: Resolve pinned dependencies
         run: npm install --ignore-scripts
-      - name: Sync discovery count
-        run: sed -i 's/toHaveCount(17)/toHaveCount(23)/g; s/discovery exposes seventeen studios/discovery exposes twenty-three studios/g' tests/e2e/creative.spec.ts
+      - name: Apply strict vendor typing and sync discovery count
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("apps/web/src/PowerStudioWorkspace.tsx")
+          text = path.read_text()
+          text = text.replace(
+              'const { quicktype, InputData, jsonInputForTargetLanguage } = await import("quicktype-core");\n      const jsonInput = jsonInputForTargetLanguage(targetLanguage);',
+              'const { quicktype, InputData, jsonInputForTargetLanguage, isLanguageName } = await import("quicktype-core");\n      if (!isLanguageName(targetLanguage)) throw Error(t("不支持这个目标语言。", "Unsupported target language."));\n      const jsonInput = jsonInputForTargetLanguage(targetLanguage);',
+          )
+          path.write_text(text)
+
+          creative = Path("tests/e2e/creative.spec.ts")
+          c = creative.read_text().replace("discovery exposes seventeen studios", "discovery exposes twenty-three studios").replace('toHaveCount(17)', 'toHaveCount(23)')
+          creative.write_text(c)
+          PY
       - name: Static and security checks
         run: |
           npm run lint
@@ -34,11 +48,11 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           npm run e2e
-      - name: Commit lockfile and test sync
+      - name: Commit lockfile and compatibility sync
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json tests/e2e/creative.spec.ts
+          git add package-lock.json tests/e2e/creative.spec.ts apps/web/src/PowerStudioWorkspace.tsx
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "build: lock v0.11 power studios [v011-sync]"
           git push origin HEAD:feature/v0.11-power-studios
