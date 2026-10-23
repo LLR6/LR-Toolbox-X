@@ -5828,5 +5828,239 @@
       "numerator": "3",
       "denominator": "4"
     }
+  },
+  {
+    "id": "json.repair",
+    "name": "JSON 智能修复",
+    "nameEn": "Repair JSON",
+    "description": "修复缺失引号、逗号、注释、尾逗号等常见损坏 JSON，再输出标准格式。由 jsonrepair 驱动。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "repair"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "{name: 'LR', tools: [1,2,3,],}"
+    }
+  },
+  {
+    "id": "json.flatten",
+    "name": "JSON 扁平化",
+    "nameEn": "Flatten JSON",
+    "description": "把嵌套对象和数组转换为点路径 / 索引路径，便于查字段、做表格或调试。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "flatten"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "{\"user\":{\"name\":\"LR\",\"skills\":[\"JS\",\"Rust\"]}}"
+    }
+  },
+  {
+    "id": "html.to.markdown",
+    "name": "HTML 转 Markdown",
+    "nameEn": "HTML to Markdown",
+    "description": "把网页片段、富文本和编辑器 HTML 转成干净 Markdown。由 Turndown 驱动。",
+    "category": "Markdown",
+    "tags": [
+      "Markdown",
+      "html",
+      "to",
+      "markdown"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "<h1>LR Toolbox X</h1><p>Hello <strong>world</strong>.</p>"
+    }
+  },
+  {
+    "id": "developer.regex.test",
+    "name": "正则表达式测试器",
+    "nameEn": "Regex tester",
+    "description": "在本地测试 JavaScript 正则，返回匹配文本、索引和捕获组；默认最多返回 200 个匹配。",
+    "category": "Developer",
+    "tags": [
+      "Developer",
+      "developer",
+      "regex",
+      "test"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "flags": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "pattern",
+        "flags",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "pattern": "(LR)-(?<tool>Toolbox)",
+      "flags": "gi",
+      "text": "LR-Toolbox / lr-toolbox"
+    }
+  },
+  {
+    "id": "color.gradient.css",
+    "name": "CSS 渐变生成器",
+    "nameEn": "CSS gradient builder",
+    "description": "用两个 HEX 颜色和角度生成可直接复制的 linear-gradient CSS。",
+    "category": "Colors",
+    "tags": [
+      "Colors",
+      "color",
+      "gradient",
+      "css"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "end": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "angle": {
+          "type": "number",
+          "minimum": -360,
+          "maximum": 360
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "angle"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "start": "#596FE8",
+      "end": "#A06DE4",
+      "angle": 135
+    },
+    "expected": "linear-gradient(135deg, #596FE8, #A06DE4)"
   }
 ]
