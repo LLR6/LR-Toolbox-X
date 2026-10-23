@@ -24,6 +24,7 @@ for (const path of paths) {
         "\n";
     else if (pkg.name === "@ffmpeg/ffmpeg" && pkg.version === "0.12.15") text += "\n" + await readFile("licenses/ffmpeg-wrapper-0.12.15-LICENSE", "utf8");
     else if (["@tesseract.js-data/eng", "@tesseract.js-data/chi_sim"].includes(pkg.name) && pkg.version === "1.0.0") text += "\nModel data: Apache-2.0 (upstream tessdata LICENSE; npm package metadata declares MIT).\n" + await readFile("licenses/tesseract-language-data-LICENSE", "utf8");
+    else if (pkg.name === "quicktype-core" && pkg.version === "26.0.0") text += "\n" + await readFile("licenses/quicktype-core-26.0.0-LICENSE", "utf8");
     else throw Error("License text missing for " + pkg.name);
   }
   for (const name of names)
