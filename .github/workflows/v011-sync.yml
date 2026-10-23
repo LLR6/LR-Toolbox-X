@@ -24,17 +24,30 @@ jobs:
         run: echo "already synced"
       - name: Install pinned engines
         if: ${{ !contains(github.event.head_commit.message, '[v011-sync]') }}
-        run: npm install --save-exact echarts@6.1.0 mathjs@15.2.0 jsbarcode@3.12.3 jose@6.2.13 jsonata@2.2.2 handlebars@4.7.9 reveal.js@6.0.2 sql.js@1.15.1
+        run: npm install --save-exact echarts@6.1.0 mathjs@15.2.0 jsbarcode@3.12.3 jose@6.2.13 jsonata@2.2.2 handlebars@4.7.10 reveal.js@6.0.2 sql.js@1.15.1
       - name: Wire studios
         if: ${{ !contains(github.event.head_commit.message, '[v011-sync]') }}
-        run: python scripts/v011-sync.py
+        run: |
+          python scripts/v011-sync.py
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("apps/web/src/PowerStudioWorkspace.tsx")
+          text = path.read_text()
+          text = text.replace(
+            '    const bytes = sqlDb.current.export();\n    downloadBlob("lr-toolbox.sqlite", new Blob([bytes], { type: "application/vnd.sqlite3" }));',
+            '    const bytes = sqlDb.current.export();\n    const copy = new Uint8Array(bytes);\n    downloadBlob("lr-toolbox.sqlite", new Blob([copy.buffer], { type: "application/vnd.sqlite3" }));',
+          )
+          path.write_text(text)
+          notices = Path("THIRD_PARTY_NOTICES.md")
+          notices.write_text(notices.read_text().replace('`handlebars` 4.7.9', '`handlebars` 4.7.10'))
+          PY
       - name: Validate implementation
         if: ${{ !contains(github.event.head_commit.message, '[v011-sync]') }}
         run: |
+          npm audit --omit=dev --audit-level=moderate
           npm run lint
           npm run typecheck
           npm run build
-          npm audit --omit=dev --audit-level=moderate
           npx playwright install --with-deps chromium
           npm run e2e
       - name: Commit deterministic changes
