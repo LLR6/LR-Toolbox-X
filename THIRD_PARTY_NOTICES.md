@@ -82,3 +82,10 @@ Resolved full license texts for installed packages are collected into `THIRD_PAR
 - `libphonenumber-js` 1.13.15 — MIT; international phone-number parsing and validation. https://github.com/catamphetamine/libphonenumber-js
 - `chrono-node` 2.10.1 — MIT; natural-language date and time parsing. https://github.com/wanasit/chrono
 - `@types/sql.js` 1.4.11 — MIT; development-only TypeScript declarations from DefinitelyTyped.
+
+## v0.11 serialization studios
+
+- `jsonata` 2.2.2 — MIT; local JSON query and transformation engine. https://github.com/jsonata-js/jsonata
+- `protobufjs` 8.8.1 — BSD-3-Clause; Protocol Buffers schema parsing and binary encode/decode. https://github.com/protobufjs/protobuf.js
+- `@msgpack/msgpack` 3.1.3 — ISC; MessagePack encode/decode for browsers. https://github.com/msgpack/msgpack-javascript
+- `cbor-x` 1.6.8 — MIT; CBOR encode/decode for browsers. https://github.com/kriszyp/cbor-x
