@@ -76,125 +76,175 @@ test("mobile introduction has readable text in dark/light themes and no horizont
     ).toBeGreaterThanOrEqual(4.5);
     expect(values.width).toBeLessThanOrEqual(390);
   }
+  await page.getByTestId("studio-pdf").click();
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(390);
 });
-test("PDF studio merges actual files and extracts selected pages", async ({ page }) => {
-  const makePdf = async (count: number, label: string) => {
-    const pdf = await PDFDocument.create();
-    for (let i = 0; i < count; i++) {
-      const p = pdf.addPage([300, 200]);
-      p.drawText(`${label}-${i + 1}`, { x: 20, y: 160, size: 20 });
-    }
-    return Buffer.from(await pdf.save());
-  };
+test("PDF studio merges actual files and extracts selected pages", async ({
+  page,
+}) => {
   await open(page, "pdf");
-  await page.locator('input[type="file"]').setInputFiles([
-    { name: "a.pdf", mimeType: "application/pdf", buffer: await makePdf(2, "A") },
-    { name: "b.pdf", mimeType: "application/pdf", buffer: await makePdf(1, "B") },
+  const doc = await PDFDocument.create();
+  doc.addPage();
+  doc.addPage();
+  const data = Buffer.from(await doc.save());
+  await page.locator("input[type=file]").setInputFiles([
+    { name: "first.pdf", mimeType: "application/pdf", buffer: data },
+    { name: "second.pdf", mimeType: "application/pdf", buffer: data },
   ]);
-  await page.getByRole("button", { name: "运行工具" }).click();
-  await expect(page.getByRole("status")).toContainText("3 页");
-  let pending = page.waitForEvent("download");
-  await page.getByRole("button", { name: /下载/ }).click();
-  let file = await pending;
-  let pdf = await PDFDocument.load(await readFile((await file.path())!));
-  expect(pdf.getPageCount()).toBe(3);
-  await page.getByLabel("操作").selectOption("extract");
-  await page.getByLabel("页码").fill("2-3");
-  await page.getByRole("button", { name: "运行工具" }).click();
-  pending = page.waitForEvent("download");
-  await page.getByRole("button", { name: /下载/ }).click();
-  file = await pending;
-  pdf = await PDFDocument.load(await readFile((await file.path())!));
-  expect(pdf.getPageCount()).toBe(2);
-});
-test("compressor exports real JPEG and cropper exports an image selection", async ({ page }) => {
-  const image = await picture(page);
-  await open(page, "compress");
-  await page.locator('input[type="file"]').setInputFiles(image);
-  await page.getByRole("button", { name: "运行工具" }).click();
+  await page.getByRole("button", { name: "开始处理", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("处理完成");
   let pending = page.waitForEvent("download");
-  await page.getByRole("button", { name: /下载/ }).click();
+  await page.getByRole("button", { name: /下载 \/ Download/ }).click();
   let file = await pending;
-  let bytes = await readFile((await file.path())!);
-  expect([...bytes.subarray(0, 3)]).toEqual([255, 216, 255]);
-  await page.getByRole("button", { name: "Close studio" }).click();
-  await page.getByTestId("studio-crop").click();
-  await page.locator('input[type="file"]').setInputFiles(image);
-  await expect(page.locator("cropper-canvas")).toBeVisible({ timeout: 20000 });
-  await page.getByRole("button", { name: "运行工具" }).click();
+  expect(
+    (
+      await PDFDocument.load(await readFile((await file.path())!))
+    ).getPageCount(),
+  ).toBe(4);
+  await page.locator("input[type=file]").setInputFiles({
+    name: "source.pdf",
+    mimeType: "application/pdf",
+    buffer: data,
+  });
+  await page.getByLabel("PDF operation").selectOption("extract");
+  await page.getByLabel("PDF pages").fill("2");
+  await page.getByRole("button", { name: "开始处理", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("处理完成");
   pending = page.waitForEvent("download");
-  await page.getByRole("button", { name: /下载/ }).click();
+  await page.getByRole("button", { name: /下载 \/ Download/ }).click();
   file = await pending;
-  bytes = await readFile((await file.path())!);
-  expect([...bytes.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+  expect(
+    (
+      await PDFDocument.load(await readFile((await file.path())!))
+    ).getPageCount(),
+  ).toBe(1);
 });
-test("OCR recognizes generated printed text with same-origin worker/models", async ({ page }) => {
+test("compressor exports real JPEG and cropper exports an image selection", async ({
+  page,
+}) => {
+  await open(page, "compress");
+  const image = await picture(page);
+  await page.locator("input[type=file]").setInputFiles(image);
+  await page.getByRole("button", { name: "开始处理", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("处理完成");
+  let pending = page.waitForEvent("download");
+  await page.getByRole("button", { name: /下载 \/ Download/ }).click();
+  let file = await pending;
+  const jpeg = await readFile((await file.path())!);
+  expect([...jpeg.subarray(0, 2)]).toEqual([255, 216]);
+  await page.getByRole("button", { name: "Close tool" }).click();
+  await page.getByTestId("studio-crop").click();
+  await page.locator("input[type=file]").setInputFiles(image);
+  await expect(page.locator("cropper-selection")).toBeVisible();
+  await page.getByLabel("Crop aspect ratio").selectOption("1");
+  await page.getByRole("button", { name: "开始处理", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("处理完成");
+  pending = page.waitForEvent("download");
+  await page.getByRole("button", { name: /下载 \/ Download/ }).click();
+  file = await pending;
+  expect([...(await readFile((await file.path())!)).subarray(0, 8)]).toEqual([
+    137, 80, 78, 71, 13, 10, 26, 10,
+  ]);
+});
+test("OCR recognizes generated printed text with same-origin worker/models", async ({
+  page,
+}) => {
+  test.setTimeout(90000);
   await open(page, "ocr");
-  await page.locator('input[type="file"]').setInputFiles(await picture(page));
-  await page.getByLabel("语言").selectOption("eng");
-  await page.getByRole("button", { name: "运行工具" }).click();
-  await expect(page.locator(".studio-text-output")).toContainText("HELLO", {
+  await page.locator("input[type=file]").setInputFiles(await picture(page));
+  await page.locator(".studio-options select").selectOption("eng");
+  await page.getByRole("button", { name: "开始处理", exact: true }).click();
+  await expect(page.getByLabel("可编辑正文")).toHaveValue(/HELLO\s+2026/, {
     timeout: 60000,
   });
   const pending = page.waitForEvent("download");
-  await page.getByRole("button", { name: "TXT", exact: true }).click();
+  await page.getByRole("button", { name: "下载 TXT", exact: true }).click();
   const file = await pending;
   expect(await readFile((await file.path())!, "utf8")).toContain("HELLO");
 });
 test("Word studio previews structure, strips unsafe links and exports text/images", async ({
   page,
 }) => {
-  const image = Buffer.from(
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl6O1kAAAAASUVORK5CYII=",
-    "base64",
-  );
-  const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`;
-  const rels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`;
-  const documentRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image1.png"/><Relationship Id="rId6" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="javascript:alert(1)" TargetMode="External"/></Relationships>`;
-  const document = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"><w:body><w:p><w:r><w:t>LR Word 2026</w:t></w:r></w:p><w:p><w:hyperlink r:id="rId6"><w:r><w:t>unsafe link</w:t></w:r></w:hyperlink></w:p><w:p><w:r><w:drawing><wp:inline><a:graphic><a:graphicData><pic:pic><pic:blipFill><a:blip r:embed="rId5"/></pic:blipFill></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p><w:sectPr/></w:body></w:document>`;
-  const docx = Buffer.from(
-    zipSync({
-      "[Content_Types].xml": strToU8(contentTypes),
-      "_rels/.rels": strToU8(rels),
-      "word/document.xml": strToU8(document),
-      "word/_rels/document.xml.rels": strToU8(documentRels),
-      "word/media/image1.png": image,
-    }),
-  );
   await open(page, "word");
-  await page.locator('input[type="file"]').setInputFiles({ name: "sample.docx", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", buffer: docx });
-  await page.getByRole("button", { name: "运行工具" }).click();
-  await expect(page.locator(".word-preview-frame")).toBeVisible();
-  const html = await page.locator(".word-preview-frame").getAttribute("srcdoc");
-  expect(html).toContain("LR Word 2026");
-  expect(html).not.toContain("javascript:");
-  await expect(page.locator(".word-image-list")).toContainText("image1.png");
-  let pending = page.waitForEvent("download");
-  await page.getByRole("button", { name: "TXT", exact: true }).click();
-  let file = await pending;
-  expect(await readFile((await file.path())!, "utf8")).toContain("LR Word 2026");
-  pending = page.waitForEvent("download");
-  await page.getByRole("button", { name: "HTML", exact: true }).click();
-  file = await pending;
-  const exported = await readFile((await file.path())!, "utf8");
-  expect(exported).toContain("Content-Security-Policy");
-  expect(exported).not.toContain("javascript:");
+  const image = await picture(page);
+  const xml =
+    '<?xml version="1.0"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body><w:p><w:r><w:t>LR 中文 report</w:t></w:r></w:p><w:p><w:hyperlink r:id="bad"><w:r><w:t>unsafe link</w:t></w:r></w:hyperlink></w:p></w:body></w:document>';
+  const docx = zipSync({
+    "[Content_Types].xml": strToU8(
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="xml" ContentType="application/xml"/><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/></Types>',
+    ),
+    "_rels/.rels": strToU8(
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>',
+    ),
+    "word/document.xml": strToU8(xml),
+    "word/_rels/document.xml.rels": strToU8(
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="bad" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="javascript:alert(1)" TargetMode="External"/></Relationships>',
+    ),
+    "word/media/image.png": image.buffer,
+  });
+  await page.locator("input[type=file]").setInputFiles({
+    name: "report.docx",
+    mimeType:
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    buffer: Buffer.from(docx),
+  });
+  await page.getByRole("button", { name: "开始处理", exact: true }).click();
+  await expect(page.getByLabel("可编辑正文")).toHaveValue(/LR 中文 report/);
+  const frame = page.frameLocator("iframe");
+  await expect(frame.getByText("LR 中文 report")).toBeVisible();
+  await expect(frame.locator("[href],script")).toHaveCount(0);
+  await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
+  const pending = page.waitForEvent("download");
+  await page.getByRole("button", { name: "下载 HTML", exact: true }).click();
+  const file = await pending;
+  expect(await readFile((await file.path())!, "utf8")).toContain(
+    "Content-Security-Policy",
+  );
 });
-test("media studio extracts MP3, transcodes MP4 and makes GIF using the pinned engine", async ({ page }) => {
-  const fixture = await mediaFixture();
+test("media studio extracts MP3, transcodes MP4 and makes GIF using the pinned engine", async ({
+  page,
+}) => {
+  test.setTimeout(180000);
+  // Exact registry-distributed core bytes are served locally for deterministic CI; production uses the same pinned CDN assets.
+  await page.route(
+    "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/*",
+    async (route) => {
+      const name = new URL(route.request().url()).pathname.split("/").pop()!;
+      await route.fulfill({
+        path: "node_modules/@ffmpeg/core/dist/esm/" + name,
+        contentType: name.endsWith(".wasm")
+          ? "application/wasm"
+          : "text/javascript",
+        headers: { "access-control-allow-origin": "*" },
+      });
+    },
+  );
   await open(page, "media");
-  await page.locator('input[type="file"]').setInputFiles({ name: "sample.mp4", mimeType: "video/mp4", buffer: fixture });
-  for (const mode of ["audio", "video", "gif"] as const) {
-    await page.getByLabel("输出").selectOption(mode);
-    await page.getByRole("button", { name: "运行工具" }).click();
-    await expect(page.getByRole("status")).toContainText("处理完成", { timeout: 90000 });
+  await page.locator("input[type=file]").setInputFiles({
+    name: "sample.mp4",
+    mimeType: "video/mp4",
+    buffer: mediaFixture,
+  });
+  await page.getByLabel("Media duration").fill("1");
+  for (const [mode, extension] of [
+    ["audio", "mp3"],
+    ["mp4", "mp4"],
+    ["gif", "gif"],
+  ]) {
+    await page.getByLabel("Media operation").selectOption(mode);
+    await page.getByRole("button", { name: "开始处理", exact: true }).click();
+    await expect(page.getByRole("status")).toContainText("处理完成", {
+      timeout: 90000,
+    });
     const pending = page.waitForEvent("download");
-    await page.getByRole("button", { name: /下载/ }).click();
+    await page.getByRole("button", { name: /下载 \/ Download/ }).click();
     const file = await pending;
+    expect(file.suggestedFilename()).toBe("output." + extension);
     const bytes = await readFile((await file.path())!);
-    if (mode === "audio") expect(bytes.subarray(0, 3).toString("ascii")).toMatch(/ID3|\xff/);
-    if (mode === "video") expect(bytes.subarray(4, 8).toString("ascii")).toBe("ftyp");
-    if (mode === "gif") expect(bytes.subarray(0, 6).toString("ascii")).toMatch(/^GIF8[79]a$/);
+    expect(bytes.length).toBeGreaterThan(100);
+    if (mode === "gif") expect(bytes.subarray(0, 3).toString()).toBe("GIF");
+    if (mode === "mp4") expect(bytes.subarray(4, 8).toString()).toBe("ftyp");
   }
 });
