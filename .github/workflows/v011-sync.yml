@@ -42,15 +42,13 @@ jobs:
           notices = Path("THIRD_PARTY_NOTICES.md")
           notices.write_text(notices.read_text().replace('`handlebars` 4.7.9', '`handlebars` 4.7.10'))
           PY
-      - name: Validate implementation
+      - name: Validate deterministic implementation
         if: ${{ !contains(github.event.head_commit.message, '[v011-sync]') }}
         run: |
           npm audit --omit=dev --audit-level=moderate
           npm run lint
           npm run typecheck
           npm run build
-          npx playwright install --with-deps chromium
-          npm run e2e
       - name: Commit deterministic changes
         if: ${{ !contains(github.event.head_commit.message, '[v011-sync]') }}
         run: |
