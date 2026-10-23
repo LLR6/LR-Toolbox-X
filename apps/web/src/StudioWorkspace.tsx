@@ -6,7 +6,7 @@ import {
 } from "./studios.ts";
 import { StudioWorkspace as LegacyStudioWorkspace } from "./LegacyStudioWorkspace.tsx";
 import { VisualStudioWorkspace } from "./VisualStudioWorkspace.tsx";
-import { PowerStudioWorkspace } from "./PowerStudioWorkspace.tsx";
+import { PowerStudioWorkspace } from "./PowerStudioEntry.tsx";
 
 type Props = {
   id: Exclude<StudioId, "sql">;
