@@ -1,6 +1,12 @@
-import { isVisualStudio, type LegacyStudioId, type StudioId } from "./studios.ts";
+import {
+  isPowerStudio,
+  isVisualStudio,
+  type LegacyStudioId,
+  type StudioId,
+} from "./studios.ts";
 import { StudioWorkspace as LegacyStudioWorkspace } from "./LegacyStudioWorkspace.tsx";
 import { VisualStudioWorkspace } from "./VisualStudioWorkspace.tsx";
+import { PowerStudioWorkspace } from "./PowerStudioWorkspace.tsx";
 
 type Props = {
   id: Exclude<StudioId, "sql">;
@@ -10,6 +16,9 @@ type Props = {
 };
 
 export function StudioWorkspace(props: Props) {
+  if (isPowerStudio(props.id)) {
+    return <PowerStudioWorkspace {...props} id={props.id} />;
+  }
   if (isVisualStudio(props.id)) {
     return <VisualStudioWorkspace {...props} id={props.id} />;
   }
