@@ -127,3 +127,8 @@ Generated from executable registry. Native actions are listed separately.
 | math.factorial | 大整数阶乘 | Math | web, windows, linux, macos, cli | safe |
 | numbers.primality | 质数判断 | Numbers | web, windows, linux, macos, cli | safe |
 | math.fraction.reduce | 分数约分 | Math | web, windows, linux, macos, cli | safe |
+| json.repair | JSON 智能修复 | JSON | web, windows, linux, macos, cli | safe |
+| json.flatten | JSON 扁平化 | JSON | web, windows, linux, macos, cli | safe |
+| html.to.markdown | HTML 转 Markdown | Markdown | web, windows, linux, macos, cli | safe |
+| developer.regex.test | 正则表达式测试器 | Developer | web, windows, linux, macos, cli | safe |
+| color.gradient.css | CSS 渐变生成器 | Colors | web, windows, linux, macos, cli | safe |

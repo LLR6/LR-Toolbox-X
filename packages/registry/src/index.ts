@@ -8,6 +8,7 @@ import { dataActions } from "./data.ts";
 import { networkActions } from "./network.ts";
 import { productivityActions } from "./productivity.ts";
 import { advancedMathActions } from "./advanced-math.ts";
+import { modernTools } from "./modern-tools.ts";
 import { Ajv } from "ajv";
 import { textActions } from "./text.ts";
 import { encodingActions } from "./encoding.ts";
@@ -38,9 +39,16 @@ export const actions: Action[] = [
   ...networkActions,
   ...productivityActions,
   ...advancedMathActions,
+  ...modernTools,
 ];
+const actionIds = actions.map((a) => a.id);
 const map = new Map(actions.map((a) => [a.id, a]));
-if (map.size !== actions.length) throw Error("Duplicate action ID");
+if (map.size !== actions.length) {
+  const duplicates = [
+    ...new Set(actionIds.filter((id, index) => actionIds.indexOf(id) !== index)),
+  ];
+  throw Error(`Duplicate action ID: ${duplicates.join(", ")}`);
+}
 const ajv = new Ajv({ strict: true, allErrors: true });
 const validators = new Map(
   actions.map((a) => [
