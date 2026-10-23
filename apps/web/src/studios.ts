@@ -21,6 +21,7 @@ export type VisualStudioId = Exclude<
   StudioId,
   "pdf" | "compress" | "crop" | "ocr" | "word" | "media" | "sql"
 >;
+export type LegacyStudioId = Exclude<StudioId, VisualStudioId | "sql">;
 
 export const visualStudioIds: VisualStudioId[] = [
   "mermaid",
@@ -34,6 +35,9 @@ export const visualStudioIds: VisualStudioId[] = [
   "password",
   "time",
 ];
+
+export const isVisualStudio = (id: StudioId): id is VisualStudioId =>
+  visualStudioIds.includes(id as VisualStudioId);
 
 export const studios: {
   id: StudioId;
