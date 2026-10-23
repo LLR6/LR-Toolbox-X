@@ -24,11 +24,10 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
           path = Path('apps/web/src/VisualStudioWorkspace.tsx')
           text = path.read_text()
-          old = '''  const worldZones = [localZone, "UTC", "Asia/Shanghai", "America/Los_Angeles", "Europe/London"].filter(
-            (value, index, list) => list.indexOf(value) === index,
-          );'''
+          pattern = re.compile(r'''  const worldZones = \[localZone, "UTC", "Asia/Shanghai", "America/Los_Angeles", "Europe/London"\]\.filter\(\s*\n\s*\(value, index, list\) => list\.indexOf\(value\) === index,\s*\n\s*\);''')
           new = '''  const worldZones = [
             ...new Set([
               localZone,
@@ -40,9 +39,10 @@ jobs:
               "Australia/Sydney",
             ]),
           ].slice(0, 5);'''
-          if old not in text:
-              raise SystemExit('worldZones block not found')
-          path.write_text(text.replace(old, new))
+          text, count = pattern.subn(new, text, count=1)
+          if count != 1:
+              raise SystemExit(f'expected one worldZones block, found {count}')
+          path.write_text(text)
           PY
           npm run lint
           npm run typecheck
