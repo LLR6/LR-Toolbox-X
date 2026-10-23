@@ -33,6 +33,7 @@ jobs:
           from pathlib import Path
           path = Path("apps/web/src/PowerStudioWorkspace.tsx")
           text = path.read_text()
+          text = text.replace('import "reveal.js/dist/reveal.css";', 'import "reveal.js/reveal.css";')
           text = text.replace(
             '    const bytes = sqlDb.current.export();\n    downloadBlob("lr-toolbox.sqlite", new Blob([bytes], { type: "application/vnd.sqlite3" }));',
             '    const bytes = sqlDb.current.export();\n    const copy = new Uint8Array(bytes);\n    downloadBlob("lr-toolbox.sqlite", new Blob([copy.buffer], { type: "application/vnd.sqlite3" }));',
