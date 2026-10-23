@@ -1,0 +1,46 @@
+name: Sync v0.11 release metadata
+
+on:
+  push:
+    branches:
+      - feature/v0.11-data-dev-studios
+
+permissions:
+  contents: write
+
+jobs:
+  sync-version:
+    if: ${{ !contains(github.event.head_commit.message, '[v011-version]') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/v0.11-data-dev-studios
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Synchronize product versions
+        run: |
+          npm version 0.11.0 --no-git-tag-version --allow-same-version
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('apps/android/app/build.gradle.kts')
+          t = p.read_text().replace('versionCode = 8; versionName = "0.8.0"', 'versionCode = 11; versionName = "0.11.0"')
+          p.write_text(t)
+          p = Path('apps/desktop/src-tauri/tauri.conf.json')
+          t = p.read_text().replace('"version": "0.8.0"', '"version": "0.11.0"')
+          p.write_text(t)
+          PY
+      - name: Sanity check
+        run: |
+          npm ci
+          npm run typecheck
+      - name: Commit synchronized metadata
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json apps/android/app/build.gradle.kts apps/desktop/src-tauri/tauri.conf.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "release: synchronize v0.11.0 metadata [v011-version]"
+          git push origin HEAD:feature/v0.11-data-dev-studios
