@@ -1,3 +1,4 @@
+import { CyberChefWorkspace } from "./CyberChefWorkspace.tsx";
 import { ResearchWorkspace } from "./ResearchWorkspace.tsx";
 import {
   isVisualStudio,
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export function StudioWorkspace(props: Props) {
+  if (props.id === "cyberchef") return <CyberChefWorkspace {...props} />;
   if (
     props.id === "resources" ||
     props.id === "qrread" ||
