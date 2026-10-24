@@ -255,7 +255,8 @@ export const studios: {
     intro: "不是只看长度，而是识别真实世界里的弱模式。",
     introEn: "Go beyond length and detect real-world weak patterns.",
     use: "强度仪表 · 模式分析 · 破解时间估算 · 不保存密码",
-    useEn: "Strength meter · Pattern analysis · Crack-time estimate · No saving",
+    useEn:
+      "Strength meter · Pattern analysis · Crack-time estimate · No saving",
     engine: "zxcvbn-ts",
     repo: "https://github.com/zxcvbn-ts/zxcvbn",
     accent: "mint",
@@ -277,8 +278,36 @@ export const studios: {
 
 export const studioMatches = (query: string) =>
   studios.filter((s) =>
-    [s.id, s.name, s.en, s.intro, s.use, s.engine]
-      .join(" ")
-      .toLowerCase()
-      .includes(query.trim().toLowerCase()),
+    [
+      s.id,
+      s.name,
+      s.en,
+      s.intro,
+      s.use,
+      s.engine,
+      ...(studioAliases[s.id] ?? []),
+    ].some((value) =>
+      value
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .includes(query.trim().toLowerCase().replace(/\s+/g, "")),
+    ),
   );
+
+const studioAliases: Partial<Record<StudioId, string[]>> = {
+  pdf: ["合并pdf", "拆分pdf", "pdf合并", "pdf拆分"],
+  compress: ["图片压缩", "压缩图片", "批量压缩"],
+  crop: ["裁剪图片", "图片裁剪"],
+  ocr: ["截图转文字", "识别文字", "文字识别"],
+  word: ["提取word", "word提取"],
+  media: ["提取音频", "视频转音频", "制作gif"],
+};
+export function studioShortcut(query: string) {
+  const q = query.trim().toLowerCase().replace(/\s+/g, "");
+  if (!q) return undefined;
+  return studios.find((s) =>
+    [s.id, s.name, s.en, s.engine, ...(studioAliases[s.id] ?? [])].some((v) =>
+      v.toLowerCase().replace(/\s+/g, "").includes(q),
+    ),
+  );
+}

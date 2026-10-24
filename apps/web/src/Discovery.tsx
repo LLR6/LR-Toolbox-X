@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import Fuse from "fuse.js";
-import { studioMatches, type StudioId } from "./studios.ts";
+import { studioMatches, studioShortcut, type StudioId } from "./studios.ts";
 import { ToolIcon, UiIcon } from "./Icons.tsx";
 import type { Action } from "../../../packages/registry/src/types.ts";
 import type { Run } from "./storage.ts";
@@ -102,7 +102,9 @@ export function Discovery({
       ))
     : undefined;
   const openSearch = () => {
-    if (firstMatch) choose(firstMatch);
+    const studio = studioShortcut(query);
+    if (studio) openStudio(studio.id);
+    else if (firstMatch) choose(firstMatch);
     else navigate("tools");
   };
   const popular = [
