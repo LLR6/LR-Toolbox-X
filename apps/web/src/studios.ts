@@ -15,13 +15,28 @@ export type StudioId =
   | "screenshot"
   | "cron"
   | "password"
-  | "time";
+  | "time"
+  | "resources"
+  | "qrread"
+  | "calendar";
+
+export type ResearchStudioId = "resources" | "qrread" | "calendar";
 
 export type VisualStudioId = Exclude<
   StudioId,
-  "pdf" | "compress" | "crop" | "ocr" | "word" | "media" | "sql"
+  | "pdf"
+  | "compress"
+  | "crop"
+  | "ocr"
+  | "word"
+  | "media"
+  | "sql"
+  | ResearchStudioId
 >;
-export type LegacyStudioId = Exclude<StudioId, VisualStudioId | "sql">;
+export type LegacyStudioId = Exclude<
+  StudioId,
+  VisualStudioId | "sql" | ResearchStudioId
+>;
 
 export const visualStudioIds: VisualStudioId[] = [
   "mermaid",
@@ -274,6 +289,46 @@ export const studios: {
     repo: "https://github.com/iamkun/dayjs",
     accent: "violet",
   },
+  {
+    id: "resources",
+    name: "开源与设备资源库",
+    en: "Open Source Resource Lab",
+    category: "System",
+    intro: "让上传资源和开源灵感，各有清晰的去处。",
+    introEn: "A considered home for device packs and open-source discoveries.",
+    use: "四份资源 · 本地校验 · POC 文档索引 · 精选开源推荐",
+    useEn:
+      "Four packs · Local verification · Document index · Open-source picks",
+    engine: "Fuse.js + fflate",
+    repo: "https://github.com/krisk/Fuse",
+    accent: "violet",
+  },
+  {
+    id: "qrread",
+    name: "二维码识别台",
+    en: "QR Image Reader",
+    category: "QR",
+    intro: "从图片读出信息，链接由你决定是否打开。",
+    introEn: "Read codes from images without opening their links.",
+    use: "离线图片识别 · 纯文本结果 · 下载内容",
+    useEn: "Offline image decoding · Plain text · Download",
+    engine: "jsQR",
+    repo: "https://github.com/cozmo/jsQR",
+    accent: "mint",
+  },
+  {
+    id: "calendar",
+    name: "日历文件台",
+    en: "Calendar File Studio",
+    category: "Time",
+    intro: "把日历文件，变成一目了然的事件表。",
+    introEn: "Turn calendar files into a clear event table.",
+    use: "ICS 解析 · 时区与重复规则 · JSON 导出",
+    useEn: "ICS parsing · Time-zone and recurrence metadata · JSON",
+    engine: "ICAL.js",
+    repo: "https://github.com/kewisch/ical.js",
+    accent: "coral",
+  },
 ];
 
 export const studioMatches = (query: string) =>
@@ -295,6 +350,18 @@ export const studioMatches = (query: string) =>
   );
 
 const studioAliases: Partial<Record<StudioId, string[]>> = {
+  resources: [
+    "sqlmap",
+    "poc",
+    "刷机",
+    "cpe",
+    "开源",
+    "github",
+    "随身wifi",
+    "9008",
+  ],
+  qrread: ["二维码识别", "识别二维码", "扫码"],
+  calendar: ["ics", "日历", "日程"],
   pdf: ["合并pdf", "拆分pdf", "pdf合并", "pdf拆分"],
   compress: ["图片压缩", "压缩图片", "批量压缩"],
   crop: ["裁剪图片", "图片裁剪"],

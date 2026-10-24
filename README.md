@@ -108,3 +108,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Features must have executable handlers, 
 English: a local-first toolbox with 123 portable actions and 6 native actions. This is an early working milestone, not the complete 2000-action product. Apache-2.0 applies to original project code; upstream dependencies retain their licenses.
 
 - Tool execution now uses a dedicated responsive workspace with input/output editors, syntax coloring, local text import (1 MB), output download, actual run status, metadata history and Ctrl/Cmd+Enter. Native Android tools use full pages with system Back navigation.
+
+### 开源与设备资源库
+
+在首页搜索“开源”“POC”“sqlmap”“刷机”可进入新的完整资源工作台。四份上传资源提供真实文件清单、SHA-256、本机原包比对、清单下载；POC 与 sqlmap 文本可以从匹配的本机 ZIP 中检索阅读。固件、APK 和第三方源码不会随网站分发，刷机与 Python 工具不在网页内执行。CPE RAR 实际包含两份 APK，未发现网页后台源码。
+
+新增实用工作台：**二维码识别台**（jsQR，离线从图片读码并下载内容）与 **日历文件台**（ICAL.js，解析 ICS、保留时区和重复规则、导出 JSON）。资源库另推荐 Excalidraw、Docling、MarkItDown、LocalSend、Stirling PDF、IT-Tools，明确标记为独立外部项目；不把外链计入内置工具数量。
