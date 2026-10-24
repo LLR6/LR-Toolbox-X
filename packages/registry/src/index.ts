@@ -1,3 +1,4 @@
+import { practicalActions } from "./practical.ts";
 import { sqlActions } from "./sql.ts";
 import { codeXmlActions } from "./code-xml.ts";
 import { studioActions } from "./text-studio.ts";
@@ -40,6 +41,7 @@ export const actions: Action[] = [
   ...productivityActions,
   ...advancedMathActions,
   ...modernTools,
+  ...practicalActions,
 ];
 const actionIds = actions.map((a) => a.id);
 const map = new Map(actions.map((a) => [a.id, a]));

@@ -132,3 +132,9 @@ Generated from executable registry. Native actions are listed separately.
 | html.to.markdown | HTML 转 Markdown | Markdown | web, windows, linux, macos, cli | safe |
 | developer.regex.test | 正则表达式测试器 | Developer | web, windows, linux, macos, cli | safe |
 | color.gradient.css | CSS 渐变生成器 | Colors | web, windows, linux, macos, cli | safe |
+| text.lists.compare | 两份名单对比 | Text | web, windows, linux, macos, cli | safe |
+| text.lines.frequency | 重复行频次统计 | Text | web, windows, linux, macos, cli | safe |
+| text.invisible.inspect | 不可见字符检查 | Text | web, windows, linux, macos, cli | safe |
+| text.chunk | 长文本等长分段 | Text | web, windows, linux, macos, cli | safe |
+| url.tracking.clean | 链接追踪参数清理 | Developer | web, windows, linux, macos, cli | safe |
+| json.merge.patch | JSON 合并补丁 | JSON | web, windows, linux, macos, cli | safe |
