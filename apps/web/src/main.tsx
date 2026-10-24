@@ -31,6 +31,7 @@ const StudioWorkspace = lazy(() =>
 import { ToolIcon, UiIcon } from "./Icons.tsx";
 import "./polish.css";
 import "./readability.css";
+import "./experience.css";
 const desktop = "__TAURI_INTERNALS__" in window;
 const groups = [
   "All",

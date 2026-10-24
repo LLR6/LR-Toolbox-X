@@ -135,22 +135,6 @@ export function Discovery({
     .slice(0, 4)
     .map((id) => actions.find((a) => a.id === id))
     .filter((a): a is Action => !!a);
-  const lastAction = history.length
-    ? actions.find((a) => a.id === history[0].id)
-    : undefined;
-  const smartPicks = [
-    ...(lastAction
-      ? actions.filter(
-          (a) => a.category === lastAction.category && a.id !== lastAction.id,
-        )
-      : []),
-    ...popular,
-  ]
-    .filter(
-      (action, index, list) =>
-        list.findIndex((candidate) => candidate.id === action.id) === index,
-    )
-    .slice(0, 3);
   const categories = [
     { id: "Text", name: "文本处理", en: "Text tools", desc: "整理文字，释放表达" },
     { id: "JSON", name: "数据与 JSON", en: "Data & JSON", desc: "结构清晰，转换自如" },
@@ -173,24 +157,24 @@ export function Discovery({
       <div className="dashboard-main">
         <section className="scenic-hero">
           <div className="hero-caption">
-            <span className="hero-overline">YOUR PERSONAL PRODUCTIVITY SPACE</span>
+            <span className="hero-overline">YOUR IDEAS. IN MOTION.</span>
             <h1>
               {t("让一切更高效", "Make every day flow.")}
               <span> ✦</span>
             </h1>
             <p>
               {t(
-                "一个工具箱，连接每一次灵感与行动。推荐只是捷径，所有工具始终在手边。",
-                "One toolbox. Recommendations are shortcuts; the full toolkit stays close.",
+                "从一份文件到一个灵感，让每个任务都有清晰的起点。",
+                "From a document to an idea. A clear starting point for every task.",
               )}
             </p>
           </div>
           <blockquote className="hero-quote">
-            {t("常用工具，", "Your tools,")}
+            {t("少些寻找，", "Less searching,")}
             <br />
-            {t("不该被藏起来。", "never buried.")}
+            {t("多些创造。", "more creating.")}
             <br />
-            {t("搜索、分类、推荐都只是入口。", "Search, browse, or take a shortcut.")}
+            {t("属于你的效率空间。", "A workspace that feels like yours.")}
           </blockquote>
           <div className="hero-search">
             <UiIcon name="search" />
@@ -231,6 +215,37 @@ export function Discovery({
           </div>
         </section>
 
+        <section className="task-start-section" aria-label={t("任务起点", "Start with a task")}>
+          <div className="dashboard-section-head">
+            <div><span className="studio-kicker">START SOMETHING GOOD</span><h2>{t("今天，想完成什么？", "What will you create today?")}</h2></div>
+            <span className="section-hint">{t("四个入口，少走几步", "Four shortcuts to your next idea")}</span>
+          </div>
+          <div className="task-start-grid">
+            {([
+              ["pdf", "PDF", "DOCUMENTS", "整理一份文档", "Organize a document", "合并、提取与排版，把零散资料整理好。", "Merge, extract and tidy your pages.", "rose"],
+              ["ocr", "OCR", "IMAGES", "读懂一张图片", "Read an image", "识别截图中的文字，让信息再次可编辑。", "Turn a screenshot into editable text.", "sky"],
+              ["cyberchef", "Code", "OPEN SOURCE", "探索数据的可能", "Explore your data", "进入开源实验室，把多个操作串成配方。", "Combine operations in an open-source lab.", "violet"],
+              ["resources", "System", "YOUR RESOURCES", "管理你的资源", "Know your resources", "查找设备资料、校验原包，发现好用项目。", "Find device packs and open-source projects.", "mint"],
+            ] as const).map(([id, category, label, zh, english, desc, descEn, tone], i) => (
+              <button key={id} className={"task-start-card task-tone-" + tone} data-testid={"spotlight-" + id} onClick={() => openStudio(id)}>
+                <span className="task-card-top"><ToolIcon category={category} /><span>{String(i + 1).padStart(2, "0")}</span></span>
+                <small>{label}</small><h3>{t(zh, english)}</h3><p>{t(desc, descEn)}</p>
+                <b>{t("进入工作台", "Open workspace")} <UiIcon name="arrow" /></b>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <details className="new-tools-shelf glass-panel">
+          <summary>{t("本次上新 · 6 个数据整理工具", "New · Six data cleanup tools")} <span>{t("展开查看用途与入口", "Explore this collection")}</span></summary>
+          <div className="essentials-grid">
+            {["text.lists.compare", "text.lines.frequency", "text.invisible.inspect", "text.chunk", "url.tracking.clean", "json.merge.patch"].map(id => {
+              const action = actions.find(a => a.id === id);
+              return action && <button className="new-tool-card" key={id} onClick={() => choose(action)}><ToolBadge category={action.category} /><strong>{en ? action.nameEn : action.name}</strong><p>{action.description}</p><b>{t("打开工作台", "Open workspace")} →</b></button>;
+            })}
+          </div>
+        </details>
+
         <div className="dashboard-section-head">
           <h2>
             <UiIcon name="tools" />
@@ -269,35 +284,6 @@ export function Discovery({
             </button>
           ))}
         </div>
-
-        <section className="smart-picks glass-panel">
-          <div className="dashboard-section-head">
-            <h2>
-              <UiIcon name="command" />
-              {t("为你推荐", "Suggested for you")}
-              <span className="section-hint">
-                {lastAction
-                  ? t("根据你刚用过的工具继续推荐", "Based on what you used recently")
-                  : t("先给你几项高频入口", "A few useful shortcuts to begin")}
-              </span>
-            </h2>
-            <button onClick={() => navigate("tools")}>
-              {t("自己找", "Browse instead")} →
-            </button>
-          </div>
-          <div className="smart-pick-grid">
-            {smartPicks.map((a) => (
-              <button key={a.id} onClick={() => choose(a)}>
-                <ToolBadge category={a.category} />
-                <span>
-                  <strong>{en ? a.nameEn : a.name}</strong>
-                  <small>{en ? a.id : a.description}</small>
-                </span>
-                <UiIcon name="external" />
-              </button>
-            ))}
-          </div>
-        </section>
 
         <div className="activity-grid">
           <section className="glass-panel">
@@ -411,14 +397,14 @@ export function Discovery({
           <h2>
             <UiIcon name="tools" />
             {t("精选实用工具", "Everyday essentials")}
-            <span className="section-hint">{t("常用入口直接铺开", "Common tools, one click away")}</span>
+            <span className="section-hint">{t("八项常用，随手打开", "Eight essentials, one click away")}</span>
           </h2>
           <button onClick={() => navigate("favorites")}>
             <UiIcon name="favorites" /> {t("我的收藏", "Favorites")} {favorites.length}
           </button>
         </div>
         <div className="essentials-grid">
-          {popular.map((a) => (
+          {popular.slice(0, 8).map((a) => (
             <article className="essential-card" key={a.id}>
               <button className="essential-tool" data-testid={"dashboard-" + a.id} onClick={() => choose(a)}>
                 <ToolBadge category={a.category} />

@@ -6062,5 +6062,278 @@
       "angle": 135
     },
     "expected": "linear-gradient(135deg, #596FE8, #A06DE4)"
+  },
+  {
+    "id": "text.lists.compare",
+    "name": "两份名单对比",
+    "nameEn": "Compare two lists",
+    "description": "逐行精确比较两份名单，返回交集和各自独有项；去重、忽略空行，保留空格与首次出现顺序。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "lists",
+      "compare"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "left": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "right": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "left",
+        "right"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "left": "李明\n王芳\n张伟",
+      "right": "王芳\n赵敏"
+    }
+  },
+  {
+    "id": "text.lines.frequency",
+    "name": "重复行频次统计",
+    "nameEn": "Line frequency report",
+    "description": "统计每个非空行的出现次数，按频次降序排列，同频保留首次出现顺序；精确区分空格和大小写。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "lines",
+      "frequency"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "apple\nbanana\napple\n梨\n梨\n梨"
+    }
+  },
+  {
+    "id": "text.invisible.inspect",
+    "name": "不可见字符检查",
+    "nameEn": "Inspect invisible characters",
+    "description": "定位常见控制字符、零宽字符、不换行空格及双向文本标记。位置为从 1 开始的 Unicode 码点序号；最多列出 10000 项，不修改原文。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "invisible",
+      "inspect"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "hello​ world !"
+    }
+  },
+  {
+    "id": "text.chunk",
+    "name": "长文本等长分段",
+    "nameEn": "Split long text",
+    "description": "按 Unicode 码点分段，不拆开 emoji 的代理对；组合字符或复合 emoji 可能跨段。每段 1–100000 码点，最多输出 10000 段。",
+    "category": "Text",
+    "tags": [
+      "Text",
+      "text",
+      "chunk"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        }
+      },
+      "required": [
+        "text",
+        "size"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "一份长文，分段后更容易处理。",
+      "size": 6
+    }
+  },
+  {
+    "id": "url.tracking.clean",
+    "name": "链接追踪参数清理",
+    "nameEn": "Clean tracking parameters",
+    "description": "移除 HTTP(S) 链接中的 utm_*、fbclid、gclid、dclid、msclkid 和 mc_*id 参数，保留其他参数与片段；不访问链接，签名链接修改后可能失效。",
+    "category": "Developer",
+    "tags": [
+      "Developer",
+      "url",
+      "tracking",
+      "clean"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "text": "https://example.com/article?id=42&utm_source=share&fbclid=abc#intro"
+    }
+  },
+  {
+    "id": "json.merge.patch",
+    "name": "JSON 合并补丁",
+    "nameEn": "JSON Merge Patch",
+    "description": "按 RFC 7396 合并配置：对象递归合并，null 删除字段，数组及非对象整体替换。支持最多 64 层补丁对象；数字遵循 JS 精度。",
+    "category": "JSON",
+    "tags": [
+      "JSON",
+      "json",
+      "merge",
+      "patch"
+    ],
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "patch": {
+          "type": "string",
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "target",
+        "patch"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "string"
+    },
+    "platforms": [
+      "web",
+      "windows",
+      "linux",
+      "macos",
+      "cli"
+    ],
+    "permissions": [],
+    "risk_level": "safe",
+    "timeout": 5000,
+    "example": {
+      "target": "{\"name\":\"LR\",\"settings\":{\"theme\":\"light\",\"old\":true}}",
+      "patch": "{\"settings\":{\"theme\":\"dark\",\"old\":null}}"
+    }
   }
 ]

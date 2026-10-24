@@ -1,0 +1,425 @@
+/* Task-first alpine workspace. Keep library introductions available in full. */
+:root {
+  --bg: #0b1220;
+  --panel: #111e31;
+  --panel2: #192a42;
+  --line: #2d435f;
+  --text: #f1f5fe;
+  --muted: #b5c3d9;
+  --accent: #b0adff;
+  --accentbg: #293755;
+}
+[data-theme="light"] {
+  --bg: #edf1f7;
+  --panel: #fff;
+  --panel2: #edf2fa;
+  --line: #c4cfdf;
+  --text: #203049;
+  --muted: #53657e;
+  --accent: #5753b5;
+  --accentbg: #e6e7f9;
+}
+body {
+  background:
+    radial-gradient(ellipse at 65% 0%, #34457135, transparent 60%), var(--bg);
+}
+.sidebar {
+  background: linear-gradient(165deg, #17243b, #0b1423);
+  border-right: 1px solid var(--line);
+}
+.brand img {
+  width: 43px;
+  height: 43px;
+}
+.nav {
+  min-height: 46px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+.nav.selected {
+  background: linear-gradient(100deg, #595caa44, #3b54832b);
+  box-shadow: inset 3px 0 #b0adff;
+}
+main > header {
+  border-color: var(--line);
+  background: var(--bg);
+}
+.dashboard-layout {
+  max-width: 1840px;
+  margin: auto;
+  gap: 24px;
+  padding: 26px 28px;
+}
+.dashboard-main {
+  gap: 24px;
+  min-width: 0;
+}
+.glass-panel {
+  border: 1px solid var(--line);
+  border-radius: 19px;
+  background: linear-gradient(140deg, #ffffff04, transparent), var(--panel);
+  box-shadow: 0 12px 34px #02081518;
+}
+.scenic-hero {
+  min-height: 352px;
+  padding: 38px 32px 25px;
+  border: 1px solid #829cc14d;
+  border-radius: 22px;
+  background:
+    linear-gradient(90deg, #071526c9 0%, #111c3930 72%),
+    url("/alpine-dusk.png") center/cover;
+  box-shadow: 0 20px 60px #02081535;
+}
+.hero-overline {
+  font-size: 11px;
+  letter-spacing: 2.6px;
+  color: #d5def6;
+}
+.hero-caption h1 {
+  font-size: clamp(32px, 3vw, 48px);
+  letter-spacing: 1px;
+  color: #fff;
+  margin: 18px 0 12px;
+}
+.hero-caption p {
+  color: #e2e9fa;
+  font-size: 15px;
+  line-height: 1.9;
+  max-width: 510px;
+}
+.hero-quote {
+  color: #f0e9ff;
+  line-height: 2;
+  font-size: 14px;
+}
+.hero-search {
+  min-height: 64px;
+  background: #0d1b31df;
+  border: 1px solid #9fabe582;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px #02081533;
+}
+.hero-search input {
+  color: #f1f5fe;
+  font-size: 15px;
+}
+.hero-search input::placeholder {
+  color: #c0cce0;
+}
+.hero-chips {
+  gap: 8px;
+  font-size: 12px;
+  color: #e0e7f7;
+}
+.hero-chips button {
+  color: #f1f5fe;
+  border-color: #9faed54d;
+  background: #172640b3;
+  border-radius: 8px;
+}
+.dashboard-section-head {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.dashboard-section-head h2 {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.studio-kicker {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+.section-hint {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.task-start-section > .dashboard-section-head {
+  margin-bottom: 17px;
+}
+.task-start-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+}
+.task-start-card {
+  --task-glow: #c587a2;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  min-height: 247px;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  color: var(--text);
+  background:
+    radial-gradient(
+      ellipse at 95% 0%,
+      color-mix(in srgb, var(--task-glow) 16%, transparent),
+      transparent 65%
+    ),
+    var(--panel);
+  transition:
+    transform 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.task-tone-sky {
+  --task-glow: #719fde;
+}
+.task-tone-violet {
+  --task-glow: #a58ae5;
+}
+.task-tone-mint {
+  --task-glow: #75c3b0;
+}
+.task-start-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--task-glow);
+  box-shadow: 0 16px 28px #02081533;
+}
+.task-start-card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.task-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.task-card-top > svg {
+  width: 54px;
+  height: 54px;
+  filter: drop-shadow(0 8px 9px #0004);
+}
+.task-card-top > span {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.task-start-card > small {
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  color: var(--muted);
+}
+.task-start-card h3 {
+  margin: 9px 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.task-start-card p {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.85;
+}
+.task-start-card b {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  font-size: 12px;
+  font-weight: 500;
+}
+.task-start-card b svg {
+  width: 17px;
+  height: 17px;
+}
+.collection {
+  border-radius: 16px;
+  min-height: 143px;
+}
+.collection strong {
+  color: var(--text);
+  font-size: 14px;
+}
+.collection small,
+.collection-count {
+  color: var(--muted);
+}
+.activity-grid {
+  gap: 17px;
+}
+.essentials-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.essential-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+}
+.essential-tool strong {
+  color: var(--text);
+  font-size: 14px;
+}
+.essential-tool small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.studio-shelf {
+  padding: 23px;
+}
+.studio-shelf .studio-card {
+  min-height: 171px;
+  border-radius: 15px;
+  padding: 17px;
+}
+.studio-shelf .studio-card-top > svg:first-child {
+  width: 43px;
+  height: 43px;
+}
+.studio-shelf .studio-card-top > span,
+.studio-shelf .studio-card p,
+.studio-shelf .studio-card-use {
+  display: none;
+}
+.studio-shelf .studio-card h3 {
+  font-size: 16px;
+}
+[data-theme="light"] .sidebar {
+  background: linear-gradient(165deg, #fff, #e9eef7);
+}
+[data-theme="light"] .nav.selected {
+  background: #dfe4f7;
+}
+@media (min-width: 1650px) {
+  .dashboard-layout {
+    grid-template-columns: minmax(0, 1fr) 268px;
+  }
+  .scenic-hero {
+    min-height: 380px;
+  }
+  .task-start-card {
+    min-height: 260px;
+  }
+  .essentials-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1250px) {
+  .task-start-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hero-quote {
+    display: none;
+  }
+}
+@media (max-width: 1050px) {
+  .dashboard-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .insight-rail {
+    display: none;
+  }
+  .scenic-hero {
+    min-height: 335px;
+  }
+}
+@media (max-width: 700px) {
+  .dashboard-layout {
+    padding: 15px;
+    gap: 18px;
+  }
+  .dashboard-main {
+    gap: 20px;
+  }
+  .scenic-hero {
+    min-height: 360px;
+    padding: 25px 19px;
+  }
+  .hero-caption h1 {
+    font-size: 33px;
+  }
+  .hero-caption p {
+    font-size: 13px;
+  }
+  .hero-search input {
+    font-size: 13px;
+    min-width: 0;
+  }
+  .task-start-grid {
+    gap: 10px;
+  }
+  .task-start-card {
+    padding: 15px;
+    min-height: 237px;
+  }
+  .task-start-card h3 {
+    font-size: 15px;
+  }
+  .task-card-top > svg {
+    width: 46px;
+    height: 46px;
+  }
+  .task-start-card > small {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .collection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .essentials-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .studio-shelf {
+    padding: 15px;
+  }
+  .studio-shelf .studio-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .task-start-card {
+    transition: none;
+  }
+  .task-start-card:hover {
+    transform: none;
+  }
+}
+
+.new-tools-shelf {
+  padding: 20px;
+}
+.new-tools-shelf summary {
+  cursor: pointer;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+}
+.new-tools-shelf summary span {
+  display: inline-block;
+  margin-left: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.new-tools-shelf[open] summary {
+  margin-bottom: 20px;
+}
+.new-tool-card {
+  text-align: left;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel2);
+  color: var(--text);
+}
+.new-tool-card strong {
+  display: block;
+  margin-top: 10px;
+}
+.new-tool-card p {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 12px;
+}
+.new-tool-card b {
+  font-size: 12px;
+  color: var(--accent);
+}
