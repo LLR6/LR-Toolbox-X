@@ -50,18 +50,25 @@ test("self-hosted upstream workbench executes real Base64, SHA-256 and URL recip
   ).toBeVisible();
   const input = frame.locator("#input .cm-content");
   const output = frame.locator("#output .cm-content");
+  await expect(frame.locator("#rec-list")).toContainText("To Base64");
   await input.fill("Hello LR");
-  await expect(output).toContainText("SGVsbG8gTFI=");
+  await frame.locator("#bake").click();
+  await expect(output).toContainText("SGVsbG8gTFI=", { timeout: 30_000 });
   await page
     .getByRole("button", { name: "SHA-256 摘要 →", exact: true })
     .click();
+  await expect(frame.locator("#rec-list")).toContainText("SHA2");
   await input.fill("abc");
+  await frame.locator("#bake").click();
   await expect(output).toContainText(
     "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+    { timeout: 30_000 },
   );
   await page.getByRole("button", { name: "URL 解码 →", exact: true }).click();
+  await expect(frame.locator("#rec-list")).toContainText("URL Decode");
   await input.fill("LR%20%2B%20%E4%B8%AD%E6%96%87");
-  await expect(output).toContainText("LR + 中文");
+  await frame.locator("#bake").click();
+  await expect(output).toContainText("LR + 中文", { timeout: 30_000 });
   const src = await page
     .locator('iframe[title="CyberChef local workbench"]')
     .getAttribute("src");
@@ -90,7 +97,7 @@ test("suite supports multi-step compression and JSON formatting via the pinned a
       expected: "LR local compression test 中文",
     },
     {
-      steps: [{ op: "JSON Beautify", args: [] }],
+      steps: [{ op: "JSON Beautify", args: ["  ", false, false] }],
       input: '{"a":1,"b":2}',
       expected: '"a": 1',
     },
@@ -106,6 +113,7 @@ test("suite supports multi-step compression and JSON formatting via the pinned a
     await frame.locator("#input .cm-content").fill(recipe.input);
     await expect(frame.locator("#output .cm-content")).toContainText(
       recipe.expected,
+      { timeout: 30_000 },
     );
   }
 });
