@@ -460,6 +460,7 @@ function App() {
           >
             <StudioWorkspace
               key={studio}
+              onOpen={openStudio}
               id={studio}
               en={en}
               onClose={() => setStudio(null)}
