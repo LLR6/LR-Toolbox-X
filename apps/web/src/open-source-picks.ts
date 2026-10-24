@@ -1,5 +1,14 @@
 export const openSourcePicks = [
   {
+    name: "noble-hashes",
+    repo: "paulmillr/noble-hashes",
+    tag: "已接入",
+    intro: "分块核对大文件的 SHA-256 指纹，不依赖云端服务或安全上下文。",
+    use: "资源包增量完整性校验",
+    mode: "已接入 · 资源库完整性比对",
+    studio: "resources" as const,
+  },
+  {
     name: "Excalidraw",
     repo: "excalidraw/excalidraw",
     tag: "视觉表达",

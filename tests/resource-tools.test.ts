@@ -4,6 +4,7 @@ import { zipSync, strToU8 } from "fflate";
 import {
   readPackDocument,
   inspectCalendar,
+  digestBlob,
 } from "../apps/web/src/resource-tools.ts";
 import { studioShortcut, isVisualStudio } from "../apps/web/src/studios.ts";
 test("resource text reader extracts only selected text and never interprets markup", () => {
@@ -41,4 +42,18 @@ test("new workspaces route separately and uploaded tools are searchable", () => 
   assert.equal(studioShortcut("识别二维码")?.id, "qrread");
   assert.equal(studioShortcut("ICS")?.id, "calendar");
   assert.equal(isVisualStudio("resources"), false);
+});
+
+test("incremental file hash matches standard SHA-256 across chunk boundaries", async () => {
+  const { createHash } = await import("node:crypto");
+  const bytes = new Uint8Array(4_194_311).fill(170);
+  assert.equal(
+    await digestBlob(new Blob([bytes])),
+    createHash("sha256").update(bytes).digest("hex"),
+  );
+  assert.equal(
+    await digestBlob(new Blob([])),
+    createHash("sha256").digest("hex"),
+  );
+  await assert.rejects(digestBlob({ size: 300_000_001 } as Blob), /300 MB/);
 });

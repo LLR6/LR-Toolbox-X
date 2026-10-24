@@ -31,13 +31,11 @@ test("resource lab exposes four honest pack entries, filters CVEs, exports metad
   const json = JSON.parse(await readFile((await file.path())!, "utf8"));
   expect(json.files).toHaveLength(2);
   expect(json.sha256).toMatch(/^[0-9a-f]{64}$/);
-  await page
-    .getByLabel("本机资源包")
-    .setInputFiles({
-      name: "wrong.rar",
-      mimeType: "application/octet-stream",
-      buffer: Buffer.from("not the original"),
-    });
+  await page.getByLabel("本机资源包").setInputFiles({
+    name: "wrong.rar",
+    mimeType: "application/octet-stream",
+    buffer: Buffer.from("not the original"),
+  });
   await expect(page.getByRole("alert")).toContainText("大小");
   await page.getByRole("button", { name: "已接入", exact: true }).click();
   await page
@@ -72,6 +70,9 @@ test("QR reader decodes an actual generated PNG and keeps its URL as text", asyn
   page,
 }) => {
   await page.goto("/");
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("qr.generate");
   await page.getByTestId("action-qr.generate").first().click();
   await page
     .getByRole("textbox", { name: "text", exact: true })
@@ -82,7 +83,12 @@ test("QR reader decodes an actual generated PNG and keeps its URL as text", asyn
   const file = await pending;
   const png = await readFile((await file.path())!);
   await page.getByRole("button", { name: "Close tool" }).click();
-  await page.getByTestId("studio-qrread").click();
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .fill("识别二维码");
+  await page
+    .getByRole("textbox", { name: "搜索工具", exact: true })
+    .press("Enter");
   await page
     .getByLabel("二维码图片")
     .setInputFiles({ name: "qr.png", mimeType: "image/png", buffer: png });
@@ -90,13 +96,11 @@ test("QR reader decodes an actual generated PNG and keeps its URL as text", asyn
     "https://example.test/LR",
   );
   await expect(page.getByRole("status")).toContainText("本机识别");
-  await page
-    .getByLabel("二维码图片")
-    .setInputFiles({
-      name: "bad.png",
-      mimeType: "image/png",
-      buffer: Buffer.from("invalid"),
-    });
+  await page.getByLabel("二维码图片").setInputFiles({
+    name: "bad.png",
+    mimeType: "image/png",
+    buffer: Buffer.from("invalid"),
+  });
   await expect(page.getByRole("alert")).toBeVisible();
   await expect(page.getByLabel("二维码结果")).toHaveValue("");
 });

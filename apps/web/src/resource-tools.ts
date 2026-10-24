@@ -34,3 +34,24 @@ export async function inspectCalendar(source: string) {
     recurrence: String(event.getFirstPropertyValue("rrule") ?? ""),
   }));
 }
+
+/** Incremental hashing also works in local HTTP previews without WebCrypto. */
+export async function digestBlob(blob: Blob): Promise<string> {
+  if (blob.size > 300_000_000) throw Error("资源包最大 300 MB");
+  const { sha256 } = await import("@noble/hashes/sha2.js");
+  const hash = sha256.create();
+  try {
+    for (let offset = 0; offset < blob.size; offset += 4_194_304) {
+      hash.update(
+        new Uint8Array(
+          await blob.slice(offset, offset + 4_194_304).arrayBuffer(),
+        ),
+      );
+    }
+    return Array.from(hash.digest(), (value) =>
+      value.toString(16).padStart(2, "0"),
+    ).join("");
+  } finally {
+    hash.destroy();
+  }
+}

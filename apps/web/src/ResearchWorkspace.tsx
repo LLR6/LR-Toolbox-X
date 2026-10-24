@@ -2,7 +2,11 @@ import { useMemo, useState } from "react";
 import Fuse from "fuse.js";
 import packs from "./resource-packs.json";
 import { openSourcePicks } from "./open-source-picks.ts";
-import { inspectCalendar, readPackDocument } from "./resource-tools.ts";
+import {
+  inspectCalendar,
+  readPackDocument,
+  digestBlob,
+} from "./resource-tools.ts";
 import { studios, type ResearchStudioId } from "./studios.ts";
 import { ToolIcon } from "./Icons.tsx";
 import { download } from "./storage.ts";
@@ -76,21 +80,16 @@ export function ResearchWorkspace({
   }
   async function verify(file: File) {
     await task(async () => {
-      if (file.size > 300_000_000) throw Error("资源包最大 300 MB");
       setArchive(null);
       setDoc("");
       setDocName("");
       if (file.size !== pack.bytes)
         throw Error("文件大小与登记包不同，请选择对应的原始包");
-      const data = await file.arrayBuffer();
-      const hash = Array.from(
-        new Uint8Array(await crypto.subtle.digest("SHA-256", data)),
-        (v) => v.toString(16).padStart(2, "0"),
-      ).join("");
+      const hash = await digestBlob(file);
       if (hash !== pack.sha256)
         throw Error("SHA-256 不一致：这不是登记的同一份包");
       if (file.size <= 12_000_000 && file.name.toLowerCase().endsWith(".zip"))
-        setArchive(new Uint8Array(data));
+        setArchive(new Uint8Array(await file.arrayBuffer()));
       setNotice("完整性一致 · 与上传原包相同（不代表来源可信或设备兼容）");
     });
   }
