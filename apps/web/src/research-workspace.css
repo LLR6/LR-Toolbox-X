@@ -32,6 +32,9 @@
   margin-bottom: 22px;
 }
 .research-hero {
+  height: auto;
+  min-height: 170px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: 24px;
@@ -244,6 +247,9 @@
     padding: 16px;
   }
   .research-hero {
+    height: auto;
+    min-height: 170px;
+    box-sizing: border-box;
     padding: 24px;
     gap: 14px;
   }
