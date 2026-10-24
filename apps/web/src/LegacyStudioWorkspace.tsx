@@ -1,3 +1,4 @@
+import { bundleDownloads } from "./bundle-downloads.ts";
 import { useState, useRef, useEffect } from "react";
 import type Cropper from "cropperjs";
 import { studios, type LegacyStudioId } from "./studios.ts";
@@ -58,6 +59,7 @@ export function StudioWorkspace({
   onClose: () => void;
   onRecord: (id: string, status: "success" | "error", ms: number) => void;
 }) {
+  const [packing, setPacking] = useState(false);
   const meta = studios.find((s) => s.id === id)!;
   const t = (zh: string, english: string) => (en ? english : zh);
   const [files, setFiles] = useState<File[]>([]),
@@ -852,6 +854,31 @@ export function StudioWorkspace({
                 {t("下载 TXT", "Download TXT")}
               </button>
             </div>
+          )}
+          {results.length > 1 && (
+            <button
+              disabled={packing || busy}
+              onClick={async () => {
+                setPacking(true);
+                setError("");
+                try {
+                  const zip = await bundleDownloads(results);
+                  downloadBlob("LR-results.zip", zip);
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setPacking(false);
+                }
+              }}
+            >
+              {packing
+                ? t("正在打包…", "Packing…")
+                : t(
+                    `打包下载全部（${results.length} 份）`,
+                    `Download all (${results.length})`,
+                  )}{" "}
+              <UiIcon name="download" />
+            </button>
           )}
           {results.map((result, i) => (
             <ResultFile key={i} result={result} />

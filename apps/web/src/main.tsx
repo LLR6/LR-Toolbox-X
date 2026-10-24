@@ -19,7 +19,12 @@ import "./dashboard.css";
 import { UpdateNotice } from "./UpdateNotice.tsx";
 import { Workbench } from "./Workbench.tsx";
 import { Discovery, StudioCards } from "./Discovery.tsx";
-import { studios, studioMatches, type StudioId } from "./studios.ts";
+import {
+  studios,
+  studioMatches,
+  studioShortcut,
+  type StudioId,
+} from "./studios.ts";
 const StudioWorkspace = lazy(() =>
   import("./StudioWorkspace.tsx").then((m) => ({ default: m.StudioWorkspace })),
 );
@@ -775,11 +780,30 @@ function App() {
                       key={i}
                       onClick={() => {
                         const a = all.find((a) => a.id === h.id);
+                        const target = studios.find(
+                          (s) => "studio." + s.id === h.id,
+                        );
                         if (a) choose(a);
+                        else if (target) openStudio(target.id);
                       }}
                     >
                       <span>
-                        {h.status === "success" ? "✓" : "!"} {h.id}
+                        {h.status === "success" ? "✓" : "!"}{" "}
+                        {(() => {
+                          const action = all.find((a) => a.id === h.id);
+                          const target = studios.find(
+                            (s) => "studio." + s.id === h.id,
+                          );
+                          return action
+                            ? en
+                              ? action.nameEn
+                              : action.name
+                            : target
+                              ? en
+                                ? target.en
+                                : target.name
+                              : h.id;
+                        })()}
                       </span>
                       <span>
                         {new Date(h.time).toLocaleString()} · {h.elapsedMs} ms
@@ -967,9 +991,13 @@ function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && paletteMatches[0]) {
-                  e.preventDefault();
-                  choose(paletteMatches[0]);
+                if (e.key === "Enter") {
+                  const target = studioShortcut(query);
+                  if (target || paletteMatches[0]) {
+                    e.preventDefault();
+                    if (target) openStudio(target.id);
+                    else choose(paletteMatches[0]);
+                  }
                 }
               }}
             />
