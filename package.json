@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "node scripts/studio-assets.mjs && tsc --noEmit && vite build && node scripts/licenses.mjs && node scripts/offline.mjs",
+    "build": "node scripts/studio-assets.mjs && node scripts/cyberchef-assets.mjs && tsc --noEmit && vite build && node scripts/licenses.mjs && node scripts/offline.mjs",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -19,7 +19,7 @@
     "desktop:build": "cd apps/desktop && tauri build",
     "e2e": "playwright test",
     "cli:build": "node scripts/build-cli.mjs",
-    "predev": "node scripts/studio-assets.mjs"
+    "predev": "node scripts/studio-assets.mjs && node scripts/cyberchef-assets.mjs"
   },
   "dependencies": {
     "@ffmpeg/ffmpeg": "0.12.15",

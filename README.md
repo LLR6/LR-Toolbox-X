@@ -114,3 +114,9 @@ English: a local-first toolbox with 123 portable actions and 6 native actions. T
 在首页搜索“开源”“POC”“sqlmap”“刷机”可进入新的完整资源工作台。四份上传资源提供真实文件清单、SHA-256、本机原包比对、清单下载；POC 与 sqlmap 文本可以从匹配的本机 ZIP 中检索阅读。固件、APK 和第三方源码不会随网站分发，刷机与 Python 工具不在网页内执行。CPE RAR 实际包含两份 APK，未发现网页后台源码。
 
 新增实用工作台：**二维码识别台**（jsQR，离线从图片读码并下载内容）与 **日历文件台**（ICAL.js，解析 ICS、保留时区和重复规则、导出 JSON）。资源库另推荐 Excalidraw、Docling、MarkItDown、LocalSend、Stirling PDF、IT-Tools，明确标记为独立外部项目；不把外链计入内置工具数量。
+
+### CyberChef 数据实验室
+
+新增完整自托管 CyberChef v11.5.0，首页搜索 `CyberChef` 即可打开。提供 16 类、504 项去重后的上游操作目录、关键词检索、目录下载和常用配方入口，进入本站内的完整配方工作区。固定官方发行版本并验证 SHA-256，保留 Apache-2.0 与上游依赖许可；首次打开才加载大引擎，不加入日常离线预缓存。
+
+计数口径：128 个便携工具、21 个特色工作台入口；CyberChef 的 504 项上游操作单独标记，未与已有重叠功能相加，也未宣称全部逐项实测。**2000 个独立、真实可用工具的目标仍在推进，尚未完成。**

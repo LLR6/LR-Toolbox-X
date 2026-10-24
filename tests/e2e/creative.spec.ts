@@ -26,11 +26,11 @@ async function open(page: Page, id: string) {
   await page.goto("/");
   await page.getByTestId("studio-" + id).click();
 }
-test("discovery exposes twenty studios and recommends only three tools at a time", async ({
+test("discovery exposes twenty-one studios and recommends only three tools at a time", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator(".studio-card")).toHaveCount(20);
+  await expect(page.locator(".studio-card")).toHaveCount(21);
   await expect(page.locator(".recommended-tools article")).toHaveCount(3);
   await expect(page.locator(".sidebar details")).not.toHaveAttribute(
     "open",

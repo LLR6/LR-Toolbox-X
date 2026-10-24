@@ -18,9 +18,11 @@ export type StudioId =
   | "time"
   | "resources"
   | "qrread"
-  | "calendar";
+  | "calendar"
+  | "cyberchef";
 
-export type ResearchStudioId = "resources" | "qrread" | "calendar";
+export type ResearchStudioId =
+  "resources" | "qrread" | "calendar" | "cyberchef";
 
 export type VisualStudioId = Exclude<
   StudioId,
@@ -329,6 +331,21 @@ export const studios: {
     repo: "https://github.com/kewisch/ical.js",
     accent: "coral",
   },
+  {
+    id: "cyberchef",
+    name: "CyberChef 数据实验室",
+    en: "CyberChef Suite",
+    category: "Code",
+    intro: "将数百项开源数据操作，串成可复用的处理配方。",
+    introEn:
+      "Combine hundreds of upstream data operations into reusable recipes.",
+    use: "自托管完整应用 · 操作目录搜索 · 编码 / 分析 / 压缩",
+    useEn:
+      "Self-hosted suite · Operation search · Encoding / analysis / compression",
+    engine: "CyberChef 11.5.0",
+    repo: "https://github.com/gchq/CyberChef",
+    accent: "violet",
+  },
 ];
 
 export const studioMatches = (query: string) =>
@@ -350,6 +367,7 @@ export const studioMatches = (query: string) =>
   );
 
 const studioAliases: Partial<Record<StudioId, string[]>> = {
+  cyberchef: ["cyberchef", "数据实验室", "数据配方", "魔术解码"],
   resources: [
     "sqlmap",
     "poc",

@@ -14,6 +14,9 @@ const files = await walk("dist"),
   hash = createHash("sha256");
 for (const f of files) hash.update(await readFile(f));
 const key = "lrx-" + hash.digest("hex").slice(0, 12);
-const urls = files.map((f) => "./" + f.slice(5));
+// The optional 50 MB upstream suite loads on demand; keep the everyday offline shell small.
+const urls = files
+  .filter((f) => !f.startsWith("dist/engines/cyberchef/"))
+  .map((f) => "./" + f.slice(5));
 await writeFile("dist/sw.js", offlineWorker(key, ["./", ...urls]));
 console.log("Offline shell generated:", key, files.length, "files");
