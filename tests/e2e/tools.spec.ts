@@ -18,7 +18,7 @@ test("format JSON, reject invalid input and record history", async ({
     .locator(".sidebar")
     .getByRole("button", { name: /执行历史/ })
     .click();
-  await expect(page.getByText("json.format").first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /JSON 格式化/ }).first()).toBeVisible();
 });
 test("workflow runs shared handlers", async ({ page }) => {
   await page.goto("/");
