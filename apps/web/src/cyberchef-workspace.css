@@ -255,3 +255,12 @@
     overflow-wrap: anywhere;
   }
 }
+
+.chef-layout.chef-focused {
+  grid-template-columns: minmax(0, 1fr);
+}
+.chef-view-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

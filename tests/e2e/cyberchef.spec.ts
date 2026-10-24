@@ -45,6 +45,9 @@ test("self-hosted upstream workbench executes real Base64, SHA-256 and URL recip
   await page
     .getByRole("button", { name: "Base64 编码 →", exact: true })
     .click();
+  await expect(
+    page.getByRole("button", { name: "显示操作目录", exact: true }),
+  ).toBeVisible();
   const input = frame.locator("#input .cm-content");
   const output = frame.locator("#output .cm-content");
   await input.fill("Hello LR");

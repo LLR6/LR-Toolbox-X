@@ -54,6 +54,7 @@ export function CyberChefWorkspace({
   const [selected, setSelected] = useState("");
   const [source, setSource] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [focused, setFocused] = useState(false);
   const fuse = useMemo(
     () =>
       new Fuse(chefOperations, {
@@ -73,6 +74,7 @@ export function CyberChefWorkspace({
     .map((c) => c.name);
   const launch = (name: string, args: unknown[] = []) => {
     setSelected(name);
+    setFocused(true);
     setLoaded(false);
     setSource(name ? recipeUrl(name, args) : "./engines/cyberchef/index.html");
   };
@@ -126,63 +128,65 @@ export function CyberChefWorkspace({
         ))}
         <button onClick={() => launch("")}>打开完整操作台 →</button>
       </div>
-      <div className="chef-layout">
-        <aside className="chef-browser">
-          <h2>找一项操作</h2>
-          <label>
-            按名称搜索
-            <input
-              aria-label="搜索 CyberChef 操作"
-              placeholder="Base64 / JSON / SHA / Extract…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </label>
-          <label>
-            按场景筛选
-            <select
-              aria-label="CyberChef 分类"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">全部分类</option>
-              {categoryNames.map((name) => (
-                <option key={name} value={name}>
-                  {labels[name] ?? name} / {name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <p>
-            显示 {matches.length} 项{query ? "（搜索最多 100 项）" : ""}
-          </p>
-          <div className="chef-operation-list">
-            {matches.map((op) => (
-              <button
-                key={op.name}
-                aria-pressed={op.name === selected}
-                onClick={() => launch(op.name)}
+      <div className={"chef-layout" + (focused ? " chef-focused" : "")}>
+        {!focused && (
+          <aside className="chef-browser">
+            <h2>找一项操作</h2>
+            <label>
+              按名称搜索
+              <input
+                aria-label="搜索 CyberChef 操作"
+                placeholder="Base64 / JSON / SHA / Extract…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </label>
+            <label>
+              按场景筛选
+              <select
+                aria-label="CyberChef 分类"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
               >
-                <strong>{op.name}</strong>
-                <span>
-                  {op.categories.map((c) => labels[c] ?? c).join(" · ")}
-                </span>
-              </button>
-            ))}
-            {!matches.length && <p>没有匹配项，试试英文关键词。</p>}
-          </div>
-          <button
-            onClick={() =>
-              download(
-                "CyberChef-11.5.0-operation-catalog.json",
-                JSON.stringify(chefOperations, null, 2),
-                "application/json",
-              )
-            }
-          >
-            下载完整操作目录 JSON ↓
-          </button>
-        </aside>
+                <option value="">全部分类</option>
+                {categoryNames.map((name) => (
+                  <option key={name} value={name}>
+                    {labels[name] ?? name} / {name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p>
+              显示 {matches.length} 项{query ? "（搜索最多 100 项）" : ""}
+            </p>
+            <div className="chef-operation-list">
+              {matches.map((op) => (
+                <button
+                  key={op.name}
+                  aria-pressed={op.name === selected}
+                  onClick={() => launch(op.name)}
+                >
+                  <strong>{op.name}</strong>
+                  <span>
+                    {op.categories.map((c) => labels[c] ?? c).join(" · ")}
+                  </span>
+                </button>
+              ))}
+              {!matches.length && <p>没有匹配项，试试英文关键词。</p>}
+            </div>
+            <button
+              onClick={() =>
+                download(
+                  "CyberChef-11.5.0-operation-catalog.json",
+                  JSON.stringify(chefOperations, null, 2),
+                  "application/json",
+                )
+              }
+            >
+              下载完整操作目录 JSON ↓
+            </button>
+          </aside>
+        )}
         <div className="chef-runtime">
           <div className="chef-runtime-title">
             <div>
@@ -190,7 +194,12 @@ export function CyberChefWorkspace({
               <h2>{selected || "准备开始你的第一个配方"}</h2>
             </div>
             {source && (
-              <button onClick={() => launch(selected)}>重新打开</button>
+              <div className="chef-view-controls">
+                <button onClick={() => setFocused(!focused)}>
+                  {focused ? "显示操作目录" : "专注工作台"}
+                </button>
+                <button onClick={() => launch(selected)}>重新打开</button>
+              </div>
             )}
           </div>
           {source ? (
