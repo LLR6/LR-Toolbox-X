@@ -1,5 +1,32 @@
 export const openSourcePicks = [
   {
+    name: "Ghostfolio",
+    repo: "ghostfolio/ghostfolio",
+    tag: "股票 · ETF · 加密资产",
+    intro:
+      "统一记录股票、ETF 和加密资产持仓，查看资产配置与组合表现。国内场外基金覆盖需逐项核查，行情能力取决于数据提供商。",
+    use: "资产组合记录与配置分析",
+    mode: "独立自托管服务 · 未在本站运行；不连接交易账户",
+  },
+  {
+    name: "AKShare",
+    repo: "akfamily/akshare",
+    tag: "A股 · 基金数据",
+    intro:
+      "Python 财经数据接口库，包含股票与公募基金数据接口，适合导出历史数据后在 DuckDB 分析。上游接口可能变更或限流，需遵守数据源条款并核对更新时间。",
+    use: "股票历史数据 · 公募基金净值与资料研究",
+    mode: "本机 Python · 需安装；本站未提供实时行情 API",
+  },
+  {
+    name: "Freqtrade",
+    repo: "freqtrade/freqtrade",
+    tag: "加密资产 · 回测模拟",
+    intro:
+      "开源加密资产策略研究工具，支持历史回测与 dry-run 模拟钱包。本站推荐先使用模拟模式；回测不代表未来收益，需计入手续费、滑点和数据偏差。",
+    use: "历史策略回测 · dry-run 模拟研究",
+    mode: "独立部署 · 本站不运行机器人、不收集交易密钥、不下单",
+  },
+  {
     name: "jq",
     repo: "jqlang/jq",
     tag: "数据处理",
