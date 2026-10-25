@@ -165,7 +165,9 @@ function DataDesk() {
     [status, setStatus] = useState(
       "CSV 表名固定为 data；首次运行需联网加载引擎。",
     );
-  const runtime = useRef<any>(null),
+  type QueryResult = {toArray:()=>{toJSON:()=>Record<string,unknown>}[]};
+  type Database = {registerFileText:(name:string,text:string)=>Promise<void>;connect:()=>Promise<{query:(sql:string)=>Promise<QueryResult>;close:()=>Promise<void>}>};
+  const runtime = useRef<Database | null>(null),
     worker = useRef<Worker | null>(null),
     alive = useRef(true);
   useEffect(() => {
@@ -210,6 +212,7 @@ function DataDesk() {
         runtime.current = db;
       }
       const db = runtime.current;
+      if (!db) throw Error("数据引擎未就绪");
       await db.registerFileText("input.csv", csv);
       const connection = await db.connect();
       try {
@@ -219,7 +222,7 @@ function DataDesk() {
         const result = await connection.query(
           "SELECT * FROM (" + sql.trim().replace(/;$/, "") + ") LIMIT 500",
         );
-        const data = result.toArray().map((r: any) => r.toJSON());
+        const data = result.toArray().map((r) => r.toJSON());
         if (alive.current) {
           setRows(data);
           setStatus(
