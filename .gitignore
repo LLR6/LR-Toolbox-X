@@ -20,3 +20,5 @@ dist-cli/
 test-results/
 playwright-report/
 apps/web/public/engines/
+
+local-agent/__pycache__/

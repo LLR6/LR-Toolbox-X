@@ -1,5 +1,55 @@
 export const openSourcePicks = [
   {
+    name: "jq",
+    repo: "jqlang/jq",
+    tag: "数据处理",
+    intro: "筛选、转换和聚合大型 JSON 数据，适合接口调试与批处理脚本。",
+    use: "JSON 查询与数据流水线",
+    mode: "独立命令行 · 需单独安装",
+  },
+  {
+    name: "fd",
+    repo: "sharkdp/fd",
+    tag: "文件检索",
+    intro: "快速按名称和模式查找文件，适合代码库、资料库与日常目录检索。",
+    use: "高效定位文件与批量查找",
+    mode: "独立命令行 · 需单独安装",
+  },
+  {
+    name: "gdu",
+    repo: "dundee/gdu",
+    tag: "磁盘管理",
+    intro: "交互查看磁盘空间被哪些目录占用，帮助找到大文件与清理候选项。",
+    use: "磁盘占用分析",
+    mode: "独立命令行 · 需单独安装；删除操作需谨慎确认",
+  },
+  {
+    name: "OCRmyPDF",
+    repo: "ocrmypdf/OCRmyPDF",
+    tag: "扫描文档",
+    intro: "给扫描 PDF 添加可搜索文字层，适合论文、讲义和档案检索。",
+    use: "扫描件变为可检索 PDF",
+    mode: "本机命令行 · 需安装 Tesseract 等依赖",
+  },
+  {
+    name: "copyparty",
+    repo: "9001/copyparty",
+    tag: "文件协作",
+    intro:
+      "轻量文件服务器，支持断点续传、媒体浏览和多种传输协议，适合自己的多设备资料库。",
+    use: "局域网大文件共享与资料服务",
+    mode: "独立服务 · 需自行部署并配置访问权限",
+  },
+  {
+    name: "Fast Music Remover",
+    repo: "omeryusufyagci/fast-music-remover",
+    tag: "音频处理",
+    intro:
+      "基于 DeepFilterNet 增强语音、减少背景音乐和噪声，适合口播素材预处理。",
+    use: "语音素材降噪与背景音乐削弱",
+    mode: "本机程序 / Docker · 需单独安装",
+  },
+  {
     name: "noble-hashes",
     repo: "paulmillr/noble-hashes",
     tag: "已接入",
