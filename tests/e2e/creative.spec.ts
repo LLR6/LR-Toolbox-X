@@ -30,7 +30,7 @@ test("discovery exposes twenty-one studios and recommends only three tools at a 
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator(".studio-card")).toHaveCount(21);
+  await expect(page.locator(".studio-card")).toHaveCount(25);
   await expect(page.locator(".recommended-tools article")).toHaveCount(3);
   await expect(page.locator(".sidebar details")).not.toHaveAttribute(
     "open",

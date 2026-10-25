@@ -1,3 +1,4 @@
+import { PowerStudios } from "./PowerStudios.tsx";
 import { CyberChefWorkspace } from "./CyberChefWorkspace.tsx";
 import { ResearchWorkspace } from "./ResearchWorkspace.tsx";
 import {
@@ -17,6 +18,15 @@ type Props = {
 };
 
 export function StudioWorkspace(props: Props) {
+  if (
+    props.id === "duckdb" ||
+    props.id === "czkawka" ||
+    props.id === "losslesscut" ||
+    props.id === "tabby"
+  )
+    return (
+      <PowerStudios key={props.id} id={props.id} onClose={props.onClose} />
+    );
   if (props.id === "cyberchef") return <CyberChefWorkspace {...props} />;
   if (
     props.id === "resources" ||

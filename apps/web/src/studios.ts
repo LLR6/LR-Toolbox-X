@@ -19,10 +19,21 @@ export type StudioId =
   | "resources"
   | "qrread"
   | "calendar"
-  | "cyberchef";
+  | "cyberchef"
+  | "duckdb"
+  | "czkawka"
+  | "losslesscut"
+  | "tabby";
 
 export type ResearchStudioId =
-  "resources" | "qrread" | "calendar" | "cyberchef";
+  | "resources"
+  | "qrread"
+  | "calendar"
+  | "cyberchef"
+  | "duckdb"
+  | "czkawka"
+  | "losslesscut"
+  | "tabby";
 
 export type VisualStudioId = Exclude<
   StudioId,
@@ -69,6 +80,58 @@ export const studios: {
   repo: string;
   accent: string;
 }[] = [
+  {
+    id: "duckdb",
+    name: "数据分析台",
+    en: "DuckDB SQL",
+    category: "CSV",
+    engine: "DuckDB-Wasm",
+    repo: "https://github.com/duckdb/duckdb-wasm",
+    intro: "上传 CSV，用 SQL 完成筛选与汇总。",
+    introEn: "上传 CSV，用 SQL 完成筛选与汇总。",
+    use: "浏览器数据分析 · JSON 导出",
+    useEn: "浏览器数据分析 · JSON 导出",
+    accent: "blue",
+  },
+  {
+    id: "czkawka",
+    name: "重复文件整理",
+    en: "Czkawka",
+    category: "Developer",
+    engine: "Czkawka · 桌面配套",
+    repo: "https://github.com/qarmin/czkawka",
+    intro: "定位重复文件、空目录和相似图片。",
+    introEn: "定位重复文件、空目录和相似图片。",
+    use: "独立安装 · 扫描与预览指引",
+    useEn: "独立安装 · 扫描与预览指引",
+    accent: "blue",
+  },
+  {
+    id: "losslesscut",
+    name: "无损音视频剪辑",
+    en: "LosslessCut",
+    category: "Images",
+    engine: "LosslessCut · 桌面配套",
+    repo: "https://github.com/mifi/lossless-cut",
+    intro: "快速整理长视频、录音和素材片段。",
+    introEn: "快速整理长视频、录音和素材片段。",
+    use: "独立安装 · 无损剪切使用指引",
+    useEn: "独立安装 · 无损剪切使用指引",
+    accent: "blue",
+  },
+  {
+    id: "tabby",
+    name: "AI 编程助手",
+    en: "Tabby AI",
+    category: "Code",
+    engine: "Tabby · 独立服务",
+    repo: "https://github.com/TabbyML/tabby",
+    intro: "给编辑器部署自己的 AI 编程助手。",
+    introEn: "给编辑器部署自己的 AI 编程助手。",
+    use: "Docker 启动脚本 · 部署指引",
+    useEn: "Docker 启动脚本 · 部署指引",
+    accent: "blue",
+  },
   {
     id: "pdf",
     name: "PDF 整理台",
