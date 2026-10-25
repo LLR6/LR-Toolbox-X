@@ -22,3 +22,6 @@ playwright-report/
 apps/web/public/engines/
 
 local-agent/__pycache__/
+
+local-agent/environments/
+local-agent/*.log

@@ -9,19 +9,28 @@ def available():
         return True
     except Exception:
         return False
-if not shutil.which('ollama'):
-    raise SystemExit('Please install Ollama from https://ollama.com/download then run again.')
-if not available():
-    subprocess.Popen(['ollama','serve'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    for _ in range(30):
-        if available(): break
-        time.sleep(1)
-    else: raise SystemExit('Ollama did not start. Please check the Ollama app.')
-print('Preparing '+MODEL+' (first run downloads model weights)...', flush=True)
-subprocess.run(['ollama','pull',MODEL],check=True)
+from deploy import Manager
+manager=Manager(ROOT/'environments')
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT/'web'),**kwargs)
+    def do_GET(self):
+        if self.path=='/api/local/tools':
+            if self.headers.get('Host')!='127.0.0.1:8765': self.send_error(403); return
+            data=json.dumps(manager.status(),ensure_ascii=False).encode()
+            self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(data);return
+        super().do_GET()
     def do_POST(self):
+        if self.headers.get('Host')!='127.0.0.1:8765' or self.headers.get('Origin')!='http://127.0.0.1:8765':
+            self.send_error(403);return
+        if self.path=='/api/local/install':
+            try:
+                size=int(self.headers.get('Content-Length','0'))
+                if not 0<size<1024: raise ValueError('Invalid request size')
+                manager.install(json.loads(self.rfile.read(size))['id'])
+                self.send_response(202);self.end_headers();self.wfile.write(b'{}')
+            except Exception as e: self.send_error(400,str(e))
+            return
+
         if self.path!='/api/local/chat/completions':
             self.send_error(404); return
         origin=self.headers.get('Origin')
@@ -41,6 +50,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_error(502,'Local model request failed; inspect Ollama and retry.')
     def log_message(self,*args): pass
 server=http.server.ThreadingHTTPServer(('127.0.0.1',8765),Handler)
+print('Local deployment center available without Ollama. Install/configure Ollama separately for AI.');
 print('LR Agent: http://127.0.0.1:8765 — close this window to stop.',flush=True)
 webbrowser.open('http://127.0.0.1:8765')
 try: server.serve_forever()

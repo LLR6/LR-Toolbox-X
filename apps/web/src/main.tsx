@@ -33,6 +33,7 @@ import "./polish.css";
 import "./readability.css";
 import "./experience.css";
 import "./comfort.css";
+import { DeployCenter } from "./DeployCenter.tsx";
 import { TaskDesk } from "./TaskDesk.tsx";
 const desktop = "__TAURI_INTERNALS__" in window;
 const groups = [
@@ -341,6 +342,7 @@ function App() {
           <kbd>⌘ K</kbd>
         </button>
         <div className="nav-label">WORKSPACE</div>
+        {nav("deploy", t("本地部署", "Local deployment"))}
         {nav("assistant", t("任务助手", "Task assistant"))}
         {nav("home", t("工作台", "Workbench"))}
         {nav("studios", t("创作工作台", "Creative studios"))}
@@ -570,6 +572,7 @@ function App() {
           />
         ) : (
           <>
+            {page === "deploy" && <DeployCenter />}
             {page === "assistant" && <TaskDesk choose={choose} />}
             {page === "home" && (
               <Discovery
