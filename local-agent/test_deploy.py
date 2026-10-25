@@ -17,4 +17,12 @@ class DeploymentTests(unittest.TestCase):
    with patch('deploy.venv.EnvBuilder.create',side_effect=RuntimeError('dependency unavailable')):m._install('akshare')
    result=next(x for x in m.status() if x['id']=='akshare')
    self.assertEqual(result['state'],'error');self.assertIn('dependency unavailable',result['detail'])
+ def test_execution_validation(self):
+  with tempfile.TemporaryDirectory() as root:
+   m=Manager(root)
+   with self.assertRaises(ValueError):m.execute({'operation':'shell'})
+   for tool in ['akshare','markitdown']:
+    py=m.python(tool);py.parent.mkdir(parents=True);py.touch()
+   with self.assertRaises(ValueError):m.execute({'operation':'fund','code':'123;bad'})
+   with self.assertRaises(ValueError):m.execute({'operation':'markitdown','name':'bad.exe','data':''})
 if __name__=='__main__':unittest.main()

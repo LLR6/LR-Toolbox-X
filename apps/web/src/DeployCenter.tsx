@@ -1,3 +1,4 @@
+import { download } from "./storage.ts";
 import { useState } from "react";
 type Tool = { id: string; state: string; detail: string; log: string };
 export function DeployCenter() {
@@ -34,6 +35,28 @@ export function DeployCenter() {
       setBusy(false);
     }
   }
+  const [code, setCode] = useState(""),
+    [result, setResult] = useState("");
+  async function run(payload: object) {
+    setBusy(true);
+    setError("");
+    setResult("");
+    try {
+      const r = await fetch("/api/local/execute", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(100000),
+      });
+      const data = await r.json();
+      if (!r.ok) throw Error(data.error || "执行失败");
+      setResult(data.text || data.csv || "无数据");
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
   return (
     <section className="task-desk">
       <div className="task-heading">
@@ -64,6 +87,71 @@ export function DeployCenter() {
           的模型由其后续功能按需准备。安装可能持续数分钟，可手动刷新查看进度。
         </p>
         {error && <p role="alert">{error}</p>}
+        {local && (
+          <>
+            <h2>本地执行工作台</h2>
+            <p>
+              先安装 MarkItDown 或
+              AKShare，再使用下面的操作。原始文件留在本机；基金查询需要连接外部数据源。
+            </p>
+            <label>
+              MarkItDown 文本文件转换（最大 2 MB）
+              <input
+                type="file"
+                accept=".txt,.md,.html,.htm,.csv,.json"
+                disabled={busy}
+                onChange={async (e) => {
+                  const f = e.target.files?.[0];
+                  if (!f) return;
+                  if (f.size > 2 * 1024 * 1024) {
+                    setError("文件最大 2 MB");
+                    return;
+                  }
+                  const bytes = new Uint8Array(await f.arrayBuffer());
+                  let binary = "";
+                  for (const b of bytes) binary += String.fromCharCode(b);
+                  void run({
+                    operation: "markitdown",
+                    name: f.name,
+                    data: btoa(binary),
+                  });
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            <label>
+              公募基金代码
+              <input
+                value={code}
+                maxLength={6}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="六位基金代码"
+              />
+            </label>
+            <button
+              disabled={busy || !/^\d{6}$/.test(code)}
+              onClick={() => run({ operation: "fund", code })}
+            >
+              查询单位净值历史
+            </button>
+            <p>
+              查询最多返回最近 2000
+              行，不是实时行情。以数据内日期为准；数据源异常会显示错误。
+            </p>
+            {result && (
+              <>
+                <pre>{result}</pre>
+                <button
+                  onClick={() =>
+                    download("local-tool-result.txt", result, "text/plain")
+                  }
+                >
+                  下载结果
+                </button>
+              </>
+            )}
+          </>
+        )}
         {tools.map((t) => (
           <article key={t.id}>
             <h2>{t.id}</h2>

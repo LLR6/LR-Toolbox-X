@@ -41,3 +41,29 @@ class Manager:
                 subprocess.run([str(self.python(tool)),'-m','pip','freeze'],stdout=log,stderr=subprocess.STDOUT,timeout=30)
         except Exception as e: error=str(e)
         with self.lock: self.jobs[tool]={'running':False,'error':error}
+
+    def execute(self, payload):
+        import tempfile,base64,re
+        operation=payload.get('operation')
+        tool={'markitdown':'markitdown','fund':'akshare'}.get(operation)
+        if not tool: raise ValueError('Unknown operation')
+        py=self.python(tool)
+        if not py.is_file(): raise ValueError('请先安装对应工具')
+        script=pathlib.Path(__file__).with_name('execute_tool.py')
+        with tempfile.TemporaryDirectory(prefix='lr-task-') as tmp:
+            if operation=='fund':
+                code=payload.get('code','')
+                if not isinstance(code,str) or not re.fullmatch(r'\d{6}',code):raise ValueError('基金代码必须为六位数字')
+                argument=code
+            else:
+                extension=pathlib.Path(payload.get('name','')).suffix.lower()
+                if extension not in {'.txt','.md','.html','.htm','.csv','.json'}:raise ValueError('当前仅支持文本类文件；Office/PDF 适配后续提供')
+                content=base64.b64decode(payload.get('data',''),validate=True)
+                if len(content)>2*1024*1024:raise ValueError('文件最大 2 MB')
+                path=pathlib.Path(tmp)/('input'+extension);path.write_bytes(content);argument=str(path)
+            output=pathlib.Path(tmp)/'output.json';errors=pathlib.Path(tmp)/'errors.txt'
+            with output.open('w') as out,errors.open('w') as err:
+                result=subprocess.run([str(py),str(script),operation,argument],stdout=out,stderr=err,timeout=90)
+            if result.returncode:raise ValueError('工具执行失败：'+errors.read_text(errors='replace')[-2000:])
+            if output.stat().st_size>4*1024*1024:raise ValueError('输出超过 4 MB 上限')
+            return json.loads(output.read_text(encoding='utf-8'))

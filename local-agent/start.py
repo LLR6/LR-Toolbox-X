@@ -22,6 +22,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         if self.headers.get('Host')!='127.0.0.1:8765' or self.headers.get('Origin')!='http://127.0.0.1:8765':
             self.send_error(403);return
+        if self.path=='/api/local/execute':
+            try:
+                size=int(self.headers.get('Content-Length','0'))
+                if not 0<size<3000000: raise ValueError('请求最大 3 MB')
+                result=manager.execute(json.loads(self.rfile.read(size)))
+                data=json.dumps(result,ensure_ascii=False).encode()
+                self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(data)
+            except Exception as e:
+                data=json.dumps({'error':str(e)},ensure_ascii=False).encode()
+                self.send_response(400);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(data)
+            return
         if self.path=='/api/local/install':
             try:
                 size=int(self.headers.get('Content-Length','0'))
