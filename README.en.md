@@ -140,3 +140,6 @@ The detailed [user guide](docs/USER-GUIDE.md) and [integration checklist](docs/L
 Project code is licensed under [Apache-2.0](LICENSE). Third-party programs, model weights, data sources, and assets retain their own licenses and terms. Thank you to the maintainers of every integrated and recommended project.
 
 <p align="center"><sub>Built by LR · Local first. Clear steps. Real tools.</sub></p>
+
+
+[Per-tool reference (Chinese)](docs/TOOLS.md) · [Preview release notes (Chinese)](docs/RELEASE-PREVIEW.md)

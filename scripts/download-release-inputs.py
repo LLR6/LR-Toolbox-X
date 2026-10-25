@@ -1,6 +1,6 @@
 """Reuse successful CI outputs from the exact tagged source SHA."""
 import json, os, subprocess
-repo=os.environ['GITHUB_REPOSITORY']; sha=os.environ['GITHUB_SHA']
+repo=os.environ['GITHUB_REPOSITORY']; sha=os.environ.get('SOURCE_SHA',os.environ['GITHUB_SHA'])
 runs=json.loads(subprocess.check_output(['gh','run','list','--repo',repo,'--commit',sha,'--limit','100','--json','databaseId,workflowName,status,conclusion']))
 selected={}
 for name in ('CI','Desktop installers','CodeQL'):

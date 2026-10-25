@@ -1,0 +1,54 @@
+name: Publish verified preview installers
+on:
+  workflow_run:
+    workflows: [CI, Desktop installers, CodeQL]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: publish-preview-v0.10.0
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: v0.10.0-preview.1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Check exact-commit gates
+        id: gate
+        env:
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          python - <<'PY'
+          import os,json,subprocess
+          repo=os.environ['GITHUB_REPOSITORY'];sha=os.environ['SOURCE_SHA']
+          runs=json.loads(subprocess.check_output(['gh','run','list','--repo',repo,'--commit',sha,'--limit','100','--json','workflowName,status,conclusion']))
+          ready=all(any(r['workflowName']==n and r['status']=='completed' and r['conclusion']=='success' for r in runs) for n in ['CI','Desktop installers','CodeQL'])
+          existing=subprocess.run(['gh','release','view',os.environ['TAG'],'--repo',repo],capture_output=True).returncode==0
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('ready='+str(ready and not existing).lower()+'\n')
+          PY
+      - if: steps.gate.outputs.ready == 'true'
+        run: python scripts/download-release-inputs.py
+        env:
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+      - if: steps.gate.outputs.ready == 'true'
+        run: npm ci && npm run build && python scripts/prepare-release.py && python scripts/checksums.py release-assets
+      - name: Publish actual artifacts
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          gh release create "$TAG" release-assets/* --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" --prerelease --title "LR Toolbox X v0.10.0 · 任务工作台预览版" --notes-file docs/RELEASE-PREVIEW.md
